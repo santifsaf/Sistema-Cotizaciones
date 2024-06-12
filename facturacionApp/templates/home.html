@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Título de tu Aplicación</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.1.0/css/bootstrap.min.css">
+    
+    <!-- Styles -->
+    <link href="{% static 'facturacionApp/static/home.css'%}" rel="stylesheet">
+    
+</head>
+<body>
+    <header>
+        <!-- Navbar -->
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <div class="container">
+                <a class="navbar-brand" href="#">Título de tu Aplicación</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav ms-auto">
+                        <li class="nav-item">
+                            <a class="nav-link active" aria-current="page" href="#">Inicio</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">Características</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">Precios</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">Contacto</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+        <!-- Hero section -->
+        <section class="hero-section">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-6">
+                        <h1>Facturación Rápida y Fácil</h1>
+                        <p>Una solución integral para tu negocio.</p>
+                        <a href="#" class="btn btn-primary">Cree una factura ahora</a>
+                    </div>
+                    <div class="col-lg-6">
+                        <!-- Aquí podrían ir imágenes o contenido adicional -->
+                    </div>
+                </div>
+            </div>
+        </section>
+    </header>
+
+    <!-- Más secciones y contenido aquí -->
+
+    <footer>
+        <!-- Pie de página -->
+        <div class="container">
+            <p>&copy; 2024 Título de tu Aplicación. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.1.0/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
