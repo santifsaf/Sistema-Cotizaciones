@@ -1,51 +1,7 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    {% load static %}
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Título de tu Aplicación</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.1.0/css/bootstrap.min.css">
-    
-    <!-- Styles -->
-    <link href="{% static 'home.css' %}" rel="stylesheet">
-    
-</head>
-<body>
-    <header>
-        <!-- Navbar -->
-        <nav>
-            <ul class="menu-horizontal">
-                <li><a href="#">Inicio</a></li>
-                <li>
-                    <a href="#">Cotizaciones</a>
-                    <ul class="menu-vertical">
-                        <li><a href="#">Nueva cotizacion</a></li>
-                        <li><a href="#">Mis cotizaciones</a></li>
-                    </ul>
-                </li>
-                <li>
-                    <a href="#">Articulos</a>
-                    <ul class="menu-vertical">
-                        <li><a href="#">Nuevo articulo</a></li>
-                        <li><a href="#">Mis articulos</a></li>
-                    </ul>
-                </li>
-                <li><a href="#">Clientes</a>
-                    <ul class="menu-vertical">
-                        <li><a href="#">Nuevo cliente</a></li>
-                        <li><a href="#">Mis clientes</a></li>
-                    </ul>
-                </li>
-                <li><a href="#">Cuenta</a>
-                    <ul class="menu-vertical">
-                        <li><a href="#">Mi empresa</a></li>
-                        <li><a href="#">Cerrar sesion</a></li>
-                    </ul>
-                </li>
-            </ul>
-        </nav>
-        <!-- Hero section -->
+{% extends "estructura_base.html" %}
+{% load static %}
+{% block content %} 
+
         <section class="hero-section">
             <div class="container">
                 <div class="row">
@@ -62,15 +18,5 @@
         </section>
     </header>
 
-    <!-- Más secciones y contenido aquí -->
 
-    <footer>
-        <!-- Pie de página -->
-        <div class="container">
-            <p>&copy; 2024 Título de tu Aplicación. Todos los derechos reservados.</p>
-        </div>
-    </footer>
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.1.0/js/bootstrap.bundle.min.js"></script>
-</body> 
-</html>
+{% endblock %}
