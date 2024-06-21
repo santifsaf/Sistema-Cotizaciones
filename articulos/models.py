@@ -2,7 +2,7 @@ from django.db import models
 
 # Create your models here.
 
-class Articulos(models.Model):
+class Articulo(models.Model):
     imagen=models.ImageField(upload_to='articulos', default='proyectoWeb/media/articulos/sin imagen.jpg')
     nombre=models.CharField(max_length=30)
     descripcion=models.CharField(max_length=80)

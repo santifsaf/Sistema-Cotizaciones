@@ -1,10 +1,10 @@
 from django.contrib import admin
-from .models import Articulos
+from .models import Articulo
 
 # Register your models here.
 
-class ArticulosAdmin(admin.ModelAdmin):
+class ArticuloAdmin(admin.ModelAdmin):
     readonly_fields=('created', 'updated')
 
 
-admin.site.register(Articulos, ArticulosAdmin)
+admin.site.register(Articulo, ArticuloAdmin)
