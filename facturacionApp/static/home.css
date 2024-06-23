@@ -1,59 +1,93 @@
-*{
-	margin: 0;
-	padding: 0;
-	box-sizing: border-box;
-	font-family: 'Open Sans';
-}
-body{
-	background-image: url(img/fondo.jpg);
-	background-size: cover;
-}
-nav{
-	max-width: 900px;
-	margin: auto;
-	background-color: #333;
-	font-size: 20px;
-	margin-top: 50px;
-}
-.menu-horizontal{
-	list-style: none;
-	display: flex;
-	justify-content: space-around;
-}
-.menu-horizontal > li > a{
-	display: block;
-	padding: 15px 20px;
-	color: white;
-	text-decoration: none;
-}
-.menu-horizontal > li:hover{
-	background-color: red;
-}
-.menu-vertical{
-	position: absolute;
-	display: none;
-	list-style: none;
-	width: 200px;
-	background-color: rgba(0, 0, 0, .5);
-}
-.menu-horizontal li:hover .menu-vertical{
-	display: block;
-}
-.menu-vertical li:hover{
-	background-color: black;
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Open Sans', sans-serif;
 }
 
-.menu-vertical li a{
-	display: block;
-	color: white;
-	text-decoration: none;
-	padding: 15px 15px 15px 20px;
+body {
+    background-image: url("{% static 'img/fondo.jpg' %}");
+    background-size: cover;
+    padding-top: 50px; /* Ajustar según la altura del menú */
 }
 
-#html{
-	margin: auto;
-	padding: 20px;
-	max-width: 900px;
-	background: white;
+nav {
+    max-width: 900px;
+    margin: auto;
+    background-color: #333;
+    font-size: 20px;
+    position: relative; /* Establecer posición relativa para contener elementos absolutos */
+    z-index: 1000; /* Asegurar que el menú esté sobre otros contenidos */
+}
 
+.menu-horizontal {
+    list-style: none;
+    display: flex;
+    justify-content: space-around;
+    position: relative; /* Asegurar que el menú horizontal sea relativo */
+    z-index: 1001; /* Asegurar que el menú horizontal esté sobre otros contenidos */
+}
+
+.menu-horizontal > li {
+    position: relative; /* Importante para el posicionamiento absoluto del menú vertical */
+}
+
+.menu-horizontal > li > a {
+    display: block;
+    padding: 15px 20px;
+    color: white;
+    text-decoration: none;
+}
+
+.menu-horizontal > li:hover {
+    background-color: red;
+}
+
+.menu-vertical {
+    position: absolute;
+    display: none;
+    list-style: none;
+    width: 200px;
+    background-color: rgba(0, 0, 0, 0.5);
+    top: 100%; /* Colocar el menú vertical debajo del menú horizontal */
+    left: 0;
+    z-index: 1010; /* Asegurar que el menú vertical esté sobre otros contenidos */
+}
+
+.menu-horizontal > li:hover .menu-vertical {
+    display: block;
+}
+
+.menu-vertical li:hover {
+    background-color: black;
+}
+
+.menu-vertical li a {
+    display: block;
+    padding: 15px 20px;
+    color: white;
+    text-decoration: none;
+}
+
+/* Estilo específico para la tabla */
+.table-container {
+    position: relative; /* Asegura que la tabla tenga un contexto de posicionamiento */
+    z-index: 999; /* Ajusta según sea necesario para que esté por debajo del menú horizontal */
+}
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px; 
+}
+
+.table th, .table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+}
+
+.table th {
+    background-color: #f2f2f2;
+    color: #333;
 }

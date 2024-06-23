@@ -2,27 +2,41 @@
 {% load static %}
 {% block content %} 
 
-<table class="table">
-    <tbody>
-        {% for articulo in articulos %}
-        {% if forloop.counter0|divisibleby:4 %}
-            <tr>
-        {% endif %}
-        <td>
-          <div class="card">
-            <img src="{{articulo.imagen.url}}" style="width: 300px; height: 200px;">
-            <div class="card-body" style="text-align: center;">
-              <h7 class="card-title">{{articulo.nombre}}</h7>
-              <p class="card-text">{{articulo.descripcion}}</p>
-              <p class="card-text"><strong>$</strong>{{articulo.precio}}</p>
-            </div>
-        </td>
-      {% if forloop.counter|divisibleby:4 or forloop.last %}
+<form action="{% url 'eliminar_articulo' %}" method="post">
+  {% csrf_token %}
+
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Imagen</th>
+        <th>Nombre</th>
+        <th>Descripción</th>
+        <th>Precio</th>
+        
       </tr>
-      {% endif %}
+    </thead>
+    <tbody>
+      {% for articulo in articulos %}
+      <tr>
+        <td><img src="{{ articulo.imagen.url }}" style="width: 100px;"></td>
+        <td>{{ articulo.nombre }}</td>
+        <td>{{ articulo.descripcion }}</td>
+        <td>{{ articulo.precio }}</td>
+        <td><input type="checkbox" name="articulos_seleccionados[]" value="{{ articulo.id }}"></td>
+        <td><a href="{% url 'actualizar_articulo' articulo.id %}">Modificar articulo</a></td>
+      </tr>
       {% endfor %}
     </tbody>
   </table>
-</div>
+  <button type="submit" class="btn btn-danger">Eliminar</button>
+</form>
+
+{% if messages %} 
+<ul>
+    {% for message in messages %}
+        <li>{{ message }}</li>
+    {% endfor %}
+</ul>
+{% endif %}
 
 {% endblock %}

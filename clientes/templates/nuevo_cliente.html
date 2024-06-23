@@ -2,6 +2,27 @@
 {% load static %}
 {% block content %} 
 
-ACA VAMOS A PONER EL CONTENIDO DE ESTE TEMPLATE
+<section> 
+
+    <title>Nuevo cliente</title>
+
+    
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        <table>
+            {{ form.as_table }}
+        </table>
+        <button type="submit">Guardar</button>
+    </form>
+
+    {% if messages %}
+    <ul>
+        {% for message in messages %}
+            <li>{{ message }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+
+</section>
 
 {% endblock %}

@@ -1,7 +1,28 @@
 {% extends "estructura_base.html" %}
 {% load static %}
-{% block content %} 
+{% block content %}
 
-ACA VAMOS A PONER EL CONTENIDO DE ESTE TEMPLATE
+<div class="table-responsive">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Nombre de la Empresa</th>
+                <th>Teléfono</th>
+                <th>Mail</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for cliente in clientes %}
+            <tr>
+                <td>{{ cliente.nombre }}</td>
+                <td>{{ cliente.nombre_empresa }}</td>
+                <td>{{ cliente.telefono }}</td>
+                <td>{{ cliente.mail }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
 
 {% endblock %}

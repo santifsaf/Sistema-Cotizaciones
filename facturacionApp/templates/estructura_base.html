@@ -1,16 +1,16 @@
 {% load static %}
 
+<!DOCTYPE html>
+<html lang="es">
 <head>
-    <!DOCTYPE html>
-    <html lang="es">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Título de tu Aplicación</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.1.0/css/bootstrap.min.css">
     
     <!-- Styles -->
-    <link href="{% static 'home.css' %}" rel="stylesheet">
-    
+    <link href="{% static 'home.css' %}" rel="stylesheet"> <!-- Enlace al archivo CSS -->
+
 </head>
 
 <body>
@@ -22,15 +22,15 @@
                 <li>
                     <a href="#">Cotizaciones</a>
                     <ul class="menu-vertical">
-                        <li><a href="{% url 'nueva_cotizacion' %}">Nueva cotizacion</a></li>
+                        <li><a href="{% url 'nueva_cotizacion' %}">Nueva cotización</a></li>
                         <li><a href="{% url 'mis_cotizaciones' %}">Mis cotizaciones</a></li>
                     </ul>
                 </li>
                 <li>
-                    <a href="#">Articulos</a>
+                    <a href="#">Artículos</a>
                     <ul class="menu-vertical">
-                        <li><a href="{% url 'nuevo_articulo' %}">Nuevo articulo</a></li>
-                        <li><a href="{% url 'mis_articulos' %}">Mis articulos</a></li>
+                        <li><a href="{% url 'nuevo_articulo' %}">Nuevo artículo</a></li>
+                        <li><a href="{% url 'mis_articulos' %}">Mis artículos</a></li>
                     </ul>
                 </li>
                 <li><a href="#">Clientes</a>
@@ -42,22 +42,17 @@
                 <li><a href="#">Cuenta</a>
                     <ul class="menu-vertical">
                         <li><a href="#">Mi empresa</a></li>
-                        <li><a href="#">Cerrar sesion</a></li>
+                        <li><a href="#">Cerrar sesión</a></li>
                     </ul>
                 </li>
             </ul>
         </nav>
+    </header>
 
-
-
-        
+    <div id="html">
         {% block content %}
-
-
         {% endblock %}
-
-
-
+    </div>
 
     <footer>
         <!-- Pie de página -->
