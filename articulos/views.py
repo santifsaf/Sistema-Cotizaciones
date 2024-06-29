@@ -8,7 +8,9 @@ from django.contrib import messages
 
 def mis_articulos(request):
     articulos=Articulo.objects.all()
-    return render(request, "mis_articulos.html", {"articulos": articulos}) 
+    if not articulos.exists():
+        mensaje="Aun no se agrego ningun articulo" 
+        return render(request, "mis_articulos.html", {"articulos": articulos}) 
 
 def nuevo_articulo(request):
     if request.method == 'POST':
@@ -26,16 +28,13 @@ def nuevo_articulo(request):
         
 
 def eliminar_articulo(request):
-    if request.method == 'POST':
+    if request.method == 'POST' and request.POST.get('accion') == 'eliminar':
         articulos_a_eliminar = request.POST.getlist('articulos_seleccionados[]')
         if articulos_a_eliminar:
-            for articulo_id in articulos_a_eliminar:
-                try:
-                    art = Articulo.objects.get(id=articulo_id)
-                    art.delete()
-                except Articulo.DoesNotExist:
-                    pass
-            
+            try:
+                art = Articulo.objects.filter(id__in=articulos_a_eliminar).delete()
+            except Articulo.DoesNotExist:
+                pass
             messages.success(request, 'Los artículos seleccionados se han eliminado correctamente.')
         else:
             messages.error(request, 'Debe seleccionar al menos un artículo.')
