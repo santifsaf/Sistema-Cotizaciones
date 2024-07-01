@@ -8,9 +8,7 @@ from django.contrib import messages
 
 def mis_articulos(request):
     articulos=Articulo.objects.all()
-    if not articulos.exists():
-        mensaje="Aun no se agrego ningun articulo" 
-        return render(request, "mis_articulos.html", {"articulos": articulos}) 
+    return render(request, "mis_articulos.html", {"articulos": articulos}) 
 
 def nuevo_articulo(request):
     if request.method == 'POST':

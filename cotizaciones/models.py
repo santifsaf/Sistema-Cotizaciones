@@ -1,18 +1,25 @@
 from django.db import models
+from clientes.models import Clientes
 
 # Create your models here.
 
 class Cotizaciones(models.Model):
     numero_referencia=models.IntegerField(unique=True, editable=False)
-    cliente=models.CharField(max_length=50)
+    cliente=models.ForeignKey(Clientes, on_delete=models.CASCADE)
     total_cotizado=models.IntegerField()
     created=models.DateTimeField(auto_now_add=True)
     updated=models.DateTimeField(auto_now=True)
 
-    def save(self, *args, **kwargs): 
-        if not self.id:
-            self.referencia = f'COT-{self.id}'
+    def save(self, *args, **kwargs):
+        if not self.numero_referencia:
+            last_cotizacion = Cotizaciones.objects.all().order_by('id').last()
+            if last_cotizacion:
+                last_id = last_cotizacion.id
+            else:
+                last_id = 0
+            self.numero_referencia = f'COT-{last_id + 1:05d}'
         super().save(*args, **kwargs)
+
  
     class Meta:
         verbose_name="Cotizacion"
