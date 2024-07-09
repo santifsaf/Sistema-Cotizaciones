@@ -30,11 +30,7 @@ def eliminar_cliente(request):
     if request.method == 'POST' and request.POST.get('accion') == 'eliminar':
         clientes_a_eliminar = request.POST.getlist('clientes_seleccionados[]')
         if clientes_a_eliminar:
-            try:
-                cli=Clientes.objects.filter(id__in=clientes_a_eliminar).delete()
-            except Clientes.DoesNotExist:
-                pass
-
+            Clientes.objects.filter(id__in=clientes_a_eliminar).delete()
             messages.success(request, 'Se eliminaron los clientes seleccionados')    
         else:
             messages.error(request, 'Debe seleccionar al menos un cliente')

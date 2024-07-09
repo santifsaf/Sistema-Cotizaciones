@@ -1,0 +1,91 @@
+aWEB FACTURACION
+
+TEMPLATES:
+
+INICIO
+boton Crea una cotizacion ahora.
+
+*COTIZACIONES
+*autocompletado opcional con los datos de mi empresa
+*cliente 
+*costo de envio opcional
+*generador pdf e impresion opcional
+*enviar x correo *
+
+COTIZACIONES 
+nueva cotizacion
+mis cotizaciones @login requerido
+
+ARTICULOS @login requerido   
+nuevo articulo
+mis articulos 
+
+CLIENTES @login requerido
+nuevo cliente 
+mis clientes
+
+
+EMPRESA: @login requerido
+-informacion de la empresa
+
+
+TABLAS
+
+
+Empresa
+-imagen
+-nombre
+-cuit
+-telefono
+-mail
+
+
+
+Clientes
+-nombre
+-empresa y cuit opcional
+-telefono
+-mail
+-fecha creacion 
+
+Articulos
+-imagen
+-nombre
+-descripcion
+-precio
+
+
+Cotizaciones
+-Numero referencia 
+-Total cotizacion
+-Fecha creacion
+-Cliente
+
+
+_____
+
+-DEF crear_cotizacion , eliminar_cotizacion
+detalle_cotizacion?
+
+-TEMPLATE NUEVA_COTIZACION: 
+datos empresa por defecto
+fecha actual por defecto
+opción de cargar datos cliente ya creado
+poder agregar artículos existentes
+cálculos en general
+suma total
+añadir descuento
+añadir costo envio
+
+
+
+DOCUMENTAR
+
+template detalle_cotizacion
+
+HACER EL LOGIN 
+
+LOGIN REQUERIDO PARA LAS VISTAS 
+
+AGREGAR VALIDACIONES CON EL METODO CLEAN() EN LOS MODELOS Y/O FORMULARIOS 
+

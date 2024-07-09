@@ -1,12 +1,13 @@
 from django.db import models
 from clientes.models import Clientes
+from articulos.models import Articulo
 
 # Create your models here.
 
 class Cotizaciones(models.Model):
     numero_referencia=models.IntegerField(unique=True, editable=False)
-    cliente=models.ForeignKey(Clientes, on_delete=models.CASCADE)
-    total_cotizado=models.IntegerField()
+    cliente=models.ManyToManyField(Clientes, null=True)
+    articulos_cotizados=models.ManyToManyField(Articulo)
     created=models.DateTimeField(auto_now_add=True)
     updated=models.DateTimeField(auto_now=True)
 

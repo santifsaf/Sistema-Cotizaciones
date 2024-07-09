@@ -1,0 +1,126 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+}
+
+.container {
+    width: 80%;
+    margin: 20px auto;
+    background: #fff;
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+header {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+header h1 {
+    margin: 0;
+    font-size: 24px;
+}
+
+.company-details, .client-details, .invoice-items, .notes, .totals {
+    margin-bottom: 20px;
+}
+
+.logo-placeholder {
+    border: 2px dashed #ccc;
+    text-align: center;
+    padding: 20px;
+    width: 200px;
+    margin: 0 auto 20px auto;
+}
+
+.company-info, .invoice-details, .client-details {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.company-info input, .invoice-details input, .invoice-details select, .client-details input, .invoice-items input, .invoice-items select, .notes textarea, .totals input {
+    flex: 1 1 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.invoice-details .row {
+    display: flex;
+    flex-direction: column;
+}
+
+.invoice-details .row label {
+    margin-bottom: 5px;
+}
+
+.invoice-items table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 10px;
+}
+
+.invoice-items table th, .invoice-items table td {
+    border: 1px solid #ccc;
+    padding: 10px;
+    text-align: left;
+}
+
+.invoice-items table th {
+    background: #f4f4f4;
+}
+
+.invoice-items button {
+    background: #007bff;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    margin-right: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.invoice-items button:hover {
+    background: #0056b3;
+}
+
+.notes textarea {
+    width: 100%;
+    height: 60px;
+    margin-bottom: 10px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.totals .subtotal, .totals .total {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 10px;
+}
+
+.totals .subtotal label, .totals .total label {
+    margin-right: 10px;
+}
+
+footer {
+    text-align: center;
+}
+
+footer button {
+    background: #28a745;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    margin: 0 5px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+footer button:hover {
+    background: #218838;
+}

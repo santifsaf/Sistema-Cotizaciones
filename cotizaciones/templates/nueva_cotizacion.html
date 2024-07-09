@@ -2,6 +2,125 @@
 {% load static %}
 {% block content %} 
 
-ACA VAMOS A PONER EL CONTENIDO DE ESTE TEMPLATE
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nueva Factura</title>
+    <link href="{% static 'nueva_cotizacion.css' %}" rel="stylesheet"> 
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Nueva factura</h1>
+        </header>
+        <section class="company-details">
+            <div class="logo-placeholder">
+                <p>+Añadir un logotipo</p>
+            </div>
+            <div class="company-info">
+                <input type="text" placeholder="Nombre de la empresa">
+                <input type="text" placeholder="Dirección de la empresa">
+            </div>
+            <div class="invoice-details">
+                <div class="row">
+                    <label for="fecha">Fecha:</label>
+                    <input type="date" id="fecha" value=>
+                </div>
+                <div class="row">
+                    <label for="numero-factura">Nº de factura:</label>
+                    <input type="text" id="numero-factura" value="10000">
+                </div>
+                <div class="row">
+                    <label for="condiciones-pago">Condiciones de pago:</label>
+                    <select id="condiciones-pago">
+                        <option value="30">Pago en días</option>
+                    </select>
+                </div>
+                <div class="row">
+                    <label for="orden-compra">Nº orden de compra:</label>
+                    <input type="text" id="orden-compra" placeholder="Opcional">
+                </div>
+                <div class="row">
+                    <label for="vendedor">Vendedor:</label>
+                    <input type="text" id="vendedor" placeholder="Opcional">
+                </div>
+                <div class="row">
+                    <label for="direccion-envio">Dirección de envío:</label>
+                    <input type="text" id="direccion-envio" placeholder="Deje en blanco si es igual que Dirección de facturación">
+                </div>
+            </div>
+        </section>
+        <section class="client-details">
+            <input type="text" placeholder="Cliente">
+            <input type="text" placeholder="Dirección de facturación">
+        </section>
+        <section class="invoice-items">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Cant.</th>
+                        <th>Cód. artículo</th>
+                        <th>Descripción</th>
+                        <th>Precio unit.</th>
+                        <th>Impuesto</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><input type="number" value="1"></td>
+                        <td><input type="text" placeholder="Opcional"></td>
+                        <td><input type="text" placeholder="Descripción"></td>
+                        <td><input type="text" placeholder="$0.00"></td>
+                        <td><select><option>IVA(21%)</option></select></td>
+                        <td>$0.00</td>
+                    </tr>
+                    <tr>
+                        <td><input type="number" value="1"></td>
+                        <td><input type="text" placeholder="Opcional"></td>
+                        <td><input type="text" placeholder="Descripción"></td>
+                        <td><input type="text" placeholder="$0.00"></td>
+                        <td><select><option>IVA(21%)</option></select></td>
+                        <td>$0.00</td>
+                    </tr>
+                    <tr>
+                        <td><input type="number" value="1"></td>
+                        <td><input type="text" placeholder="Opcional"></td>
+                        <td><input type="text" placeholder="Descripción"></td>
+                        <td><input type="text" placeholder="$0.00"></td>
+                        <td><select><option>IVA(21%)</option></select></td>
+                        <td>$0.00</td>
+                    </tr>
+                </tbody>
+            </table>
+            <button>+ Agregar artículo</button>
+            <button>+ Añadir descuento</button>
+            <button>+ Añadir envío</button>
+        </section>
+        <section class="notes">
+            <textarea placeholder="Nota pública"></textarea>
+            <textarea placeholder="Nota privada"></textarea>
+            <textarea placeholder="Nota al pie"></textarea>
+        </section>
+        <section class="totals">
+            <div class="subtotal">
+                <label for="subtotal">Subtotal:</label>
+                <input type="text" id="subtotal" value="$0.00" readonly>
+            </div>
+            <div class="total">
+                <label for="total">Total:</label>
+                <input type="text" id="total" value="$0.00" readonly>
+            </div>
+        </section>
+        <footer>
+            <button>Borrar factura</button>
+            <button>Vista previa de la factura</button>
+            <button>Crear y enviar por correo electrónico</button>
+        </footer>
+    </div>
+</body>
+</html>
 
 {% endblock %}

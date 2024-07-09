@@ -29,10 +29,7 @@ def eliminar_articulo(request):
     if request.method == 'POST' and request.POST.get('accion') == 'eliminar':
         articulos_a_eliminar = request.POST.getlist('articulos_seleccionados[]')
         if articulos_a_eliminar:
-            try:
-                art = Articulo.objects.filter(id__in=articulos_a_eliminar).delete()
-            except Articulo.DoesNotExist:
-                pass
+            Articulo.objects.filter(id__in=articulos_a_eliminar).delete()
             messages.success(request, 'Los artículos seleccionados se han eliminado correctamente.')
         else:
             messages.error(request, 'Debe seleccionar al menos un artículo.')
