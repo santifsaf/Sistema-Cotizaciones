@@ -64,20 +64,10 @@ Cotizaciones
 
 _____
 
--DEF crear_cotizacion , eliminar_cotizacion
-detalle_cotizacion?
+AGREGAR REGISTRO DE USUARIOS
+RUTA DE LOGIN LOGOUT
 
--TEMPLATE NUEVA_COTIZACION: 
-datos empresa por defecto
-fecha actual por defecto
-opción de cargar datos cliente ya creado
-poder agregar artículos existentes
-cálculos en general
-suma total
-añadir descuento
-añadir costo envio
-
-
+Continuar con la creacion de la cotizacion
 
 DOCUMENTAR
 

@@ -42,7 +42,11 @@
                 <li><a href="#">Cuenta</a>
                     <ul class="menu-vertical">
                         <li><a href="#">Mi empresa</a></li>
-                        <li><a href="#">Cerrar sesión</a></li>
+                        {% if request.user.is_authenticated %}
+                            <li><a href="">Cerrar sesión</a></li>
+                        {% else %}
+                            <li><a href="">Iniciar sesion</a></li>
+                        {% endif %}
                     </ul>
                 </li>
             </ul>

@@ -2,6 +2,51 @@
 {% load static %}
 {% block content %} 
 
-ACA VAMOS A PONER EL CONTENIDO DE ESTE TEMPLATE
+<form action="{% url 'eliminar_cotizacion' %}" method="post">
+    {% csrf_token %}
+
+    <table class="table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Cliente</th>
+          <th>Fecha de creacion</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for cotizacion in cotizaciones %}
+        <tr>
+          <td>{{ cotizacion.numero_referencia }}</td>
+          <td>{{ cotizacion.cliente}}</td>
+          <td>{{ cotizacion.created }}</td>
+          <td><input type="checkbox" name="cotizaciones_seleccionadas[]" value="{{ cotizacion.id }}"></td>
+          <td><a href="{% url 'actualizar_cotizacion' cotizacion.id %}">Modificar</a></td>
+        </tr>
+        {% empty %}
+            <tr>
+              <td colspan="6">No se creo ninguna cotizacion.</td>
+            </tr>
+            <tr>
+              <td colspan="6">
+                <a class="boton" href="{% url 'nueva_cotizacion' %}">Crear nueva cotizacion</a>
+              </td>
+            </tr>
+        {% endfor %}
+      </tbody>
+
+      
+    </table>
+    {% if cotizaciones %}
+      <button type="submit" class="btn btn-danger" name="accion" value="eliminar">Eliminar</button>
+    {% endif %}
+  </form>
+
+  {% if messages %} 
+  <ul>
+      {% for message in messages %}
+          <li>{{ message }}</li>
+      {% endfor %}
+  </ul>
+  {% endif %}
 
 {% endblock %}

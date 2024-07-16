@@ -4,4 +4,5 @@ from . import views
 urlpatterns = [
     path('', views.mis_cotizaciones, name="mis_cotizaciones"),
     path('nueva/', views.nueva_cotizacion, name="nueva_cotizacion"),
+    path('eliminar_cotizacion/', views.eliminar_cotizacion, name='eliminar_cotizacion'),
 ]

@@ -26,29 +26,21 @@
             <div class="invoice-details">
                 <div class="row">
                     <label for="fecha">Fecha:</label>
-                    <input type="date" id="fecha" value=>
+                    <input type="date" id="fecha" value="{{ fecha_actual }}">
                 </div>
                 <div class="row">
                     <label for="numero-factura">Nº de factura:</label>
-                    <input type="text" id="numero-factura" value="10000">
+                    <input type="text" id="numero-factura" value="COT-">
                 </div>
                 <div class="row">
-                    <label for="condiciones-pago">Condiciones de pago:</label>
+                    <label for="condiciones-pago">Condición de pago:</label>
                     <select id="condiciones-pago">
-                        <option value="30">Pago en días</option>
+                        <option value="Efectivo">Efectivo</option>
                     </select>
                 </div>
                 <div class="row">
-                    <label for="orden-compra">Nº orden de compra:</label>
-                    <input type="text" id="orden-compra" placeholder="Opcional">
-                </div>
-                <div class="row">
-                    <label for="vendedor">Vendedor:</label>
-                    <input type="text" id="vendedor" placeholder="Opcional">
-                </div>
-                <div class="row">
                     <label for="direccion-envio">Dirección de envío:</label>
-                    <input type="text" id="direccion-envio" placeholder="Deje en blanco si es igual que Dirección de facturación">
+                    <input type="text" id="direccion-envio" placeholder="">
                 </div>
             </div>
         </section>
@@ -61,7 +53,7 @@
                 <thead>
                     <tr>
                         <th>Cant.</th>
-                        <th>Cód. artículo</th>
+                        <th>Nombre</th>
                         <th>Descripción</th>
                         <th>Precio unit.</th>
                         <th>Impuesto</th>
@@ -71,7 +63,7 @@
                 <tbody>
                     <tr>
                         <td><input type="number" value="1"></td>
-                        <td><input type="text" placeholder="Opcional"></td>
+                        <td><input type="text" placeholder="Nombre"></td>
                         <td><input type="text" placeholder="Descripción"></td>
                         <td><input type="text" placeholder="$0.00"></td>
                         <td><select><option>IVA(21%)</option></select></td>
@@ -79,7 +71,7 @@
                     </tr>
                     <tr>
                         <td><input type="number" value="1"></td>
-                        <td><input type="text" placeholder="Opcional"></td>
+                        <td><input type="text" placeholder="Nombre"></td>
                         <td><input type="text" placeholder="Descripción"></td>
                         <td><input type="text" placeholder="$0.00"></td>
                         <td><select><option>IVA(21%)</option></select></td>
@@ -87,7 +79,7 @@
                     </tr>
                     <tr>
                         <td><input type="number" value="1"></td>
-                        <td><input type="text" placeholder="Opcional"></td>
+                        <td><input type="text" placeholder="Nombre"></td>
                         <td><input type="text" placeholder="Descripción"></td>
                         <td><input type="text" placeholder="$0.00"></td>
                         <td><select><option>IVA(21%)</option></select></td>
@@ -100,9 +92,7 @@
             <button>+ Añadir envío</button>
         </section>
         <section class="notes">
-            <textarea placeholder="Nota pública"></textarea>
-            <textarea placeholder="Nota privada"></textarea>
-            <textarea placeholder="Nota al pie"></textarea>
+            <textarea placeholder="Observaciones"></textarea>
         </section>
         <section class="totals">
             <div class="subtotal">
@@ -120,6 +110,7 @@
             <button>Crear y enviar por correo electrónico</button>
         </footer>
     </div>
+    
 </body>
 </html>
 

@@ -2,15 +2,16 @@ from django.shortcuts import render, redirect
 from .forms import ClienteForm
 from .models import Clientes
 from django.contrib import messages
-
+from django.contrib.auth.decorators import login_required
 
 # Create your views here.
 
+@login_required
 def mis_clientes(request):
     clientes=Clientes.objects.all()
     return render(request, "mis_clientes.html", {"clientes": clientes})
  
-
+@login_required
 def nuevo_cliente(request):
     if request.method=='POST':
         form=ClienteForm(request.POST) 
@@ -26,6 +27,7 @@ def nuevo_cliente(request):
         
     return render (request, "nuevo_cliente.html", {'form':form})
 
+@login_required
 def eliminar_cliente(request):
     if request.method == 'POST' and request.POST.get('accion') == 'eliminar':
         clientes_a_eliminar = request.POST.getlist('clientes_seleccionados[]')
@@ -38,7 +40,7 @@ def eliminar_cliente(request):
     else:
         return redirect('mis_clientes')
 
-            
+@login_required            
 def actualizar_cliente(request, cliente_id):
     cliente=Clientes.objects.get(id=cliente_id)
     if request.method=='POST':

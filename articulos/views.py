@@ -2,14 +2,16 @@ from django.shortcuts import render, redirect, get_object_or_404
 from .forms import ArticuloForm
 from .models import Articulo
 from django.contrib import messages
-
+from django.contrib.auth.decorators import login_required
 
 # Create your views here.
 
+@login_required
 def mis_articulos(request):
     articulos=Articulo.objects.all()
     return render(request, "mis_articulos.html", {"articulos": articulos}) 
 
+@login_required
 def nuevo_articulo(request):
     if request.method == 'POST':
         form=ArticuloForm(request.POST, request.FILES)
@@ -25,6 +27,7 @@ def nuevo_articulo(request):
     return render(request, 'nuevo_articulo.html', {'form': form})
         
 
+@login_required
 def eliminar_articulo(request):
     if request.method == 'POST' and request.POST.get('accion') == 'eliminar':
         articulos_a_eliminar = request.POST.getlist('articulos_seleccionados[]')
@@ -39,6 +42,7 @@ def eliminar_articulo(request):
         return redirect('mis_articulos')
     
 
+@login_required
 def actualizar_articulo(request, articulo_id):
     articulo = Articulo.objects.get(id=articulo_id)
 
