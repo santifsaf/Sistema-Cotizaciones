@@ -6,11 +6,6 @@
             <div class="container">
                 <div class="row">
                     <div class="col-lg-6">
-                        <h4> 
-                            {% if request.user.is_authenticated %}
-                                {{ user.username | upper }}, bienvenido!
-                            {% endif %}
-                        </h4>
                         <h1>Cotiza tus productos, facil y rapido.</h1>
                         <p>Una solución integral para tu negocio.</p>
                         <a href="{% url 'nueva_cotizacion' %}" class="btn btn-primary">Crear una cotizacion ahora</a>

@@ -146,3 +146,9 @@ MESSAGE_TAGS = {
     messages.WARNING: 'warning',
     messages.ERROR: 'error',
 }
+
+
+# VARIABLES DE REDIRECCION LOGIN Y LOGOUT
+
+LOGIN_REDIRECT_URL = 'home'
+LOGOUT_REDIRECT_URL= 'home'

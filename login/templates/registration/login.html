@@ -2,25 +2,30 @@
 {% load static %}
 
 {% block content %}
-    <form method="post" action="" style="color:white">
-        {% csrf_token %}
+<form method="post" action="">
+    {% csrf_token %}
     
-        <input type="text" name="username" id="" placeholder="Nombre de usuario">
-        <br>
-        <input type="password" name="password" id="" placeholder="Contrasenia">
-        <br>
-        <button type="submit">Iniciar sesion</button>
+    <p>Ingrese los datos de su cuenta</p>
+    
+    <input type="text" name="username" id="username" placeholder="Nombre de usuario" style="margin: 10px; padding: 10px; font-size: 1em;">
+    <br>
+    
+    <input type="password" name="password" id="password" placeholder="Contraseña" style="margin: 10px; padding: 10px; font-size: 1em;">
+    <br>
+    
+    <button type="submit" style="margin: 10px; padding: 10px 20px; font-size: 1em;">Iniciar sesión</button>
+</form>
 
-    </form>
+        <section>
+            {% if messages %}
+                <ul style="list-style: none; padding: 0; color: red;">
+                    {% for message in messages %}
+                        <li>{{ message }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        </section>
 
-    <section>
-      {% if messages %}
-      <ul>
-          {% for message in messages %}
-              <li>{{ message }}</li>
-          {% endfor %}
-      </ul>
-      {% endif %}
-    </section>
+<a href="{% url 'registro' %}" style="color: blue; font-size: 1em; text-decoration: underline;">Registrarse</a>
+</div>
 {% endblock %}
- 

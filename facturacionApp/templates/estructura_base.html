@@ -43,14 +43,22 @@
                     <ul class="menu-vertical">
                         <li><a href="#">Mi empresa</a></li>
                         {% if request.user.is_authenticated %}
-                            <li><a href="">Cerrar sesión</a></li>
+                            <li><a href="{% url 'exit' %}">Cerrar sesión</a></li>
                         {% else %}
-                            <li><a href="">Iniciar sesion</a></li>
+                            <li><a href="{% url 'login' %}">Iniciar sesion</a></li>
                         {% endif %}
                     </ul>
                 </li>
             </ul>
         </nav>
+        <div class="bienvenida">
+            {% if request.user.is_authenticated and request.resolver_match.url_name == 'home' %}
+                <p style="background-color: gray; color: white; display: inline-block; padding: 5px;">
+                    {{ request.user.username|upper }}, bienvenido!
+                </p>
+            {% endif %}
+        </div>
+
     </header>
 
     <div id="html">
