@@ -1,6 +1,7 @@
 from django.urls import path
-from . import views
+from .views import CustomLoginView, vistaRegistro
 
 urlpatterns = [
-    path('', views.vistaRegistro.as_view(), name="registro"),
-]
+    path('', vistaRegistro.as_view(), name="registro"),
+    path('registration/login/', CustomLoginView.as_view(), name='login'),
+    ]

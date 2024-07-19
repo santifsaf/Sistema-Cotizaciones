@@ -32,6 +32,8 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'crispy_forms',
+    'crispy_bootstrap5',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -44,6 +46,9 @@ INSTALLED_APPS = [
     'cotizaciones',
     'login',
 ]
+
+CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
+CRISPY_TEMPLATE_PACK = 'bootstrap5'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -60,7 +65,7 @@ ROOT_URLCONF = 'proyectoWeb.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -147,8 +152,5 @@ MESSAGE_TAGS = {
     messages.ERROR: 'error',
 }
 
-
-# VARIABLES DE REDIRECCION LOGIN Y LOGOUT
-
-LOGIN_REDIRECT_URL = 'home'
-LOGOUT_REDIRECT_URL= 'home'
+LOGOUT_REDIRECT_URL = '/home/'
+LOGIN_REDIRECT_URL = '/home/'

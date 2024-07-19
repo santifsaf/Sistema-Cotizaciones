@@ -64,7 +64,6 @@ Cotizaciones
 
 _____
 
-VERIFICAR SI SE GUARDAN LOS USUARIOS NUEVOS Y A DONDE REDIRECCIONA 
 
 
 Continuar con la creacion de la cotizacion

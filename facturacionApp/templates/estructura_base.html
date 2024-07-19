@@ -14,53 +14,64 @@
 </head>
 
 <body>
-    <header>
-        <!-- Navbar -->
-        <nav>
-            <ul class="menu-horizontal">
-                <li><a href="{% url 'home' %}">Inicio</a></li>
-                <li>
-                    <a href="#">Cotizaciones</a>
-                    <ul class="menu-vertical">
-                        <li><a href="{% url 'nueva_cotizacion' %}">Nueva cotización</a></li>
-                        <li><a href="{% url 'mis_cotizaciones' %}">Mis cotizaciones</a></li>
-                    </ul>
-                </li>
-                <li>
-                    <a href="#">Artículos</a>
-                    <ul class="menu-vertical">
-                        <li><a href="{% url 'nuevo_articulo' %}">Nuevo artículo</a></li>
-                        <li><a href="{% url 'mis_articulos' %}">Mis artículos</a></li>
-                    </ul>
-                </li>
-                <li><a href="#">Clientes</a>
-                    <ul class="menu-vertical">
-                        <li><a href="{% url 'nuevo_cliente' %}">Nuevo cliente</a></li>
-                        <li><a href="{% url 'mis_clientes' %}">Mis clientes</a></li>
-                    </ul>
-                </li>
-                <li><a href="#">Cuenta</a>
-                    <ul class="menu-vertical">
-                        <li><a href="#">Mi empresa</a></li>
-                        {% if request.user.is_authenticated %}
-                            <li><a href="{% url 'exit' %}">Cerrar sesión</a></li>
-                        {% else %}
-                            <li><a href="{% url 'login' %}">Iniciar sesion</a></li>
-                        {% endif %}
-                    </ul>
-                </li>
-            </ul>
-        </nav>
-        <div class="bienvenida">
-            {% if request.user.is_authenticated and request.resolver_match.url_name == 'home' %}
-                <p style="background-color: gray; color: white; display: inline-block; padding: 5px;">
-                    {{ request.user.username|upper }}, bienvenido!
-                </p>
-            {% endif %}
-        </div>
-
-    </header>
-
+    <div class="container"></div>
+        <header>
+            <!-- Navbar -->
+            <nav>
+                <ul class="menu-horizontal">
+                    <li><a href="{% url 'home' %}">Inicio</a></li>
+                    <li>
+                        <a href="#">Cotizaciones</a>
+                        <ul class="menu-vertical">
+                            <li><a href="{% url 'nueva_cotizacion' %}">Nueva cotización</a></li>
+                            <li><a href="{% url 'mis_cotizaciones' %}">Mis cotizaciones</a></li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a href="#">Artículos</a>
+                        <ul class="menu-vertical">
+                            <li><a href="{% url 'nuevo_articulo' %}">Nuevo artículo</a></li>
+                            <li><a href="{% url 'mis_articulos' %}">Mis artículos</a></li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a href="#">Clientes</a>
+                        <ul class="menu-vertical">
+                            <li><a href="{% url 'nuevo_cliente' %}">Nuevo cliente</a></li>
+                            <li><a href="{% url 'mis_clientes' %}">Mis clientes</a></li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a href="#">Cuenta</a>
+                        <ul class="menu-vertical">
+                            <li><a href="#">Mi empresa</a></li>
+                            {% if request.user.is_authenticated %}
+                                <li>
+                                    <form method="post" action="{% url 'logout' %}">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-link menu-link">Cerrar sesión</button>
+                                    </form>
+                                </li>
+                            {% else %}
+                                <li>
+                                    <form method="get" action="{% url 'login' %}">
+                                        <button type="submit" class="btn btn-link menu-link">Iniciar sesión</button>
+                                    </form>
+                                </li>
+                            {% endif %}
+                        </ul>
+                    </li>
+            </nav>
+            <div class="bienvenida">
+                {% if request.user.is_authenticated and request.resolver_match.url_name == 'home' %}
+                    <p style="background-color: gray; color: white; display: inline-block; padding: 5px;">
+                        {{ request.user.username|upper }}, bienvenido!
+                    </p>
+                {% endif %}
+            </div>
+        </header>
+    </div>
+    
     <div id="html">
         {% block content %}
         {% endblock %}

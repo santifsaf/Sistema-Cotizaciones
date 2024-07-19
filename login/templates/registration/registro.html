@@ -3,23 +3,21 @@
 
 {% block content %}
 
-<head>
-    <meta charset="UTF-8">
-    <title>Registro</title>
-</head>
-<body>
-    <h1>Registro de Usuario</h1>
-    <form method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Registrar</button>
-    </form>
-    {% if messages %}
-        <ul style="list-style: none; padding: 0; color: red;">
-            {% for message in messages %}
-                <li>{{ message }}</li>
-            {% endfor %}
-        </ul>
-    {% endif %}
+{% load crispy_forms_tags %}
 
+<br>
+
+<form id="register-form" action="" method="post">
+    {% csrf_token %}
+
+    <div class="card mx-auto" style="width: 30rem;">
+      <div class="card-body">
+        <h5 class="card-title">Complete todos los campos</h5>
+        {{ form | crispy }}
+        <a href={% url 'home' %} class="card-link">Inicio</a>
+        <a href={% url 'login' %} class="card-link">Iniciar sesion</a>
+        <button class="btn btn-sm btn-primary float-end" type="submit">Registrarse</button>
+      </div>
+    </div>
+</form>
 {% endblock %}
