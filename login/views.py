@@ -1,21 +1,21 @@
 from django.shortcuts import render, redirect
-from django.views.generic import View
-from django.contrib.auth.forms import UserCreationForm, AuthenticationForm #Formulario de django 
-from django.contrib.auth import login
+from django.views.generic import View #Para crear vistas basadas en clases
+from django.contrib.auth.forms import UserCreationForm, AuthenticationForm #Formularios creacion y autenticacion 
+from django.contrib.auth import login  
 from django.contrib import messages
-from django.contrib.auth.views import LoginView
+from django.contrib.auth.views import LoginView #vista basad en clases para el inicio de sesion.  
 # Create your views here.
 
 class vistaRegistro(View):
-    def get(self, request):  #Encargada de crear el formulario
-        form=UserCreationForm()
-        return render(request, "registration/registro.html",{"form":form})
+    def get(self, request):   #solicitud get al cargar la pagina
+        form=UserCreationForm() #Creamos una instancia vacia del formulario
+        return render(request, "registration/registro.html",{"form":form}) #renderizamos el template y pasamos el form al contexto 
 
-    def post(self, request):
+    def post(self, request): #solicitud post al enviar el formulario 
         form = UserCreationForm(request.POST)
         if form.is_valid():
             usuario = form.save()
-            login(request, usuario)
+            login(request, usuario) #inicia sesion con el nuevo usuario
             return redirect('home')
         else:
             for field, errors in form.errors.items():

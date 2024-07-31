@@ -1,10 +1,15 @@
 from django.contrib import admin
 from .models import Articulo
+from import_export import resources
+from import_export.admin import ImportExportModelAdmin
 
-# Register your models here.
+class ArticuloResource(resources.ModelResource):
+    class Meta:
+        model = Articulo
 
-class ArticuloAdmin(admin.ModelAdmin):
+class ArticuloAdmin(ImportExportModelAdmin, admin.ModelAdmin):
     readonly_fields=('created', 'updated')
+    resource_class= ArticuloResource
 
 
 admin.site.register(Articulo, ArticuloAdmin)
