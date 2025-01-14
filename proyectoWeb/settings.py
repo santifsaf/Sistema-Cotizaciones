@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'cotizaciones',
     'login',
     'import_export',
+    'rest_framework',
 ]
 
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
@@ -133,7 +134,7 @@ STATICFILES_DIRS = [
     BASE_DIR / "facturacionApp/static",    
 ]
 
-STATIC_ROOT= BASE_DIR / 'staticfiles'    
+# STATIC_ROOT= BASE_DIR / 'staticfiles'    
 
 MEDIA_URL='proyectoWeb/media/' 
 

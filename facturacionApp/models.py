@@ -4,7 +4,6 @@ from django.db import models
 # Create your models here.
 
 class Empresa(models.Model):
-    logo=models.ImageField(upload_to='logos', null=True)
     nombre=models.CharField(max_length=30)
     cuit=models.CharField(max_length=20)
     telefono=models.CharField(max_length=20)

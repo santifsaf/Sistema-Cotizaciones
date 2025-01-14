@@ -1,53 +1,70 @@
 {% extends "estructura_base.html" %}
 {% load static %}
-{% block content %} 
-
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nueva Factura</title>
+{% block content %}
     <link href="{% static 'nueva_cotizacion.css' %}" rel="stylesheet"> 
-</head>
-<body>
     <div class="container">
         <header>
-            <h1>Nueva factura</h1>
+            <h1>PRESUPUESTO NO VALIDO COMO FACTURA</h1>
         </header>
         <section class="company-details">
-            <div class="logo-placeholder">
-                <p>+Añadir un logotipo</p>
-            </div>
-            <div class="company-info">
-                <input type="text" placeholder="Nombre de la empresa">
-                <input type="text" placeholder="Dirección de la empresa">
-            </div>
             <div class="invoice-details">
-                <div class="row">
+                <div class="row fecha-row">
                     <label for="fecha">Fecha:</label>
-                    <input type="date" id="fecha" value="{{ fecha_actual }}">
+                    <input type="date" id="fecha" name="fecha" value="{{ fecha_actual }}">
                 </div>
-                <div class="row">
-                    <label for="numero-factura">Nº de factura:</label>
-                    <input type="text" id="numero-factura" value="COT-">
-                </div>
-                <div class="row">
+                
+                <div class="row condicion-pago-row">
                     <label for="condiciones-pago">Condición de pago:</label>
                     <select id="condiciones-pago">
                         <option value="Efectivo">Efectivo</option>
+                        <option value="Precio de lista">Precio de lista</option>
                     </select>
                 </div>
-                <div class="row">
-                    <label for="direccion-envio">Dirección de envío:</label>
-                    <input type="text" id="direccion-envio" placeholder="">
-                </div>
             </div>
+            
+            <form method="GET" action="">
+                <div class="company-info">
+                    <label for="empresa">Empresa:</label>
+                    <select id="empresa" name="empresa" onchange="this.form.submit()">
+                        <option value="">--</option>
+                        {% for empresa in empresas %}
+                            <option value="{{ empresa.id }}" {% if empresa.id == empresa_seleccionada.id %}selected{% endif %}>
+                                {{ empresa.nombre }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                
+                {% if empresa_seleccionada %}
+                <div class="row">
+                    <p><strong>CUIT:</strong> {{ empresa_seleccionada.cuit }}</p>
+                    <p><strong>Teléfono:</strong> {{ empresa_seleccionada.telefono }}</p>
+                    <p><strong>Mail:</strong> {{ empresa_seleccionada.mail }}</p>
+                </div>
+                {% endif %}
+                
+                <div class="client-details">
+                    <label for="cliente">Cliente:</label>
+                    <select id="cliente" name="cliente" onchange="this.form.submit()">
+                        <option value="">--</option>
+                        {% for cliente in clientes %}
+                            <option value="{{ cliente.id }}" {% if cliente.id == cliente_seleccionado.id %}selected{% endif %}>
+                                {{ cliente.nombre }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                
+                {% if cliente_seleccionado %}
+                <div class="row">
+                    <p><strong>Empresa:</strong> {{ cliente_seleccionado.nombre_empresa }}</p>
+                    <p><strong>Mail:</strong> {{ cliente_seleccionado.mail }}</p>
+                </div>
+                {% endif %}
+            </form>
         </section>
-        <section class="client-details">
-            <input type="text" placeholder="Cliente">
-            <input type="text" placeholder="Dirección de facturación">
-        </section>
+        
+        
         <section class="invoice-items">
             <table>
                 <thead>
@@ -69,31 +86,22 @@
                         <td><select><option>IVA(21%)</option></select></td>
                         <td>$0.00</td>
                     </tr>
-                    <tr>
-                        <td><input type="number" value="1"></td>
-                        <td><input type="text" placeholder="Nombre"></td>
-                        <td><input type="text" placeholder="Descripción"></td>
-                        <td><input type="text" placeholder="$0.00"></td>
-                        <td><select><option>IVA(21%)</option></select></td>
-                        <td>$0.00</td>
-                    </tr>
-                    <tr>
-                        <td><input type="number" value="1"></td>
-                        <td><input type="text" placeholder="Nombre"></td>
-                        <td><input type="text" placeholder="Descripción"></td>
-                        <td><input type="text" placeholder="$0.00"></td>
-                        <td><select><option>IVA(21%)</option></select></td>
-                        <td>$0.00</td>
-                    </tr>
                 </tbody>
+
+                
             </table>
-            <button>+ Agregar artículo</button>
+            <button>+ Seleccionar artículo existente</button>
+            <button>+ Agregar artículo nuevo</button>
             <button>+ Añadir descuento</button>
-            <button>+ Añadir envío</button>
+            <button>+ Añadir costo envío</button>
         </section>
+
+        
+        
         <section class="notes">
             <textarea placeholder="Observaciones"></textarea>
         </section>
+        
         <section class="totals">
             <div class="subtotal">
                 <label for="subtotal">Subtotal:</label>
@@ -103,14 +111,18 @@
                 <label for="total">Total:</label>
                 <input type="text" id="total" value="$0.00" readonly>
             </div>
+
+            <label for="validez">La validez de este presupuesto es de 1 dia desde su emision. Consultar nuevamente los precios antes de efectuar la compra.</label>
         </section>
+        
         <footer>
-            <button>Borrar factura</button>
-            <button>Vista previa de la factura</button>
-            <button>Crear y enviar por correo electrónico</button>
+            <button>Descartar</button>
+            <button>Descargar PDF</button>
+            <button>Imprimir</button>
+            <button>Enviar</button>
+            <button>Guardar</button>
         </footer>
     </div>
-    
 </body>
 </html>
 

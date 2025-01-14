@@ -1,0 +1,27 @@
+{% extends "estructura_base.html" %}
+{% load static %}
+{% block content %}
+
+<section> 
+
+    <title>Nueva Empresa</title>
+
+    <form method="POST">
+        {% csrf_token %}
+        <table>
+            {{ form.as_table }}
+        </table>
+        <button type="submit">Guardar</button>
+    </form>
+
+    {% if messages %}
+    <ul>
+        {% for message in messages %}
+            <li>{{ message }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+
+</section>
+
+{% endblock %}

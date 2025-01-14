@@ -57,4 +57,4 @@ def actualizar_articulo(request, articulo_id):
     else:
         form = ArticuloForm(instance=articulo)
 
-    return render(request, 'actualizar_articulo.html', {'form': form, 'articulo': articulo})
+    return render(request, 'nuevo_articulo.html', {'form': form, 'articulo': articulo})

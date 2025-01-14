@@ -6,7 +6,6 @@
 }
 
 body {
-    background-image: url("{% static 'img/fondo.jpg' %}");
     background-size: cover;
     padding-top: 50px; /* Ajustar según la altura del menú */
 }

@@ -41,23 +41,76 @@ header h1 {
     gap: 10px;
 }
 
-.company-info input, .invoice-details input, .invoice-details select, .client-details input, .invoice-items input, .invoice-items select, .notes textarea, .totals input {
-    flex: 1 1 100%;
-    padding: 10px;
-    margin-bottom: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
+/* Ajuste para flexbox: Alineación izquierda y derecha */
+.company-info,
+.client-details,
+.invoice-details {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    width: 100%; /* Asegura que ocupen el 100% del ancho */
 }
 
+/* Estilo para los campos de la fecha y condición de pago */
+.invoice-details .fecha-row, .invoice-details .condicion-pago-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+    width: 100%;
+}
+
+/* Estilo específico para la fila de la fecha */
+.fecha-row {
+    background-color: #f0f8ff;  /* Fondo azul claro */
+    padding: 10px;
+    border-radius: 5px;
+    flex: 1; /* Asegura que ocupe el mismo espacio */
+}
+
+/* Estilo específico para la fila de la condición de pago */
+.condicion-pago-row {
+    background-color: #f0f8ff;  
+    padding: 10px;
+    border-radius: 5px;
+    flex: 1; /* Asegura que ocupe el mismo espacio */
+}
+
+/* Alineación de los labels dentro de la fila */
+.invoice-details .row label,
+.invoice-details .row input,
+.invoice-details .row select {
+    margin: 0;
+    padding: 8px;
+    border-radius: 5px;
+    width: 100%;
+}
+
+/* Estilo común para todos los campos de entrada y selección */
+/* Asegura que las filas con los label y los input estén alineadas */
 .invoice-details .row {
     display: flex;
-    flex-direction: column;
+    align-items: center;  /* Centra verticalmente los elementos */
+    gap: 10px;  /* Espacio entre el label y el input */
 }
 
+/* Estilo para los labels */
 .invoice-details .row label {
-    margin-bottom: 5px;
+    width: 120px; /* Asigna un ancho fijo para los labels */
+    margin: 0; /* Elimina márgenes innecesarios */
 }
 
+/* Estilo para los input y select */
+.invoice-details .row input,
+.invoice-details .row select {
+    flex-grow: 1; /* El input ocupará el espacio restante */
+    padding: 10px;
+    margin: 0; /* Elimina márgenes innecesarios */
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+
+
+/* Estilo de las tablas de items */
 .invoice-items table {
     width: 100%;
     border-collapse: collapse;
@@ -74,6 +127,7 @@ header h1 {
     background: #f4f4f4;
 }
 
+/* Estilos de botones */
 .invoice-items button {
     background: #007bff;
     color: #fff;

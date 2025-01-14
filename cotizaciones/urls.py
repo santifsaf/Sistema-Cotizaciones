@@ -1,8 +1,9 @@
 from django.urls import path
-from . import views
+from .views import MisCotizaciones, NuevaCotizacion, EliminarCotizacion
+
 
 urlpatterns = [
-    path('', views.mis_cotizaciones, name="mis_cotizaciones"),
-    path('nueva/', views.nueva_cotizacion, name="nueva_cotizacion"),
-    path('eliminar_cotizacion/', views.eliminar_cotizacion, name='eliminar_cotizacion'),
+    path('', MisCotizaciones.as_view(), name="mis_cotizaciones"),
+    path('nueva/', NuevaCotizacion.as_view(), name="nueva_cotizacion"),
+    path('eliminar_cotizacion/', EliminarCotizacion.as_view(), name='eliminar_cotizacion'),
 ]
