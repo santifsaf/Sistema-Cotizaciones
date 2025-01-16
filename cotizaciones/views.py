@@ -2,12 +2,10 @@ from django.shortcuts import redirect
 from .models import Cotizaciones
 from facturacionApp.models import Empresa
 from clientes.models import Clientes
-from articulos.models import Articulo
 from .forms import CotizacionForm
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import ListView, CreateView, View
-from datetime import datetime
 from django.utils import timezone
 
 # Create your views here.
