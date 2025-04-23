@@ -8,7 +8,7 @@ from django.contrib.auth.decorators import login_required
 
 @login_required
 def mis_articulos(request):
-    articulos=Articulo.objects.all()
+    articulos=Articulo.objects.filter(usuario_log=request.user)
     return render(request, "mis_articulos.html", {"articulos": articulos}) 
 
 @login_required
@@ -16,7 +16,9 @@ def nuevo_articulo(request):
     if request.method == 'POST':
         form=ArticuloForm(request.POST, request.FILES)
         if form.is_valid(): 
-            form.save()
+            Articulo=form.save(commit=False)
+            Articulo.usuario_log=request.user
+            Articulo.save()
             messages.success(request, 'El articulo fue creado correctamente.')
             return redirect('nuevo_articulo')
         else:
@@ -32,7 +34,7 @@ def eliminar_articulo(request):
     if request.method == 'POST' and request.POST.get('accion') == 'eliminar':
         articulos_a_eliminar = request.POST.getlist('articulos_seleccionados[]')
         if articulos_a_eliminar:
-            Articulo.objects.filter(id__in=articulos_a_eliminar).delete()
+            Articulo.objects.filter(id__in=articulos_a_eliminar, usuario_log=request.user).delete()
             messages.success(request, 'Los artículos seleccionados se han eliminado correctamente.')
         else:
             messages.error(request, 'Debe seleccionar al menos un artículo.')
@@ -44,7 +46,7 @@ def eliminar_articulo(request):
 
 @login_required
 def actualizar_articulo(request, articulo_id):
-    articulo = Articulo.objects.get(id=articulo_id)
+    articulo = get_object_or_404(Articulo, id=articulo_id, usuario_log=request.user)
 
     if request.method == 'POST':
         form = ArticuloForm(request.POST, request.FILES, instance=articulo)

@@ -1,8 +1,10 @@
 from django.db import models
+from django.contrib.auth.models import User
 
 # Create your models here.
 
 class Articulo(models.Model):
+    usuario_log=models.ForeignKey(User, on_delete=models.CASCADE)
     imagen=models.ImageField(upload_to='articulos', default='proyectoWeb/media/articulos/sin imagen.jpg')
     nombre=models.CharField(max_length=30)
     descripcion=models.CharField(max_length=80)

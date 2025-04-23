@@ -21,7 +21,7 @@ def mis_empresas(request):
 @login_required
 def nueva_empresa(request):
     if request.method == 'POST':
-        form = EmpresaForm(request.POST)  # Ya no necesitas request.FILES si no hay un campo de imagen
+        form = EmpresaForm(request.POST)  
         if form.is_valid():
             form.save()
             messages.success(request, 'La empresa fue creada correctamente.')

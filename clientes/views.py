@@ -12,6 +12,10 @@ class MisClientes(LoginRequiredMixin, ListView):
     model = Clientes
     template_name = "mis_clientes.html"
     context_object_name = "clientes"
+
+    def get_queryset(self):
+        return Clientes.objects.filter(usuario_log=self.request.user)
+    
  
 
 class NuevoCliente(LoginRequiredMixin, CreateView):
@@ -20,12 +24,16 @@ class NuevoCliente(LoginRequiredMixin, CreateView):
     template_name="nuevo_cliente.html"
     success_url=reverse_lazy('mis_clientes')
 
+    def form_valid(self, form):
+        form.instance.usuario_log = self.request.user 
+        return super().form_valid(form)
+
 class EliminarCliente(LoginRequiredMixin, View):
     def post(self, request):
         if request.method == 'POST' and request.POST.get('accion')=='eliminar':
             clientes_a_eliminar=request.POST.getlist('clientes_seleccionados[]')
             if clientes_a_eliminar:
-                Clientes.objects.filter(id__in=clientes_a_eliminar).delete()
+                Clientes.objects.filter(id__in=clientes_a_eliminar, usuario_log=request.user).delete()
                 messages.success(request, 'Se eliminaron los clientes seleccionados')
             else:
                 messages.error(request, 'Debe seleccionar al menos un cliente')
@@ -40,3 +48,6 @@ class ActualizarCliente(LoginRequiredMixin, UpdateView):
     form_class=ClienteForm
     template_name="nuevo_cliente.html"
     success_url=reverse_lazy('mis_clientes')
+    
+    def get_queryset(self):
+        return Clientes.objects.filter(usuario_log=self.request.user)
