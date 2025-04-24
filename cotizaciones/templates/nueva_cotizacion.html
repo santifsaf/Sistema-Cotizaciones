@@ -48,7 +48,8 @@
                     <select id="cliente" name="cliente" onchange="this.form.submit()">
                         <option value="">--</option>
                         {% for cliente in clientes %}
-                            <option value="{{ cliente.id }}" {% if cliente.id == cliente_seleccionado.id %}selected{% endif %}>
+                            <option value="{{ cliente.id }}" 
+                                {% if cliente_seleccionado and cliente.id == cliente_seleccionado.id %}selected{% endif %}>
                                 {{ cliente.nombre }}
                             </option>
                         {% endfor %}
@@ -73,25 +74,33 @@
                         <th>Nombre</th>
                         <th>Descripción</th>
                         <th>Precio unit.</th>
-                        <th>Impuesto</th>
                         <th>Total</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
-                        <td><input type="number" value="1"></td>
-                        <td><input type="text" placeholder="Nombre"></td>
-                        <td><input type="text" placeholder="Descripción"></td>
-                        <td><input type="text" placeholder="$0.00"></td>
-                        <td><select><option>IVA(21%)</option></select></td>
-                        <td>$0.00</td>
+                        <td><input type="number" id="cantidad" value="1" onchange="actualizarTotales()"></td>
+                        <td>
+                            <select id="articulo" onchange="completarCampos()">
+                                <option value="">-- Seleccione un artículo --</option>
+                                {% for articulo in articulos %}
+                                    <option value="{{ articulo.id }}" 
+                                        data-descripcion="{{ articulo.descripcion }}" 
+                                        data-precio="{{ articulo.precio }}">
+                                        {{ articulo.nombre }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </td>
+                        <td><input type="text" id="descripcion" placeholder="Descripción" readonly></td>
+                        <td><input type="text" id="precio" placeholder="$0.00" readonly></td>
+                        <td><input type="text" id="totalArticulo" placeholder="$0.00" readonly></td>
                     </tr>
                 </tbody>
 
                 
             </table>
-            <button>+ Seleccionar artículo existente</button>
-            <button>+ Agregar artículo nuevo</button>
+            <button id="agregarArticulo" type="button">+ Agregar artículo nuevo</button>
             <button>+ Añadir descuento</button>
             <button>+ Añadir costo envío</button>
         </section>
@@ -103,13 +112,9 @@
         </section>
         
         <section class="totals">
-            <div class="subtotal">
-                <label for="subtotal">Subtotal:</label>
-                <input type="text" id="subtotal" value="$0.00" readonly>
-            </div>
             <div class="total">
                 <label for="total">Total:</label>
-                <input type="text" id="total" value="$0.00" readonly>
+                <input type="text" id="totalCot" placeholder="$0.00" readonly>
             </div>
 
             <label for="validez">La validez de este presupuesto es de 1 dia desde su emision. Consultar nuevamente los precios antes de efectuar la compra.</label>
@@ -125,5 +130,83 @@
     </div>
 </body>
 </html>
+
+
+
+
+
+<script>
+    window.onload = function () {
+        document.getElementById('condiciones-pago').addEventListener('change', actualizarTotales);
+        document.getElementById('agregarArticulo').addEventListener('click', agregarArticuloNuevo);
+    };
+
+    function completarCampos() {
+        // Obtener los elementos del DOM
+        const select = document.getElementById('articulo'); // El select donde se elige el artículo
+        const descripcion = document.getElementById('descripcion'); // Campo de descripción
+        const precio = document.getElementById('precio'); // Campo de precio unitario
+
+        // Obtener la opción seleccionada
+        const selectedOption = select.options[select.selectedIndex];
+
+        // Verificar si se seleccionó un artículo
+        if (selectedOption.value) {
+            // Extraer los atributos personalizados de la opción seleccionada
+            descripcion.value = selectedOption.getAttribute('data-descripcion'); // Descripción del artículo
+            const precioOriginal = selectedOption.getAttribute('data-precio'); // Precio unitario del artículo
+            precio.value = `$${parseFloat(precioOriginal).toFixed(2)}`; // Mostrar el precio original
+            precio.setAttribute('data-precio-original', precioOriginal); // Guardar el precio original en un atributo
+            actualizarTotales();
+        } else {
+            // Si no se seleccionó un artículo, limpiar los campos
+            descripcion.value = '';
+            precio.value = '';
+            document.getElementById('totalArticulo').value = '$0.00';
+            actualizarTotales();
+        }
+    }
+
+    function actualizarTotales() {
+        // Obtener los elementos del DOM
+        const precio = document.getElementById('precio'); // Campo de precio unitario
+        const precioOriginal = parseFloat(precio.getAttribute('data-precio-original')) || 0; // Precio original almacenado
+        const cantidad = parseInt(document.getElementById('cantidad').value) || 0; // Cantidad
+        const condicionPago = document.getElementById('condiciones-pago').value; // Valor seleccionado en el select
+        const totalArticulo = document.getElementById('totalArticulo'); // Total del artículo
+        const totalCotizacion = document.getElementById('totalCot'); // Total general de la cotización
+
+        // Aplicar descuento si la condición de pago es "Efectivo"
+        let precioFinal = precioOriginal;
+        if (condicionPago === "Efectivo") {
+            precioFinal = precioOriginal * 0.9; // Aplicar 10% de descuento
+        }
+
+        // Actualizar el campo de precio unitario con el precio final
+        precio.value = `$${precioFinal.toFixed(2)}`;
+
+        // Calcular el total del artículo
+        const totalArticuloValor = precioFinal * cantidad;
+        totalArticulo.value = `$${totalArticuloValor.toFixed(2)}`; // Usar value para actualizar el input
+
+        // Actualizar el total general (en este caso, solo un artículo; puedes sumar más si hay varios)
+        totalCotizacion.value = `$${totalArticuloValor.toFixed(2)}`;
+    }
+
+    function agregarArticuloNuevo() {
+        // Obtener la tabla de artículos
+        const tabla = document.querySelector('.invoice-items tbody');
+
+        // Crear una nueva fila
+        const nuevaFila = document.createElement('tr');
+        nuevaFila.classList.add('fila-articulo');
+    
+
+        // Agregar la nueva fila a la tabla
+        tabla.appendChild(nuevaFila);
+    }
+
+</script>
+
 
 {% endblock %}

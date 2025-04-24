@@ -6,7 +6,7 @@ from articulos.models import Articulo
 
 class Cotizaciones(models.Model):
     numero_referencia=models.IntegerField(unique=True, editable=False)
-    cliente=models.ManyToManyField(Clientes, null=True)
+    cliente=models.ManyToManyField(Clientes)
     articulos_cotizados=models.ManyToManyField(Articulo)
     created=models.DateTimeField(auto_now_add=True)
     updated=models.DateTimeField(auto_now=True)
