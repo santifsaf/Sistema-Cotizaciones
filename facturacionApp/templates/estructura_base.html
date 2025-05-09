@@ -44,7 +44,7 @@
                     <li>
                         <a href="#">Cuenta</a>
                         <ul class="menu-vertical">
-                            <li><a href="{% url 'mis_empresas' %}">Mis empresas</a></li>
+                            <li><a href="{% url 'mis_empresas' %}">Mis datos</a></li>
                             {% if request.user.is_authenticated %}
                                 <li>
                                     <form method="post" action="{% url 'logout' %}">

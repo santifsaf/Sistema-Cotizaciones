@@ -26,11 +26,11 @@
       </tr>
       {% empty %}
         <tr>
-          <td colspan="7">No hay empresas disponibles.</td>
+          <td colspan="7">Aun no cargaste los datos de tu empresa.</td>
         </tr>
         <tr>
           <td colspan="7">
-            <a class="boton" href="{% url 'nueva_empresa' %}">Agregar empresa</a>
+            <a class="boton" href="{% url 'nueva_empresa' %}">Cargar datos</a>
           </td>
         </tr>
       {% endfor %}
