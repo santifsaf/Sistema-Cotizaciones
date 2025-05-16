@@ -22,10 +22,11 @@
                 </div>
             </div>
             
-
-            <div class="datos-empresa">
-                <form method="GET" action="">
-                    <div class="company-info">
+            
+            <form method="GET" action="">
+                <div class="datos-container">
+                    <!-- Columna izquierda: Empresa -->
+                    <div class="columna empresa">
                         <label for="empresa">Empresa:</label>
                         <select id="empresa" name="empresa" onchange="this.form.submit()">
                             <option value="">--</option>
@@ -35,39 +36,40 @@
                                 </option>
                             {% endfor %}
                         </select>
-                    </div>
-                    
-                    {% if empresa_seleccionada %}
-                    <div class="row">
-                        <p><strong>CUIT:</strong> {{ empresa_seleccionada.cuit }}</p>
-                        <p><strong>Teléfono:</strong> {{ empresa_seleccionada.telefono }}</p>
-                        <p><strong>Mail:</strong> {{ empresa_seleccionada.mail }}</p>
-                    </div>
-                    {% endif %}
-                    
-                    <div class="datos-container">
-                        <div class="client-details">
-                            <label for="cliente">Cliente:</label>
-                            <select id="cliente" name="cliente" onchange="this.form.submit()">
-                                <option value="">--</option>
-                                {% for cliente in clientes %}
-                                    <option value="{{ cliente.id }}" 
-                                        {% if cliente_seleccionado and cliente.id == cliente_seleccionado.id %}selected{% endif %}>
-                                        {{ cliente.nombre }}
-                                    </option>
-                                {% endfor %}
-                            </select>
+
+                        {% if empresa_seleccionada %}
+                        <div class="info-box">
+                            <p><strong>CUIT:</strong> {{ empresa_seleccionada.cuit }}</p>
+                            <p><strong>Teléfono:</strong> {{ empresa_seleccionada.telefono }}</p>
+                            <p><strong>Mail:</strong> {{ empresa_seleccionada.mail }}</p>
                         </div>
-                        
-                        {% if cliente_seleccionado %}
-                            <div class="row">
-                                <p><strong>Empresa:</strong> {{ cliente_seleccionado.nombre_empresa }}</p>
-                                <p><strong>Mail:</strong> {{ cliente_seleccionado.mail }}</p>
-                            </div>
                         {% endif %}
-                    </div>    
-                </form>
-            </div>
+                    </div>
+
+                    <!-- Columna derecha: Cliente -->
+                    <div class="columna cliente">
+                        <label for="cliente">Cliente:</label>
+                        <select id="cliente" name="cliente" onchange="this.form.submit()">
+                            <option value="">--</option>
+                            {% for cliente in clientes %}
+                                <option value="{{ cliente.id }}" 
+                                    {% if cliente_seleccionado and cliente.id == cliente_seleccionado.id %}selected{% endif %}>
+                                    {{ cliente.nombre }}
+                                </option>
+                            {% endfor %}
+                        </select>
+
+                        {% if cliente_seleccionado %}
+                        <div class="info-box">
+                            <p><strong>Empresa:</strong> {{ cliente_seleccionado.nombre_empresa }}</p>
+                            <p><strong>Mail:</strong> {{ cliente_seleccionado.mail }}</p>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </form>
+            
+            
         </section>
         
         
@@ -84,9 +86,9 @@
                 </thead>
                 <tbody>
                     <tr>
-                        <td><input type="number" name="cantidad" value="1"></td>
+                        <td><input type="number" name="cantidad" value="1" min=0 max=1000></td>
                         <td>
-                            <select id="articulo">
+                            <select id="articulo" name="articulo">
                                 <option value="">-- Seleccione un artículo --</option>
                                 {% for articulo in articulos %}
                                     <option value="{{ articulo.id }}" 
@@ -105,9 +107,10 @@
 
                 
             </table>
-            <button id="agregarArticulo" type="button">+ Agregar artículo nuevo</button>
-            <button>+ Añadir descuento</button>
-            <button>+ Añadir costo envío</button>
+            <button id="agregarArticulo" type="button">+ Agregar artículo</button>
+            <button id="eliminarArticulo" type="button">+ Eliminar artículo</button>
+            <button id="aplicarDescuento" type="button">+ Aplicar descuento</button>
+            <button>+ Sumar costo envío</button>
         </section>
 
         
@@ -161,9 +164,6 @@
 
     // Función que se ejecuta al cargar la página
     window.onload = function () {
-        // Asignar evento al primer select de artículo
-        const primerSelect = document.getElementById('articulo');
-        primerSelect.addEventListener('change', completarCampos);
 
         // Asignar evento al select de condiciones de pago
         document.getElementById('condiciones-pago').addEventListener('change', function () {
@@ -172,12 +172,20 @@
             actualizarTotalesGenerales(); // Actualiza el total general
         });
 
-        // Asignar evento al botón para agregar un nuevo artículo
-        document.getElementById('agregarArticulo').addEventListener('click', agregarArticuloNuevo);
-
         // Asignar eventos a las filas existentes al cargar la página
         const filas = document.querySelectorAll('.invoice-items tbody tr');
         filas.forEach(asignarEventosFila);
+
+        // Asignar evento al primer select de artículo
+        const primerSelect = document.getElementById('articulo');
+        primerSelect.addEventListener('change', completarCampos);
+
+        // Asignar evento al botón para agregar un nuevo artículo
+        document.getElementById('agregarArticulo').addEventListener('click', agregarArticuloNuevo);
+
+        // asignar evento aplicar descuento
+        document.getElementById('aplicarDescuento').addEventListener('click', aplicarDescuentoNuevo);
+
     };
 
     // Función para recalcular el total de una fila
@@ -214,7 +222,7 @@
 
     // Función para recalcular el total general
     function actualizarTotalesGenerales() {
-        const filas = document.querySelectorAll('.invoice-items tbody tr');
+        const filas = document.querySelectorAll('.invoice-items tbody tr:not(.fila-descuento');
         let totalGeneral = 0;
 
         // Sumar los totales de todas las filas
@@ -248,7 +256,7 @@
         } else {
             // Limpiar los campos si no se selecciona un artículo
             descripcion.value = '';
-            precio.value = '';
+            precio.value = '$0.00';
             total.value = '$0.00';
             actualizarTotalesFila(fila);
         }
@@ -268,6 +276,8 @@
         inputCantidad.name = "cantidad";
         inputCantidad.type = "number";
         inputCantidad.value = "1";
+        inputCantidad.min=0;
+        inputCantidad.max=1000;
         tdCantidad.appendChild(inputCantidad);
         nuevaFila.appendChild(tdCantidad);
 
@@ -291,7 +301,8 @@
         }
 
         tdSelect.appendChild(select);
-        nuevaFila.appendChild(tdSelect);
+        nuevaFila.appendChild(tdSelect);    
+
 
         // Crear celdas para descripción, precio y total
         ['descripcion', 'precio', 'totalArticulo'].forEach(name => {
@@ -304,16 +315,128 @@
             td.appendChild(input);
             nuevaFila.appendChild(td);
         });
+        
+        //Crear checkbox a la nueva fila
+        const tdCheckbox = document.createElement('td');
+        const inputCheckbox = document.createElement('input');
+        inputCheckbox.name = "articulos_seleccionados[]";
+        inputCheckbox.type = "checkbox";
+        inputCheckbox.value = select.value;
+
+        tdCheckbox.appendChild(inputCheckbox);
+        nuevaFila.appendChild(tdCheckbox);
+
+        //Agrego el articulo antes del descuento si es que lo hay
+        const filaDescuentoExistente = tabla.querySelector('.fila-descuento');
+
+            if (filaDescuentoExistente) {
+                // Insertar antes de la fila descuento
+                tabla.insertBefore(nuevaFila, filaDescuentoExistente);
+            } else {
+                // No existe fila descuento, agrego al final
+                tabla.appendChild(nuevaFila);
+            }
+
 
         // Agregar la nueva fila a la tabla
-        tabla.appendChild(nuevaFila);
+        // tabla.appendChild(nuevaFila);
 
         // Asignar eventos a la nueva fila
         asignarEventosFila(nuevaFila);
 
         // Actualizar el total general
         actualizarTotalesGenerales();
+
     }
+
+    // Eliminar los articulos seleccionados
+    document.getElementById('eliminarArticulo').addEventListener('click', () => {
+        // Selecciona todos los checkboxes tildados
+        const checkboxesSeleccioandos = document.querySelectorAll('input[name="articulos_seleccionados[]"]:checked');
+
+        // Recorre cada uno
+        checkboxesSeleccioandos.forEach(checkbox => {
+            // Sube hasta el <tr> más cercano y lo borra
+            const fila = checkbox.closest('tr');
+                fila.remove();
+        });
+        actualizarTotalesGenerales();
+    });
+
+
+
+    //Funcion para aplicar fila descuento
+    
+function aplicarDescuentoNuevo() {
+    const tabla = document.querySelector('.invoice-items tbody');
+
+    // Si ya hay fila de descuento, no agregar otra
+    if (tabla.querySelector('.fila-descuento')) return;
+
+    const nuevaFila = document.createElement('tr');
+    nuevaFila.classList.add('fila-descuento');
+
+    // Celda: cantidad (siempre 1, no editable)
+    const tdCantidad = document.createElement('td');
+    const inputCantidad = document.createElement('input');
+    inputCantidad.name = "cantidad";
+    inputCantidad.type = "number";
+    inputCantidad.value = 1;
+    inputCantidad.min= 1;
+    inputCantidad.max=1;
+    inputCantidad.readOnly = true;
+    tdCantidad.appendChild(inputCantidad);
+    nuevaFila.appendChild(tdCantidad);
+
+    // Celda: texto "DESCUENTO"
+    const tdDescuento = document.createElement('td');
+    tdDescuento.textContent = "DESCUENTO";
+    nuevaFila.appendChild(tdDescuento);
+
+    // Celda: % de descuento (select)
+    const tdValorDescuento = document.createElement('td');
+    const selectValorDescuento = document.createElement('select');
+    selectValorDescuento.name = "porcentajeDescuento";
+
+    const defaultOption = document.createElement('option');
+    defaultOption.value = '';
+    defaultOption.textContent = '% de descuento';
+    selectValorDescuento.appendChild(defaultOption);
+
+    [5, 10, 15, 20, 25, 30, 40, 50].forEach(porcentaje => {
+        const option = document.createElement('option');
+        option.value = porcentaje;
+        option.textContent = `${porcentaje}%`;
+        selectValorDescuento.appendChild(option);
+    });
+
+    // Cuando cambie el descuento, se actualiza el total general
+    // selectValorDescuento.addEventListener('change', actualizarTotalesGenerales);
+
+    tdValorDescuento.appendChild(selectValorDescuento);
+    nuevaFila.appendChild(tdValorDescuento);
+
+
+    const tdDescuentoTotal = document.createElement('td')
+    tdDescuentoTotal.textContent="Descuento total:"
+    nuevaFila.appendChild(tdDescuentoTotal); // Precio vacío
+
+    nuevaFila.appendChild(document.createElement('td')); // Total vacío
+
+    //Crear checkbox a la nueva fila
+    const tdCheckbox = document.createElement('td');
+    const inputCheckbox = document.createElement('input');
+    inputCheckbox.name = "articulos_seleccionados[]";
+    inputCheckbox.type = "checkbox";    
+    tdCheckbox.appendChild(inputCheckbox);
+    nuevaFila.appendChild(tdCheckbox);
+
+
+    // Agregar la fila al final
+    tabla.appendChild(nuevaFila);
+}
+
+
 </script>
 
 

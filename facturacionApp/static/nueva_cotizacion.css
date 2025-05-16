@@ -24,36 +24,51 @@ header h1 {
 }
 
 /* Sección de detalles de la empresa y cliente */
-.company-details {
-    margin-bottom: 20px;
-}
-
-/* Contenedor de datos del cliente y empresa */
 .datos-container {
-    display: flex; /* Usar flexbox para organizar en columnas */
-    justify-content: space-between; /* Separar los elementos a los lados */
-    gap: 20px; /* Espaciado entre las columnas */
-    margin-bottom: 20px; /* Espaciado inferior */
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 20px;
+    margin: 20px 0;
+    flex-wrap: nowrap; /* Fuerza que estén lado a lado */
 }
 
-.client-details, .datos-empresa {
-    flex: 1; /* Cada columna ocupa el mismo espacio */
-    padding: 15px; /* Espaciado interno */
-    border: 1px solid #ddd; /* Bordes para separar visualmente */
-    border-radius: 5px; /* Bordes redondeados */
-    background-color: #f9f9f9; /* Fondo claro */
+/* Asegura que ambas columnas tengan el mismo ancho */
+.columna {
+    flex: 1;
+    max-width: 50%;
+    box-sizing: border-box;
+    padding: 15px;
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 5px;
 }
 
-.client-details h3, .datos-empresa h3 {
-    margin-bottom: 10px; /* Espaciado inferior del título */
-    font-size: 1.2em; /* Tamaño del título */
-    color: #333; /* Color del texto */
+/* Estilos para etiquetas y selects */
+.columna label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 5px;
 }
 
-.client-details p, .datos-empresa p {
-    margin: 5px 0; /* Espaciado entre líneas */
-    font-size: 0.9em; /* Tamaño del texto */
-    color: #555; /* Color del texto */
+.columna select {
+    width: 100%;
+    padding: 6px 10px;
+    margin-bottom: 10px;
+}
+
+/* Info adicional (CUIT, Mail, etc) */
+.info-box p {
+    margin: 5px 0;
+    font-size: 0.9em;
+    color: #555;
+}
+
+/* Responsividad */
+@media (max-width: 768px) {
+    .datos-container {
+        flex-direction: column; /* Cambiar a diseño vertical en pantallas pequeñas */
+    }
 }
 
 /* Tabla de artículos */
@@ -169,30 +184,4 @@ footer button {
 
 footer button:hover {
     background-color: #218838;
-}
-
-/* Responsividad */
-@media (max-width: 768px) {
-    .datos-container {
-        flex-direction: column; /* Cambiar a diseño vertical en pantallas pequeñas */
-    }
-
-    .invoice-details .row {
-        flex-direction: column;
-        align-items: flex-start;
-    }
-
-    .invoice-details label {
-        margin-bottom: 5px;
-    }
-
-    footer {
-        flex-direction: column;
-        align-items: flex-end;
-    }
-
-    footer button {
-        width: 100%;
-        margin-bottom: 10px;
-    }
 }
