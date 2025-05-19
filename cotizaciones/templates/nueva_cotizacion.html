@@ -424,13 +424,25 @@ function aplicarDescuentoNuevo() {
     nuevaFila.appendChild(document.createElement('td')); // Total vacío
 
     //Crear checkbox a la nueva fila
-    const tdCheckbox = document.createElement('td');
-    const inputCheckbox = document.createElement('input');
-    inputCheckbox.name = "articulos_seleccionados[]";
-    inputCheckbox.type = "checkbox";    
-    tdCheckbox.appendChild(inputCheckbox);
-    nuevaFila.appendChild(tdCheckbox);
-
+    // const tdCheckbox = document.createElement('td');
+    // const inputCheckbox = document.createElement('input');
+    // inputCheckbox.name = "articulos_seleccionados[]";
+    // inputCheckbox.type = "checkbox";    
+    // tdCheckbox.appendChild(inputCheckbox);
+    // nuevaFila.appendChild(tdCheckbox);
+    
+    const tdButtonx = document.createElement('td');
+    const buttonx = document.createElement('button');
+    buttonx.className = "btn-x";
+    buttonx.textContent = "x";
+    buttonx.style.border = "none";
+    buttonx.style.background = "transparent";
+    buttonx.style.color = "red";
+    buttonx.style.fontSize = "14px"; 
+    buttonx.style.cursor = "pointer";
+    tdButtonx.appendChild(buttonx);
+    nuevaFila.appendChild(tdButtonx);
+    // PONER X A TODAS LAS FILAS, CON ADVERTENCIA PARA ELIMINAR
 
     // Agregar la fila al final
     tabla.appendChild(nuevaFila);
