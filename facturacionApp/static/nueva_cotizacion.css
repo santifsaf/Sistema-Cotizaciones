@@ -164,24 +164,25 @@ button:disabled {
     background-color: #f9f9f9;
 }
 
-/* Footer */
-footer {
+
+.botones-articulos {
     display: flex;
-    justify-content: flex-end;
+    justify-content: center;
     gap: 10px;
-    margin-top: 20px;
+    margin: 20px 0;
 }
 
-footer button {
-    padding: 10px 15px;
-    border: none;
-    border-radius: 5px;
-    background-color: #28a745;
-    color: #fff;
-    cursor: pointer;
-    font-size: 1em;
+.botones-cotizacion {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin: 20px 0;
+    
 }
 
-footer button:hover {
-    background-color: #218838;
+.validez-msg {
+    text-align: center;
+    margin: 10px 0 20px 0;
+    color: #555;
+    font-size: 0.95em;
 }

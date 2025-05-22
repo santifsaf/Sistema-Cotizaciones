@@ -7,13 +7,13 @@
             <h1>PRESUPUESTO NO VALIDO COMO FACTURA</h1>
         </header>
         <section class="company-details">
-            <div class="invoice-details">
-                <div class="row fecha-row">
+            <div class="datos-container">
+                <div class="columna">
                     <label for="fecha">Fecha:</label>
                     <input type="date" id="fecha" name="fecha" value="{{ fecha_actual }}">
                 </div>
                 
-                <div class="row condicion-pago-row">
+                <div class="columna">
                     <label for="condiciones-pago">Condición de pago:</label>
                     <select id="condiciones-pago">
                         <option value="Efectivo">Efectivo</option>
@@ -21,6 +21,7 @@
                     </select>
                 </div>
             </div>
+
             
             
             <form method="GET" action="">
@@ -107,13 +108,17 @@
 
                 
             </table>
-            <button id="agregarArticulo" type="button">+ Agregar artículo</button>
-            <button id="eliminarArticulo" type="button">+ Eliminar artículo</button>
-            <button id="aplicarDescuento" type="button">+ Aplicar descuento</button>
-            <button>+ Sumar costo envío</button>
-        </section>
 
-        
+               
+            
+
+            <div class="botones-articulos">
+                <button id="agregarArticulo" type="button">Agregar artículo</button>
+                <button id="eliminarArticulo" type="button">Eliminar artículo</button>
+                <button id="aplicarDescuento" type="button">Aplicar descuento</button>
+                <button>Sumar costo envío</button>
+            </div>
+        </section>
         
         <section class="notes">
             <textarea placeholder="Observaciones"></textarea>
@@ -124,332 +129,328 @@
                 <label for="total">Total:</label>
                 <input type="text" id="totalCot" placeholder="$0.00" readonly>
             </div>
-
-            <label for="validez">La validez de este presupuesto es de 1 dia desde su emision. Consultar nuevamente los precios antes de efectuar la compra.</label>
         </section>
+        <div class="validez-msg">
+            La validez de este presupuesto es de 1 día desde su emisión. Consultar nuevamente los precios antes de efectuar la compra.
+        </div>
         
-        <footer>
+        <div class="botones-cotizacion">
             <button>Descartar</button>
             <button>Descargar PDF</button>
             <button>Imprimir</button>
             <button>Enviar</button>
             <button>Guardar</button>
-        </footer>
+        </div>
+
     </div>
-</body>
-</html>
 
+    <script>
+        // Función para asignar eventos a una fila específica
+        function asignarEventosFila(fila) {
+            // Asignar evento al input de cantidad
+            const cantidadInput = fila.querySelector('[name="cantidad"]');
+            if (cantidadInput) {
+                cantidadInput.addEventListener('change', function () {
+                    actualizarTotalesFila(fila); // Recalcula el total de la fila
+                    actualizarTotalesGenerales(); // Actualiza el total general
+                });
+            }
 
+            // Asignar evento al select de artículo
+            const articuloSelect = fila.querySelector('[name="articulo"]');
+            if (articuloSelect) {
+                articuloSelect.addEventListener('change', completarCampos); // Completa los campos de la fila
+            }
+        }
 
+        // Función que se ejecuta al cargar la página
+        window.onload = function () {
 
-
-<script>
-    // Función para asignar eventos a una fila específica
-    function asignarEventosFila(fila) {
-        // Asignar evento al input de cantidad
-        const cantidadInput = fila.querySelector('[name="cantidad"]');
-        if (cantidadInput) {
-            cantidadInput.addEventListener('change', function () {
-                actualizarTotalesFila(fila); // Recalcula el total de la fila
+            // Asignar evento al select de condiciones de pago
+            document.getElementById('condiciones-pago').addEventListener('change', function () {
+                const filas = document.querySelectorAll('.invoice-items tbody tr');
+                filas.forEach(actualizarTotalesFila); // Recalcula los precios de todas las filas
                 actualizarTotalesGenerales(); // Actualiza el total general
             });
-        }
 
-        // Asignar evento al select de artículo
-        const articuloSelect = fila.querySelector('[name="articulo"]');
-        if (articuloSelect) {
-            articuloSelect.addEventListener('change', completarCampos); // Completa los campos de la fila
-        }
-    }
-
-    // Función que se ejecuta al cargar la página
-    window.onload = function () {
-
-        // Asignar evento al select de condiciones de pago
-        document.getElementById('condiciones-pago').addEventListener('change', function () {
+            // Asignar eventos a las filas existentes al cargar la página
             const filas = document.querySelectorAll('.invoice-items tbody tr');
-            filas.forEach(actualizarTotalesFila); // Recalcula los precios de todas las filas
-            actualizarTotalesGenerales(); // Actualiza el total general
-        });
+            filas.forEach(asignarEventosFila);
 
-        // Asignar eventos a las filas existentes al cargar la página
-        const filas = document.querySelectorAll('.invoice-items tbody tr');
-        filas.forEach(asignarEventosFila);
+            // Asignar evento al primer select de artículo
+            const primerSelect = document.getElementById('articulo');
+            primerSelect.addEventListener('change', completarCampos);
 
-        // Asignar evento al primer select de artículo
-        const primerSelect = document.getElementById('articulo');
-        primerSelect.addEventListener('change', completarCampos);
+            // Asignar evento al botón para agregar un nuevo artículo
+            document.getElementById('agregarArticulo').addEventListener('click', agregarArticuloNuevo);
 
-        // Asignar evento al botón para agregar un nuevo artículo
-        document.getElementById('agregarArticulo').addEventListener('click', agregarArticuloNuevo);
+            // asignar evento aplicar descuento
+            document.getElementById('aplicarDescuento').addEventListener('click', aplicarDescuentoNuevo);
 
-        // asignar evento aplicar descuento
-        document.getElementById('aplicarDescuento').addEventListener('click', aplicarDescuentoNuevo);
+        };
 
-    };
+        // Función para recalcular el total de una fila
+        function actualizarTotalesFila(fila) {
+            const precioInput = fila.querySelector('[name="precio"]');
+            const cantidadInput = fila.querySelector('[name="cantidad"]');
+            const totalInput = fila.querySelector('[name="totalArticulo"]');
 
-    // Función para recalcular el total de una fila
-    function actualizarTotalesFila(fila) {
-        const precioInput = fila.querySelector('[name="precio"]');
-        const cantidadInput = fila.querySelector('[name="cantidad"]');
-        const totalInput = fila.querySelector('[name="totalArticulo"]');
+            // Validar que los elementos necesarios existan
+            if (!precioInput || !cantidadInput || !totalInput) {
+                console.error('No se encontraron los elementos necesarios en la fila.');
+                return;
+            }
 
-        // Validar que los elementos necesarios existan
-        if (!precioInput || !cantidadInput || !totalInput) {
-            console.error('No se encontraron los elementos necesarios en la fila.');
-            return;
+            // Obtener valores de precio y cantidad
+            const precio = parseFloat(precioInput.getAttribute('data-precio-original')) || 0;
+            const cantidad = parseInt(cantidadInput.value) || 0;
+            const condicionPago = document.getElementById('condiciones-pago').value;
+
+            // Aplicar descuento si la condición de pago es "Efectivo"
+            let precioFinal = precio;
+            if (condicionPago === "Efectivo") {
+                precioFinal = precio * 0.9;
+            }
+
+            // Calcular el total de la fila
+            const totalCalculado = precioFinal * cantidad;
+            precioInput.value = `$${precioFinal.toFixed(2)}`;
+            totalInput.value = `$${totalCalculado.toFixed(2)}`;
+
+            // Actualizar el total general
+            actualizarTotalesGenerales();
         }
 
-        // Obtener valores de precio y cantidad
-        const precio = parseFloat(precioInput.getAttribute('data-precio-original')) || 0;
-        const cantidad = parseInt(cantidadInput.value) || 0;
-        const condicionPago = document.getElementById('condiciones-pago').value;
+        // Función para recalcular el total general
+        function actualizarTotalesGenerales() {
+            const filas = document.querySelectorAll('.invoice-items tbody tr:not(.fila-descuento');
+            let totalGeneral = 0;
 
-        // Aplicar descuento si la condición de pago es "Efectivo"
-        let precioFinal = precio;
-        if (condicionPago === "Efectivo") {
-            precioFinal = precio * 0.9;
-        }
-
-        // Calcular el total de la fila
-        const totalCalculado = precioFinal * cantidad;
-        precioInput.value = `$${precioFinal.toFixed(2)}`;
-        totalInput.value = `$${totalCalculado.toFixed(2)}`;
-
-        // Actualizar el total general
-        actualizarTotalesGenerales();
-    }
-
-    // Función para recalcular el total general
-    function actualizarTotalesGenerales() {
-        const filas = document.querySelectorAll('.invoice-items tbody tr:not(.fila-descuento');
-        let totalGeneral = 0;
-
-        // Sumar los totales de todas las filas
-        filas.forEach(fila => {
-            const total = fila.querySelector('[name="totalArticulo"]');
-            const valor = parseFloat(total.value.replace('$', '')) || 0;
-            totalGeneral += valor;
-        });
-
-        // Actualizar el campo de total general
-        document.getElementById('totalCot').value = `$${totalGeneral.toFixed(2)}`;
-    }
-
-    // Función para completar los campos de una fila al seleccionar un artículo
-    function completarCampos(e) {
-        const fila = e.target.closest('tr');
-        const select = e.target;
-        const descripcion = fila.querySelector('[name="descripcion"]');
-        const precio = fila.querySelector('[name="precio"]');
-        const total = fila.querySelector('[name="totalArticulo"]');
-
-        const selectedOption = select.options[select.selectedIndex];
-
-        if (selectedOption.value) {
-            // Completar los campos con los datos del artículo seleccionado
-            descripcion.value = selectedOption.getAttribute('data-descripcion');
-            const precioOriginal = parseFloat(selectedOption.getAttribute('data-precio'));
-            precio.value = `$${precioOriginal.toFixed(2)}`;
-            precio.setAttribute('data-precio-original', precioOriginal);
-            actualizarTotalesFila(fila); // Recalcular el total de la fila
-        } else {
-            // Limpiar los campos si no se selecciona un artículo
-            descripcion.value = '';
-            precio.value = '$0.00';
-            total.value = '$0.00';
-            actualizarTotalesFila(fila);
-        }
-
-        actualizarTotalesGenerales(); // Actualizar el total general
-    }
-
-    // Función para agregar una nueva fila de artículo
-    function agregarArticuloNuevo() {
-        const tabla = document.querySelector('.invoice-items tbody');
-        const nuevaFila = document.createElement('tr');
-        nuevaFila.classList.add('fila-articulo');
-
-        // Crear celda para la cantidad
-        const tdCantidad = document.createElement('td');
-        const inputCantidad = document.createElement('input');
-        inputCantidad.name = "cantidad";
-        inputCantidad.type = "number";
-        inputCantidad.value = "1";
-        inputCantidad.min=0;
-        inputCantidad.max=1000;
-        tdCantidad.appendChild(inputCantidad);
-        nuevaFila.appendChild(tdCantidad);
-
-        // Crear celda para el select de artículo
-        const tdSelect = document.createElement('td');
-        const select = document.createElement('select');
-        select.name = "articulo";
-
-        const defaultOption = document.createElement('option');
-        defaultOption.value = '';
-        defaultOption.textContent = '-- Seleccione un artículo --';
-        select.appendChild(defaultOption);
-
-        const existingSelect = document.getElementById('articulo');
-        if (existingSelect) {
-            Array.from(existingSelect.options).forEach(option => {
-                select.appendChild(option.cloneNode(true));
+            // Sumar los totales de todas las filas
+            filas.forEach(fila => {
+                const total = fila.querySelector('[name="totalArticulo"]');
+                const valor = parseFloat(total.value.replace('$', '')) || 0;
+                totalGeneral += valor;
             });
-        } else {
-            console.error('El select con ID "articulo" no existe.');
+
+            // Actualizar el campo de total general
+            document.getElementById('totalCot').value = `$${totalGeneral.toFixed(2)}`;
         }
 
-        tdSelect.appendChild(select);
-        nuevaFila.appendChild(tdSelect);    
+        // Función para completar los campos de una fila al seleccionar un artículo
+        function completarCampos(e) {
+            const fila = e.target.closest('tr');
+            const select = e.target;
+            const descripcion = fila.querySelector('[name="descripcion"]');
+            const precio = fila.querySelector('[name="precio"]');
+            const total = fila.querySelector('[name="totalArticulo"]');
 
+            const selectedOption = select.options[select.selectedIndex];
 
-        // Crear celdas para descripción, precio y total
-        ['descripcion', 'precio', 'totalArticulo'].forEach(name => {
-            const td = document.createElement('td');
-            const input = document.createElement('input');
-            input.type = 'text';
-            input.name = name;
-            input.readOnly = true;
-            input.placeholder = name === 'totalArticulo' ? '$0.00' : '';
-            td.appendChild(input);
-            nuevaFila.appendChild(td);
-        });
-        
-        //Crear checkbox a la nueva fila
-        const tdCheckbox = document.createElement('td');
-        const inputCheckbox = document.createElement('input');
-        inputCheckbox.name = "articulos_seleccionados[]";
-        inputCheckbox.type = "checkbox";
-        inputCheckbox.value = select.value;
-
-        tdCheckbox.appendChild(inputCheckbox);
-        nuevaFila.appendChild(tdCheckbox);
-
-        //Agrego el articulo antes del descuento si es que lo hay
-        const filaDescuentoExistente = tabla.querySelector('.fila-descuento');
-
-            if (filaDescuentoExistente) {
-                // Insertar antes de la fila descuento
-                tabla.insertBefore(nuevaFila, filaDescuentoExistente);
+            if (selectedOption.value) {
+                // Completar los campos con los datos del artículo seleccionado
+                descripcion.value = selectedOption.getAttribute('data-descripcion');
+                const precioOriginal = parseFloat(selectedOption.getAttribute('data-precio'));
+                precio.value = `$${precioOriginal.toFixed(2)}`;
+                precio.setAttribute('data-precio-original', precioOriginal);
+                actualizarTotalesFila(fila); // Recalcular el total de la fila
             } else {
-                // No existe fila descuento, agrego al final
-                tabla.appendChild(nuevaFila);
+                // Limpiar los campos si no se selecciona un artículo
+                descripcion.value = '';
+                precio.value = '$0.00';
+                total.value = '$0.00';
+                actualizarTotalesFila(fila);
+            }
+
+            actualizarTotalesGenerales(); // Actualizar el total general
+        }
+
+        // Función para agregar una nueva fila de artículo
+        function agregarArticuloNuevo() {
+            const tabla = document.querySelector('.invoice-items tbody');
+            const nuevaFila = document.createElement('tr');
+            nuevaFila.classList.add('fila-articulo');
+
+            // Crear celda para la cantidad
+            const tdCantidad = document.createElement('td');
+            const inputCantidad = document.createElement('input');
+            inputCantidad.name = "cantidad";
+            inputCantidad.type = "number";
+            inputCantidad.value = "1";
+            inputCantidad.min=0;
+            inputCantidad.max=1000;
+            tdCantidad.appendChild(inputCantidad);
+            nuevaFila.appendChild(tdCantidad);
+
+            // Crear celda para el select de artículo
+            const tdSelect = document.createElement('td');
+            const select = document.createElement('select');
+            select.name = "articulo";
+
+            const defaultOption = document.createElement('option');
+            defaultOption.value = '';
+            defaultOption.textContent = '-- Seleccione un artículo --';
+            select.appendChild(defaultOption);
+
+            const existingSelect = document.getElementById('articulo');
+            if (existingSelect) {
+                Array.from(existingSelect.options).forEach(option => {
+                    select.appendChild(option.cloneNode(true));
+                });
+            } else {
+                console.error('El select con ID "articulo" no existe.');
+            }
+
+            tdSelect.appendChild(select);
+            nuevaFila.appendChild(tdSelect);    
+
+
+            // Crear celdas para descripción, precio y total
+            ['descripcion', 'precio', 'totalArticulo'].forEach(name => {
+                const td = document.createElement('td');
+                const input = document.createElement('input');
+                input.type = 'text';
+                input.name = name;
+                input.readOnly = true;
+                input.placeholder = name === 'totalArticulo' ? '$0.00' : '';
+                td.appendChild(input);
+                nuevaFila.appendChild(td);
+            });
+            
+            //Crear checkbox a la nueva fila
+            const tdCheckbox = document.createElement('td');
+            const inputCheckbox = document.createElement('input');
+            inputCheckbox.name = "articulos_seleccionados[]";
+            inputCheckbox.type = "checkbox";
+            inputCheckbox.value = select.value;
+
+            tdCheckbox.appendChild(inputCheckbox);
+            nuevaFila.appendChild(tdCheckbox);
+
+            //Agrego el articulo antes del descuento si es que lo hay
+            const filaDescuentoExistente = tabla.querySelector('.fila-descuento');
+
+                if (filaDescuentoExistente) {
+                    // Insertar antes de la fila descuento
+                    tabla.insertBefore(nuevaFila, filaDescuentoExistente);
+                } else {
+                    // No existe fila descuento, agrego al final
+                    tabla.appendChild(nuevaFila);
+                }
+
+
+            // Agregar la nueva fila a la tabla
+            // tabla.appendChild(nuevaFila);
+
+            // Asignar eventos a la nueva fila
+            asignarEventosFila(nuevaFila);
+
+            // Actualizar el total general
+            actualizarTotalesGenerales();
+
+        }
+
+        // Eliminar los articulos seleccionados
+        document.getElementById('eliminarArticulo').addEventListener('click', () => {
+            // Selecciona todos los checkboxes tildados
+            const checkboxesSeleccioandos = document.querySelectorAll('input[name="articulos_seleccionados[]"]:checked');
+
+            // Recorre cada uno
+            checkboxesSeleccioandos.forEach(checkbox => {
+                // Sube hasta el <tr> más cercano y lo borra
+                const fila = checkbox.closest('tr');
+                    fila.remove();
+            });
+            actualizarTotalesGenerales();
+        });
+
+
+
+        //Funcion para aplicar fila descuento
+        
+        function aplicarDescuentoNuevo() {
+            const tabla = document.querySelector('.invoice-items tbody');
+
+            // Si ya hay fila de descuento, no agregar otra
+            if (tabla.querySelector('.fila-descuento')) return;
+
+            const nuevaFila = document.createElement('tr');
+            nuevaFila.classList.add('fila-descuento');
+
+            // Celda: cantidad (siempre 1, no editable)
+            const tdCantidad = document.createElement('td');
+            const inputCantidad = document.createElement('input');
+            inputCantidad.name = "cantidad";
+            inputCantidad.type = "number";
+            inputCantidad.value = 1;
+            inputCantidad.min= 1;
+            inputCantidad.max=1;
+            inputCantidad.readOnly = true;
+            tdCantidad.appendChild(inputCantidad);
+            nuevaFila.appendChild(tdCantidad);
+
+            // Celda: texto "DESCUENTO"
+            const tdDescuento = document.createElement('td');
+            tdDescuento.textContent = "DESCUENTO";
+            nuevaFila.appendChild(tdDescuento);
+
+            // Celda: % de descuento (select)
+            const tdValorDescuento = document.createElement('td');
+            const selectValorDescuento = document.createElement('select');
+            selectValorDescuento.name = "porcentajeDescuento";
+
+            const defaultOption = document.createElement('option');
+            defaultOption.value = '';
+            defaultOption.textContent = '% de descuento';
+            selectValorDescuento.appendChild(defaultOption);
+
+            [5, 10, 15, 20, 25, 30, 40, 50].forEach(porcentaje => {
+                const option = document.createElement('option');
+                option.value = porcentaje;
+                option.textContent = `${porcentaje}%`;
+                selectValorDescuento.appendChild(option);
+            });
+
+            // Cuando cambie el descuento, se actualiza el total general
+            // selectValorDescuento.addEventListener('change', actualizarTotalesGenerales);
+
+            tdValorDescuento.appendChild(selectValorDescuento);
+            nuevaFila.appendChild(tdValorDescuento);
+
+
+            const tdDescuentoTotal = document.createElement('td')
+            tdDescuentoTotal.textContent="Descuento total:"
+            nuevaFila.appendChild(tdDescuentoTotal); // Precio vacío
+
+            nuevaFila.appendChild(document.createElement('td')); // Total vacío
+
+            //Crear checkbox a la nueva fila
+            // const tdCheckbox = document.createElement('td');
+            // const inputCheckbox = document.createElement('input');
+            // inputCheckbox.name = "articulos_seleccionados[]";
+            // inputCheckbox.type = "checkbox";    
+            // tdCheckbox.appendChild(inputCheckbox);
+            // nuevaFila.appendChild(tdCheckbox);
+            
+            const tdButtonx = document.createElement('td');
+            const buttonx = document.createElement('button');
+            buttonx.className = "btn-x";
+            buttonx.textContent = "x";
+            buttonx.style.border = "none";
+            buttonx.style.background = "transparent";
+            buttonx.style.color = "red";
+            buttonx.style.fontSize = "14px"; 
+            buttonx.style.cursor = "pointer";
+            tdButtonx.appendChild(buttonx);
+            nuevaFila.appendChild(tdButtonx);
+            // PONER X A TODAS LAS FILAS, CON ADVERTENCIA PARA ELIMINAR
+
+            // Agregar la fila al final
+            tabla.appendChild(nuevaFila);
             }
 
 
-        // Agregar la nueva fila a la tabla
-        // tabla.appendChild(nuevaFila);
-
-        // Asignar eventos a la nueva fila
-        asignarEventosFila(nuevaFila);
-
-        // Actualizar el total general
-        actualizarTotalesGenerales();
-
-    }
-
-    // Eliminar los articulos seleccionados
-    document.getElementById('eliminarArticulo').addEventListener('click', () => {
-        // Selecciona todos los checkboxes tildados
-        const checkboxesSeleccioandos = document.querySelectorAll('input[name="articulos_seleccionados[]"]:checked');
-
-        // Recorre cada uno
-        checkboxesSeleccioandos.forEach(checkbox => {
-            // Sube hasta el <tr> más cercano y lo borra
-            const fila = checkbox.closest('tr');
-                fila.remove();
-        });
-        actualizarTotalesGenerales();
-    });
-
-
-
-    //Funcion para aplicar fila descuento
-    
-function aplicarDescuentoNuevo() {
-    const tabla = document.querySelector('.invoice-items tbody');
-
-    // Si ya hay fila de descuento, no agregar otra
-    if (tabla.querySelector('.fila-descuento')) return;
-
-    const nuevaFila = document.createElement('tr');
-    nuevaFila.classList.add('fila-descuento');
-
-    // Celda: cantidad (siempre 1, no editable)
-    const tdCantidad = document.createElement('td');
-    const inputCantidad = document.createElement('input');
-    inputCantidad.name = "cantidad";
-    inputCantidad.type = "number";
-    inputCantidad.value = 1;
-    inputCantidad.min= 1;
-    inputCantidad.max=1;
-    inputCantidad.readOnly = true;
-    tdCantidad.appendChild(inputCantidad);
-    nuevaFila.appendChild(tdCantidad);
-
-    // Celda: texto "DESCUENTO"
-    const tdDescuento = document.createElement('td');
-    tdDescuento.textContent = "DESCUENTO";
-    nuevaFila.appendChild(tdDescuento);
-
-    // Celda: % de descuento (select)
-    const tdValorDescuento = document.createElement('td');
-    const selectValorDescuento = document.createElement('select');
-    selectValorDescuento.name = "porcentajeDescuento";
-
-    const defaultOption = document.createElement('option');
-    defaultOption.value = '';
-    defaultOption.textContent = '% de descuento';
-    selectValorDescuento.appendChild(defaultOption);
-
-    [5, 10, 15, 20, 25, 30, 40, 50].forEach(porcentaje => {
-        const option = document.createElement('option');
-        option.value = porcentaje;
-        option.textContent = `${porcentaje}%`;
-        selectValorDescuento.appendChild(option);
-    });
-
-    // Cuando cambie el descuento, se actualiza el total general
-    // selectValorDescuento.addEventListener('change', actualizarTotalesGenerales);
-
-    tdValorDescuento.appendChild(selectValorDescuento);
-    nuevaFila.appendChild(tdValorDescuento);
-
-
-    const tdDescuentoTotal = document.createElement('td')
-    tdDescuentoTotal.textContent="Descuento total:"
-    nuevaFila.appendChild(tdDescuentoTotal); // Precio vacío
-
-    nuevaFila.appendChild(document.createElement('td')); // Total vacío
-
-    //Crear checkbox a la nueva fila
-    // const tdCheckbox = document.createElement('td');
-    // const inputCheckbox = document.createElement('input');
-    // inputCheckbox.name = "articulos_seleccionados[]";
-    // inputCheckbox.type = "checkbox";    
-    // tdCheckbox.appendChild(inputCheckbox);
-    // nuevaFila.appendChild(tdCheckbox);
-    
-    const tdButtonx = document.createElement('td');
-    const buttonx = document.createElement('button');
-    buttonx.className = "btn-x";
-    buttonx.textContent = "x";
-    buttonx.style.border = "none";
-    buttonx.style.background = "transparent";
-    buttonx.style.color = "red";
-    buttonx.style.fontSize = "14px"; 
-    buttonx.style.cursor = "pointer";
-    tdButtonx.appendChild(buttonx);
-    nuevaFila.appendChild(tdButtonx);
-    // PONER X A TODAS LAS FILAS, CON ADVERTENCIA PARA ELIMINAR
-
-    // Agregar la fila al final
-    tabla.appendChild(nuevaFila);
-}
-
-
-</script>
+    </script>
 
 
 
