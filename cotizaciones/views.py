@@ -37,7 +37,7 @@ class NuevaCotizacion(LoginRequiredMixin, CreateView):
         context = super().get_context_data(**kwargs)
         context['empresas'] = Empresa.objects.all()
         context['clientes'] = Clientes.objects.all()
-        context['articulos'] = Articulo.objects.all()  # Asegúrate de que este modelo exista
+        context['articulos'] = Articulo.objects.all() 
 
         empresa_id = self.request.GET.get('empresa')
         if empresa_id:
