@@ -107,7 +107,7 @@
                 <button id="agregarArticulo" type="button">Agregar artículo</button>
                 <button id="eliminarArticulo" type="button">Eliminar artículo</button>
                 <button id="aplicarDescuento" type="button">Aplicar descuento</button>
-                <button>Sumar costo envío</button>
+                <button id="sumarCostoEnvio" type="button">Costo envio</button>
             </div>
         </section>
         
@@ -123,9 +123,11 @@
         </section>
 
         <section class="totals">
-            <div class="total totalConDescuento">
+            <div class="total totalConDescuento"></div>
+        </section>
 
-            </div>
+        <section class="totals">
+            <div class="costo-envio"></div>
         </section>
         
         <div class="validez-msg">
@@ -133,11 +135,11 @@
         </div>
         
         <div class="botones-cotizacion">
-            <button>Descartar</button>
+            <button type="button" onclick="if(confirm('¿Estás seguro? Se perderá la cotización.')) location.reload();">Descartar</button>
             <button>Descargar PDF</button>
             <button>Imprimir</button>
             <button>Enviar</button>
-            <button>Guardar</button>
+            <button type="submit">Guardar</button>
         </div>
 
     </div>
@@ -196,6 +198,7 @@
                 const total = fila.querySelector('[name="totalArticulo"]');
                 totalGeneral += parsearMoneda(total?.value);
             });
+            
             document.getElementById('totalCot').value = formatearMoneda(totalGeneral);
             actualizarAhorroTotalDescuento();
             totalConDescuento();
@@ -279,10 +282,22 @@
             tdCheckbox.appendChild(inputCheckbox);
             nuevaFila.appendChild(tdCheckbox);
 
-            // Insertar antes de descuento si existe
-            const filaDescuentoExistente = tabla.querySelector('.fila-descuento');
-            if (filaDescuentoExistente) {
-                tabla.insertBefore(nuevaFila, filaDescuentoExistente);
+            // Insertar antes de descuento y el costo de envio si existen
+            const filaDescuento = tabla.querySelector('.fila-descuento');
+            const filaEnvio = tabla.querySelector('.fila-costo-envio');
+
+            let referencia = null;
+
+            if (filaDescuento && filaEnvio) {
+                referencia = filaDescuento.compareDocumentPosition(filaEnvio) & Node.DOCUMENT_POSITION_FOLLOWING
+                    ? filaDescuento
+                    : filaEnvio;
+            } else {
+                referencia = filaDescuento || filaEnvio;
+            }
+
+            if (referencia) {
+                tabla.insertBefore(nuevaFila, referencia);
             } else {
                 tabla.appendChild(nuevaFila);
             }
@@ -344,16 +359,48 @@
 
             // Texto "Ahorro total"
             const tdDescuentoTotal = document.createElement('td');
-            tdDescuentoTotal.textContent = "Ahorro total:";
+            tdDescuentoTotal.textContent = "Ahorro total";
             nuevaFila.appendChild(tdDescuentoTotal);
 
             // Input ahorro total
+            const tdInputAhorroTotal = document.createElement('td');
             const inputAhorroTotal = document.createElement('input');
             inputAhorroTotal.type = 'text';
             inputAhorroTotal.readOnly = true;
             inputAhorroTotal.className = 'form-control';
             inputAhorroTotal.value = '$0.00';
-            nuevaFila.appendChild(inputAhorroTotal);
+            tdInputAhorroTotal.appendChild(inputAhorroTotal);
+            nuevaFila.appendChild(tdInputAhorroTotal);
+
+            // Botón eliminar fila
+            const tdEliminar = document.createElement('td');
+            const btnEliminar = document.createElement('span');
+            btnEliminar.id='btn-eliminar-descuento';
+            btnEliminar.textContent = 'x'; 
+            btnEliminar.style.cursor = 'pointer';
+            btnEliminar.style.color = 'red';   
+
+            // Al eliminar la fila de descuento
+            const filaDescuento = document.querySelector('.fila-descuento');
+                btnEliminar.addEventListener('click', function() {
+                    nuevaFila.remove(); 
+                    const totalConDesc = document.querySelector('.totalConDescuento');
+                    if (totalConDesc) {
+                        totalConDesc.innerHTML = '';
+                    }
+                });
+                                    
+
+            // Me aseguro que el costo de envio siempre quede al final 
+            const filaEnvio = tabla.querySelector('.fila-costo-envio'); 
+            if (filaEnvio) {
+                tabla.insertBefore(nuevaFila, filaEnvio); 
+            } else {
+                tabla.appendChild(nuevaFila); 
+            }
+
+            tdEliminar.appendChild(btnEliminar);
+            nuevaFila.appendChild(tdEliminar);
 
             // Evento para actualizar ahorro y total con descuento
             selectValorDescuento.addEventListener('change', function () {
@@ -361,10 +408,10 @@
                 totalConDescuento();
             });
 
-            tabla.appendChild(nuevaFila);
             actualizarAhorroTotalDescuento();
             totalConDescuento();
         }
+        
 
         function actualizarAhorroTotalDescuento() {
             const filaDescuento = document.querySelector('.fila-descuento');
@@ -380,8 +427,7 @@
         function totalConDescuento() {
             const totalGeneral = parsearMoneda(document.getElementById('totalCot').value);
             const filaDescuento = document.querySelector('.fila-descuento');
-            const totalConDescuentoDiv = document.querySelector('.totalConDescuento');
-            if (!totalConDescuentoDiv) return;
+            const totalConDescuentoDiv = document.querySelector('.totalConDescuento')
 
             totalConDescuentoDiv.innerHTML = '';
 
@@ -397,7 +443,7 @@
 
                     if (!input) {
                         label = document.createElement('label');
-                        label.textContent = 'Total con descuento:';
+                        label.textContent = 'Total con descuento';
                         label.className = 'totalConDescuentoLabel';
                         input = document.createElement('input');
                         input.type = 'text';
@@ -411,6 +457,81 @@
                 }
             }
         }
+
+
+        function costoEnvio() {
+            const tabla = document.querySelector('.invoice-items tbody');
+            if (tabla.querySelector('.fila-costo-envio')) return;
+
+            const nuevaFila = document.createElement('tr');
+            nuevaFila.classList.add('fila-costo-envio');
+
+            // Cantidad (siempre 1, no editable)
+            const tdCantidad = document.createElement('td');
+            const inputCantidad = document.createElement('input');
+            inputCantidad.name = "cantidad";
+            inputCantidad.type = "number";
+            inputCantidad.value = 1;
+            inputCantidad.min = 1;
+            inputCantidad.max = 1;
+            inputCantidad.readOnly = true;
+            tdCantidad.appendChild(inputCantidad);
+            nuevaFila.appendChild(tdCantidad);
+
+            // 
+            const tdEnvio = document.createElement('td');
+            tdEnvio.textContent = "Envio";
+            nuevaFila.appendChild(tdEnvio);
+
+            // Select zona envio
+            const localidadIngresada = prompt('Ingrese la localidad de envío (ej: CABA, GBA CORDON 1, etc.)');
+            if (localidadIngresada === null || localidadIngresada.trim() === '') {
+                alert('Localidad inválida. No se agregará la fila.');
+                return;
+            }
+            const tdLocalidad = document.createElement('td');
+            tdLocalidad.textContent = localidadIngresada.trim();
+            nuevaFila.appendChild(tdLocalidad);
+
+
+            // Input costo envio
+            const tdInputCostoEnvio = document.createElement('td');
+            const inputCostoEnvio = document.createElement('input');
+            inputCostoEnvio.type = 'number';
+            inputCostoEnvio.min = 0;
+            inputCostoEnvio.step = '0.01';
+            inputCostoEnvio.className = 'form-control';
+            inputCostoEnvio.placeholder = 'Costo envío';
+            
+            // Pido el costo con prompt para arrancar (podés sacar el prompt y dejar solo editable)
+            const costoIngresado = prompt('Ingrese el costo de envío (sin $)');
+            if (costoIngresado === null || costoIngresado === '' || isNaN(costoIngresado) || Number(costoIngresado) < 0) {
+                alert('Costo inválido. No se agregará la fila.');
+                return;
+            }
+            inputCostoEnvio.value = Number(costoIngresado).toFixed(2);
+            tdInputCostoEnvio.appendChild(inputCostoEnvio);
+            nuevaFila.appendChild(tdInputCostoEnvio);
+
+
+            
+            const tdEliminar = document.createElement('td');
+            const btnEliminar = document.createElement('span');
+            btnEliminar.textContent = 'x'; 
+            btnEliminar.style.cursor = 'pointer';
+            btnEliminar.style.color = 'red';
+
+
+            // Evento para eliminar la fila
+            btnEliminar.addEventListener('click', function () {
+                nuevaFila.remove();
+            });
+
+            tdEliminar.appendChild(btnEliminar);
+            nuevaFila.appendChild(tdEliminar);
+
+            tabla.appendChild(nuevaFila);
+        }        
 
         // --- Inicialización y eventos ---
         window.onload = function () {
@@ -428,6 +549,7 @@
             document.getElementById('agregarArticulo').addEventListener('click', agregarArticuloNuevo);
             document.getElementById('eliminarArticulo').addEventListener('click', eliminarArticulosSeleccionados);
             document.getElementById('aplicarDescuento').addEventListener('click', aplicarDescuentoNuevo);
+            document.getElementById('sumarCostoEnvio').addEventListener('click', costoEnvio);
 
             document.getElementById('empresa').addEventListener('change', mostrarInfoEmpresa);
             document.getElementById('cliente').addEventListener('change', mostrarInfoCliente);
