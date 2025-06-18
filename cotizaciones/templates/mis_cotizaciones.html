@@ -29,9 +29,7 @@
             <td>
               <input type="checkbox" name="cotizaciones_seleccionadas[]" value="{{ cotizacion.id }}">
             </td>
-            <td>
-              <a href="{% url 'actualizar_cotizacion' cotizacion.id %}" class="btn btn-sm btn-outline-primary">Modificar</a>
-            </td>
+            <td><a href="{% url 'ver_cotizacion' cotizacion.id %}" target="_blank">Ver</a></td>
           </tr>
           {% empty %}
           <tr>

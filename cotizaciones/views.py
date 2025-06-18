@@ -1,14 +1,16 @@
 from django.shortcuts import redirect
-from .models import Cotizaciones
 from facturacionApp.models import Empresa
-from clientes.models import Clientes
+from .models import Clientes, Cotizaciones
 from articulos.models import Articulo
+from facturacionApp.models import Empresa
 from .forms import CotizacionForm
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.views.generic import ListView, CreateView, View
-from django.utils import timezone
+from django.views.generic import ListView, CreateView, View, DetailView
 from django.urls import reverse_lazy
+from django.utils import timezone 
+
+
 
 # Create your views here.
 
@@ -25,6 +27,7 @@ class NuevaCotizacion(LoginRequiredMixin, CreateView):
     success_url = reverse_lazy("mis_cotizaciones")
 
     def form_valid(self, form):
+        form.instance.usuario = self.request.user
         response = super().form_valid(form)
         messages.success(self.request, f'Se creó una nueva cotización con ID {self.object.id}')
         return response
@@ -67,4 +70,30 @@ class EliminarCotizacion(LoginRequiredMixin, View):
                 messages.error(request, 'Debe seleccionar al menos una cotización.')
         return redirect('mis_cotizaciones')
     
+
+class GuardarCotizacion(LoginRequiredMixin, CreateView):
+    model = Cotizaciones
+    form_class = CotizacionForm
+    template_name = 'cotizaciones/crear_cotizacion.html'
+    success_url = reverse_lazy('mis_cotizaciones')
+
+    def form_valid(self, form):
+        form.instance.usuario = self.request.user
+        response = super().form_valid(form)
+        form.save_m2m() 
+        return response
     
+
+class VerCotizacionView(DetailView):
+    model = Cotizaciones
+    template_name = 'nueva_cotizacion.html'
+    context_object_name = 'cotizacion'
+    pk_url_kwarg = 'cotizacion_id'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['articulos'] = self.object.articulos_cotizados.all()
+        context['empresas'] = Empresa.objects.all()
+        context['clientes'] = Clientes.objects.all()
+        context['solo_lectura'] = True
+        return context

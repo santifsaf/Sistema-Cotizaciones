@@ -1,30 +1,47 @@
 {% extends "estructura_base.html" %}
 {% load static %}
 {% block content %}
-    <link href="{% static 'nueva_cotizacion.css' %}" rel="stylesheet"> 
+    <link href="{% static 'nueva_cotizacion.css' %}" rel="stylesheet">
     <div class="container">
         <header>
             <h1>PRESUPUESTO NO VALIDO COMO FACTURA</h1>
         </header>
-        <section class="company-details">
-            <div class="datos-container">
-                <div class="columna">
-                    <label for="fecha">Fecha:</label>
-                    <input type="date" id="fecha" name="fecha" value="{{ fecha_actual }}">
-                </div>
-                
-                <div class="columna">
-                    <label for="condiciones-pago">Condición de pago:</label>
-                    <select id="condiciones-pago">
-                        <option value="Efectivo">Efectivo</option>
-                        <option value="Precio de lista">Precio de lista</option>
-                    </select>
-                </div>
-            </div>
 
-            
-            
-            <form method="GET" action="">
+        {% if form.errors %}
+        <div class="errores-formulario">
+            <ul>
+            {% for field in form %}
+                {% for error in field.errors %}
+                <li>{{ field.label }}: {{ error }}</li>
+                {% endfor %}
+            {% endfor %}
+            {% for error in form.non_field_errors %}
+                <li>{{ error }}</li>
+            {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+    
+
+        {% if solo_lectura %}
+            <fieldset disabled>
+        {% endif %}
+        <form method="post" action="{% url 'nueva_cotizacion' %}">
+            {% csrf_token %}
+            <section class="company-details">
+                <div class="datos-container">
+                    <div class="columna">
+                        <label for="fecha">Fecha:</label>
+                        <input type="date" id="fecha" name="fecha" value="{{ fecha_actual }}">
+                    </div>
+                    <div class="columna">
+                        <label for="condiciones-pago">Condición de pago:</label>
+                        <select id="condiciones-pago" name="condiciones_pago">
+                            <option value="Efectivo">Efectivo</option>
+                            <option value="Precio de lista">Precio de lista</option>
+                        </select>
+                    </div>
+                </div>
                 <div class="datos-container">
                     <!-- Columna izquierda: Empresa -->
                     <div class="columna empresa">
@@ -40,9 +57,8 @@
                                 >{{ empresa.nombre }}</option>
                             {% endfor %}
                         </select>
-                         <div id="empresa-info" class="info-box"></div>
+                        <div id="empresa-info" class="info-box"></div>
                     </div>
-
                     <!-- Columna derecha: Cliente -->
                     <div class="columna cliente">
                         <label for="cliente">Cliente:</label>
@@ -59,89 +75,75 @@
                         <div id="cliente-info" class="info-box"></div>
                     </div>
                 </div>
-            </form>
-            
-            
-        </section>
-        
-        
-        <section class="invoice-items">
-            <table>
-                <thead>
-                    <tr>
-                        <th>Cant.</th>
-                        <th>Nombre</th>
-                        <th>Descripción</th>
-                        <th>Precio unit.</th>
-                        <th>Total</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td><input type="number" name="cantidad" value="1" min=0 max=1000></td>
-                        <td>
-                            <select id="articulo" name="articulo">
-                                <option value="">-- Seleccione un artículo --</option>
-                                {% for articulo in articulos %}
-                                    <option value="{{ articulo.id }}" 
-                                        data-descripcion="{{ articulo.descripcion }}" 
-                                        data-precio="{{ articulo.precio }}">
-                                        {{ articulo.nombre }}
-                                    </option>
-                                {% endfor %}
-                            </select>
-                        </td>
-                        <td><input type="text" name="descripcion" placeholder="Descripción" readonly></td>
-                        <td><input type="text" name="precio" placeholder="$0.00" readonly></td>
-                        <td><input type="text" name="totalArticulo" placeholder="$0.00" readonly></td>
-                    </tr>
-                </tbody>
-
-                
-            </table>
-
-               
-            
-
-            <div class="botones-articulos">
-                <button id="agregarArticulo" type="button">Agregar artículo</button>
-                <button id="eliminarArticulo" type="button">Eliminar artículo</button>
-                <button id="aplicarDescuento" type="button">Aplicar descuento</button>
-                <button id="sumarCostoEnvio" type="button">Costo envio</button>
+            </section>
+            <section class="invoice-items">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Cant.</th>
+                            <th>Nombre</th>
+                            <th>Descripción</th>
+                            <th>Precio unit.</th>
+                            <th>Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><input type="number" name="cantidad" value="1" min=0 max=1000></td>
+                            <td>
+                                <select id="articulo" name="articulos_cotizados">
+                                    <option value="">-- Seleccione un artículo --</option>
+                                    {% for articulo in articulos %}
+                                        <option value="{{ articulo.id }}" 
+                                            data-descripcion="{{ articulo.descripcion }}" 
+                                            data-precio="{{ articulo.precio }}">
+                                            {{ articulo.nombre }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                            </td>
+                            <td><input type="text" name="descripcion" placeholder="Descripción" readonly></td>
+                            <td><input type="text" name="precio" placeholder="$0.00" readonly></td>
+                            <td><input type="text" name="totalArticulo" placeholder="$0.00" readonly></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="botones-articulos">
+                    <button id="agregarArticulo" type="button">Agregar artículo</button>
+                    <button id="eliminarArticulo" type="button">Eliminar artículo</button>
+                    <button id="aplicarDescuento" type="button">Aplicar descuento</button>
+                    <button id="sumarCostoEnvio" type="button">Costo envio</button>
+                </div>
+            </section>
+            <section class="notes">
+                <textarea name="observaciones" placeholder="Observaciones"></textarea>
+            </section>
+            <section class="totals">
+                <div class="total">
+                    <label for="totalCot">Total</label>
+                    <input type="text" id="totalCot" name="total" placeholder="$0.00" readonly>
+                </div>
+            </section>
+            <section class="totals">
+                <div class="total totalConDescuento"></div>
+            </section>
+            <section class="totals">
+                <div class="costo-envio"></div>
+            </section>
+            <div class="validez-msg">
+                La validez de este presupuesto es de 1 día desde su emisión. Consultar nuevamente los precios antes de efectuar la compra.
             </div>
-        </section>
-        
-        <section class="notes">
-            <textarea placeholder="Observaciones"></textarea>
-        </section>
-        
-        <section class="totals">
-            <div class="total">
-                <label for="total">Total</label>
-                <input type="text" id="totalCot" placeholder="$0.00" readonly>
+            <div class="botones-cotizacion">
+                <button type="button" onclick="if(confirm('¿Estás seguro? Se perderá la cotización.')) location.reload();">Descartar</button>
+                <button type="button">Descargar PDF</button>
+                <button type="button" onclick="window.print();">Imprimir</button>
+                <button type="button">Enviar</button>
+                <button type="submit">Guardar</button>
             </div>
-        </section>
-
-        <section class="totals">
-            <div class="total totalConDescuento"></div>
-        </section>
-
-        <section class="totals">
-            <div class="costo-envio"></div>
-        </section>
-        
-        <div class="validez-msg">
-            La validez de este presupuesto es de 1 día desde su emisión. Consultar nuevamente los precios antes de efectuar la compra.
-        </div>
-        
-        <div class="botones-cotizacion">
-            <button type="button" onclick="if(confirm('¿Estás seguro? Se perderá la cotización.')) location.reload();">Descartar</button>
-            <button>Descargar PDF</button>
-            <button>Imprimir</button>
-            <button>Enviar</button>
-            <button type="submit">Guardar</button>
-        </div>
-
+        </form>
+        {% if solo_lectura %}
+             </fieldset>
+        {% endif %}
     </div>
 
     <script>
@@ -162,7 +164,7 @@
                     actualizarTotalesGenerales();
                 });
             }
-            const articuloSelect = fila.querySelector('[name="articulo"]');
+            const articuloSelect = fila.querySelector('[name="articulos_cotizados"]');
             if (articuloSelect) {
                 articuloSelect.addEventListener('change', completarCampos);
             }
@@ -248,7 +250,7 @@
             // Artículo
             const tdSelect = document.createElement('td');
             const select = document.createElement('select');
-            select.name = "articulo";
+            select.name = "articulos_cotizados";
             const defaultOption = document.createElement('option');
             defaultOption.value = '';
             defaultOption.textContent = '-- Seleccione un artículo --';

@@ -1,13 +1,18 @@
 from django.db import models
 from clientes.models import Clientes
 from articulos.models import Articulo
+from django.contrib.auth.models import User
 
 # Create your models here.
 
 class Cotizaciones(models.Model):
-    numero_referencia=models.IntegerField(unique=True, editable=False)
-    cliente=models.ManyToManyField(Clientes)
+    usuario = models.ForeignKey(User, on_delete=models.CASCADE)
+    fecha = models.DateField(null=True, blank=True)
+    condiciones_pago = models.CharField(max_length=50, null=True, blank=True)
+    numero_referencia=models.CharField(unique=True, editable=False, blank=True, max_length=20)
+    cliente=models.ForeignKey(Clientes, on_delete=models.CASCADE)
     articulos_cotizados=models.ManyToManyField(Articulo)
+    observaciones = models.TextField(null=True, blank=True)
     created=models.DateTimeField(auto_now_add=True)
     updated=models.DateTimeField(auto_now=True)
 
