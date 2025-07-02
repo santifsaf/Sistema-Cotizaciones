@@ -1,14 +1,19 @@
-from django.shortcuts import redirect
+from django.shortcuts import redirect, render
 from facturacionApp.models import Empresa
-from .models import Clientes, Cotizaciones
+from .models import Clientes, Cotizaciones, ArticulosCotizado
 from articulos.models import Articulo
 from facturacionApp.models import Empresa
 from .forms import CotizacionForm
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.views.generic import ListView, CreateView, View, DetailView
+from django.views.generic import ListView, CreateView, View
 from django.urls import reverse_lazy
 from django.utils import timezone 
+from decimal import Decimal
+from django.shortcuts import get_object_or_404
+from django.template.loader import render_to_string
+from django.http import HttpResponse
+from weasyprint import HTML
 
 
 
@@ -20,42 +25,63 @@ class MisCotizaciones(LoginRequiredMixin, ListView):
     context_object_name = 'cotizaciones'
 
 
-class NuevaCotizacion(LoginRequiredMixin, CreateView):
-    model = Cotizaciones
-    form_class = CotizacionForm
-    template_name = "nueva_cotizacion.html"
-    success_url = reverse_lazy("mis_cotizaciones")
+from django.views.generic import View
 
-    def form_valid(self, form):
-        form.instance.usuario = self.request.user
-        response = super().form_valid(form)
-        messages.success(self.request, f'Se creó una nueva cotización con ID {self.object.id}')
-        return response
+class NuevaCotizacion(LoginRequiredMixin, View):
+    template_name = 'nueva_cotizacion.html'
+    success_url = reverse_lazy('mis_cotizaciones')
 
-    def form_invalid(self, form):
-        messages.error(self.request, 'No se pudo crear correctamente. Inténtalo nuevamente')
-        return super().form_invalid(form)
+    def get(self, request):
+        form = CotizacionForm()
+        context = {
+            'form': form,
+            'empresas': Empresa.objects.all(),
+            'clientes': Clientes.objects.all(),
+            'articulos_disponibles': Articulo.objects.all(), 
+            'fecha_actual': timezone.now().strftime('%Y-%m-%d'),
+            'solo_lectura': False,
+        }
+        return render(request, self.template_name, context)
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['empresas'] = Empresa.objects.all()
-        context['clientes'] = Clientes.objects.all()
-        context['articulos'] = Articulo.objects.all() 
+    def post(self, request):
+        cotizacion = Cotizaciones(
+            usuario=request.user,
+            fecha=request.POST.get('fecha'),
+            condiciones_pago=request.POST.get('condiciones_pago'),
+            empresa_id=request.POST.get('empresa'),
+            cliente_id=request.POST.get('cliente'),
+            observaciones=request.POST.get('observaciones', ''),
+            descuento=Decimal(request.POST.get('descuento') or '0'),
+            costo_envio=Decimal(request.POST.get('costo_envio') or '0')
+        )
+        cotizacion.save()  # Guardar para tener ID y poder agregar items
 
-        empresa_id = self.request.GET.get('empresa')
-        if empresa_id:
-            context['empresa_seleccionada'] = Empresa.objects.filter(id=empresa_id).first()
-        else:
-            context['empresa_seleccionada'] = None
+        cantidades = request.POST.getlist('cantidad')
+        articulos_ids = request.POST.getlist('articulos_cotizados')
 
-        cliente_id = self.request.GET.get('cliente')
-        if cliente_id:
-            context['cliente_seleccionado'] = Clientes.objects.filter(id=cliente_id).first()
-        else:
-            context['cliente_seleccionado'] = None
+        for i in range(len(articulos_ids)):
+            art_id = articulos_ids[i].strip()
+            if not art_id:
+                continue
+            try:
+                cantidad_val = int(cantidades[i])
+                if cantidad_val <= 0:
+                    continue
+            except (IndexError, ValueError):
+                continue
 
-        context['fecha_actual'] = timezone.now().strftime('%Y-%m-%d')
-        return context
+            ArticulosCotizado.objects.create(
+                cotizacion=cotizacion,
+                articulo_id=art_id,
+                cantidad=cantidad_val,
+            )
+
+        cotizacion.total, monto_descuento, cotizacion.total_con_descuento = cotizacion.calcular_totales()
+        cotizacion.save()
+
+        messages.success(request, f'Se creó una nueva cotización con ID {cotizacion.id}')
+        return redirect(self.success_url)
+
         
 
 
@@ -83,17 +109,30 @@ class GuardarCotizacion(LoginRequiredMixin, CreateView):
         form.save_m2m() 
         return response
     
+def generar_pdf(request, cotizacion_id):
+    cotizacion = get_object_or_404(Cotizaciones, id=cotizacion_id)
+    articulos = cotizacion.items.all()  
 
-class VerCotizacionView(DetailView):
-    model = Cotizaciones
-    template_name = 'nueva_cotizacion.html'
-    context_object_name = 'cotizacion'
-    pk_url_kwarg = 'cotizacion_id'
+    context = {
+        "cotizacion": cotizacion,
+        "articulos": articulos,
+        "form_data": {
+            "fecha": cotizacion.fecha,
+            "numero_referencia": cotizacion.numero_referencia,
+            "condiciones_pago": cotizacion.condiciones_pago,
+            "empresa": cotizacion.empresa.id,
+            "cliente": cotizacion.cliente.id,
+            "descuento": cotizacion.descuento,
+            "observaciones": cotizacion.observaciones or '',
+        },
+        "empresas": [cotizacion.empresa],
+        "clientes": [cotizacion.cliente],
+    }
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['articulos'] = self.object.articulos_cotizados.all()
-        context['empresas'] = Empresa.objects.all()
-        context['clientes'] = Clientes.objects.all()
-        context['solo_lectura'] = True
-        return context
+    html_string = render_to_string("cotizacion_pdf.html", context)
+    html = HTML(string=html_string, base_url=request.build_absolute_uri())
+    pdf = html.write_pdf()
+
+    response = HttpResponse(pdf, content_type='application/pdf')
+    response['Content-Disposition'] = f'filename="cotizacion_{cotizacion.id}.pdf"'
+    return response

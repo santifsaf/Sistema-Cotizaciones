@@ -21,18 +21,14 @@
             </ul>
         </div>
         {% endif %}
-    
 
-        {% if solo_lectura %}
-            <fieldset disabled>
-        {% endif %}
         <form method="post" action="{% url 'nueva_cotizacion' %}">
             {% csrf_token %}
             <section class="company-details">
                 <div class="datos-container">
                     <div class="columna">
                         <label for="fecha">Fecha:</label>
-                        <input type="date" id="fecha" name="fecha" value="{{ fecha_actual }}">
+                            <input type="date" id="fecha" name="fecha" value="{{ fecha_actual }}">
                     </div>
                     <div class="columna">
                         <label for="condiciones-pago">Condición de pago:</label>
@@ -46,18 +42,21 @@
                     <!-- Columna izquierda: Empresa -->
                     <div class="columna empresa">
                         <label for="empresa">Empresa:</label>
-                        <select id="empresa" name="empresa">
-                            <option value="">--</option>
-                            {% for empresa in empresas %}
-                                <option 
-                                    value="{{ empresa.id }}"
-                                    data-cuit="{{ empresa.cuit }}"
-                                    data-telefono="{{ empresa.telefono }}"
-                                    data-mail-empresa="{{ empresa.mail }}"
-                                >{{ empresa.nombre }}</option>
-                            {% endfor %}
-                        </select>
-                        <div id="empresa-info" class="info-box"></div>
+                            <select id="empresa" name="empresa">
+                                <option value="">--</option>
+                                {% for empresa in empresas %}
+                                    <option 
+                                        value="{{ empresa.id }}"
+                                        data-cuit="{{ empresa.cuit }}"
+                                        data-telefono="{{ empresa.telefono }}"
+                                        data-mail-empresa="{{ empresa.mail }}"
+                                        {% if empresa.id == form_data.empresa %}selected{% endif %}
+                                    >
+                                        {{ empresa.nombre }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                            <div id="empresa-info" class="info-box"></div>
                     </div>
                     <!-- Columna derecha: Cliente -->
                     <div class="columna cliente">
@@ -69,12 +68,13 @@
                                     value="{{ cliente.id }}"
                                     data-empresa="{{ cliente.nombre_empresa }}"
                                     data-mail-cliente="{{ cliente.mail }}"
-                                >{{ cliente.nombre }}</option>
+                                    {% if cliente.id == form_data.cliente %}selected{% endif %}
+                                >
+                                    {{ cliente.nombre }}
+                                </option>
                             {% endfor %}
                         </select>
-                        <div id="cliente-info" class="info-box"></div>
                     </div>
-                </div>
             </section>
             <section class="invoice-items">
                 <table>
@@ -89,11 +89,11 @@
                     </thead>
                     <tbody>
                         <tr>
-                            <td><input type="number" name="cantidad" value="1" min=0 max=1000></td>
+                            <td><input type="number" name="cantidad" value="1" min="1" max="1000"></td>
                             <td>
                                 <select id="articulo" name="articulos_cotizados">
                                     <option value="">-- Seleccione un artículo --</option>
-                                    {% for articulo in articulos %}
+                                    {% for articulo in articulos_disponibles %}
                                         <option value="{{ articulo.id }}" 
                                             data-descripcion="{{ articulo.descripcion }}" 
                                             data-precio="{{ articulo.precio }}">
@@ -107,43 +107,64 @@
                             <td><input type="text" name="totalArticulo" placeholder="$0.00" readonly></td>
                         </tr>
                     </tbody>
+
                 </table>
-                <div class="botones-articulos">
-                    <button id="agregarArticulo" type="button">Agregar artículo</button>
-                    <button id="eliminarArticulo" type="button">Eliminar artículo</button>
-                    <button id="aplicarDescuento" type="button">Aplicar descuento</button>
-                    <button id="sumarCostoEnvio" type="button">Costo envio</button>
-                </div>
+                        <div class="botones-articulos">
+                            <button id="agregarArticulo" type="button">Agregar</button>
+                            <button id="eliminarArticulo" type="button">Eliminar</button>
+                            <button id="aplicarDescuento" type="button">Descuento</button>
+                            <button id="sumarCostoEnvio" type="button">Envio</button>
+                        </div>
             </section>
             <section class="notes">
                 <textarea name="observaciones" placeholder="Observaciones"></textarea>
             </section>
             <section class="totals">
-                <div class="total">
-                    <label for="totalCot">Total</label>
-                    <input type="text" id="totalCot" name="total" placeholder="$0.00" readonly>
+                    <div class="total">
+                        <label for="totalCot">Total</label>
+                            <input type="text" id="totalCot" name="total" placeholder="$0.00" value="{{ cotizacion.total }}" readonly>
+                    </div>
+                </section>
+
+            <section class="totals">
+                
+                <div class="descuento-input">
+                        <label for="descuento">Descuento (%):</label>
+                        <input
+                            type="number"
+                            name="descuento"
+                            step="0.01"
+                            min="0"
+                            max="100"
+                            value="{{ form_data.descuento|default_if_none:'0' }}"
+                            class="form-control"
+                        />
                 </div>
             </section>
-            <section class="totals">
-                <div class="total totalConDescuento"></div>
-            </section>
-            <section class="totals">
-                <div class="costo-envio"></div>
+
+            <!-- En la sección de botones -->
             </section>
             <div class="validez-msg">
                 La validez de este presupuesto es de 1 día desde su emisión. Consultar nuevamente los precios antes de efectuar la compra.
             </div>
-            <div class="botones-cotizacion">
-                <button type="button" onclick="if(confirm('¿Estás seguro? Se perderá la cotización.')) location.reload();">Descartar</button>
-                <button type="button">Descargar PDF</button>
-                <button type="button" onclick="window.print();">Imprimir</button>
-                <button type="button">Enviar</button>
-                <button type="submit">Guardar</button>
-            </div>
+                <div class="botones-cotizacion">
+                    <button type="button" onclick="if(confirm('¿Estás seguro? Se perderá la cotización.')) location.reload();">Descartar</button>
+                    <button type="button" onclick="window.print();">Imprimir</button>
+                    <button type="button">Enviar</button>
+                    <button type="submit">Guardar</button>
+                </div>
+
+            <div style="border: 1px solid red; padding: 10px;">
+                <p>DEBUG:</p>
+                <p>ID Cotización: {{ cotizacion.id }}</p>
+                <p>Total base: {{ total_base }}</p>
+                <p>Descuento (desde cotizacion.descuento): {{ cotizacion.descuento }}</p>
+                <p>Descuento_pct: {{ descuento_pct }}</p>
+                <p>Monto descuento: {{ monto_descuento }}</p>
+                <p>Costo envío: {{ costo_envio }}</p>
+                <p>Total con descuento: {{ total_con_descuento }}</p>
+        </div>
         </form>
-        {% if solo_lectura %}
-             </fieldset>
-        {% endif %}
     </div>
 
     <script>
@@ -252,7 +273,6 @@
             const select = document.createElement('select');
             select.name = "articulos_cotizados";
             const defaultOption = document.createElement('option');
-            defaultOption.value = '';
             defaultOption.textContent = '-- Seleccione un artículo --';
             select.appendChild(defaultOption);
             const existingSelect = document.getElementById('articulo');
