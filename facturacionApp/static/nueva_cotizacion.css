@@ -137,31 +137,38 @@ button:disabled {
 }
 
 /* Totales */
-.totals {
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
-    margin-top: 20px;
-}
 
-.totals .total {
+.totalCostoEnvio {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 5px;
+}
+.totals .total-con-descuento {
     display: flex;
     align-items: center;
     gap: 10px;
 }
 
-.totals label {
+.totals .totalConDescuento {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.totals .totalConDescuentoLabel {
     font-weight: bold;
     color: #333;
 }
 
-.totals input {
+.totals .totalConDescuento input {
     padding: 5px;
     border: 1px solid #ccc;
     border-radius: 5px;
     font-size: 1em;
     text-align: right;
     background-color: #f9f9f9;
+    width: 150px; 
 }
 
 

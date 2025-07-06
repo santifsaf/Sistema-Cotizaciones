@@ -37,52 +37,59 @@ class NuevaCotizacion(LoginRequiredMixin, View):
             'form': form,
             'empresas': Empresa.objects.all(),
             'clientes': Clientes.objects.all(),
-            'articulos_disponibles': Articulo.objects.all(), 
+            'articulos_disponibles': Articulo.objects.all(),
             'fecha_actual': timezone.now().strftime('%Y-%m-%d'),
-            'solo_lectura': False,
         }
         return render(request, self.template_name, context)
 
     def post(self, request):
-        cotizacion = Cotizaciones(
-            usuario=request.user,
-            fecha=request.POST.get('fecha'),
-            condiciones_pago=request.POST.get('condiciones_pago'),
-            empresa_id=request.POST.get('empresa'),
-            cliente_id=request.POST.get('cliente'),
-            observaciones=request.POST.get('observaciones', ''),
-            descuento=Decimal(request.POST.get('descuento') or '0'),
-            costo_envio=Decimal(request.POST.get('costo_envio') or '0')
-        )
-        cotizacion.save()  # Guardar para tener ID y poder agregar items
+        form = CotizacionForm(request.POST)
+        if form.is_valid():
+            print("DEBUG descuento en form.cleaned_data:", form.cleaned_data.get('descuento'))
+            cotizacion = form.save(commit=False)
+            cotizacion.usuario = request.user
+            cotizacion.save()  # Guardamos para tener ID y FK
 
-        cantidades = request.POST.getlist('cantidad')
-        articulos_ids = request.POST.getlist('articulos_cotizados')
+            cantidades = request.POST.getlist('cantidad')
+            articulos_ids = request.POST.getlist('articulos_cotizados')
 
-        for i in range(len(articulos_ids)):
-            art_id = articulos_ids[i].strip()
-            if not art_id:
-                continue
-            try:
-                cantidad_val = int(cantidades[i])
-                if cantidad_val <= 0:
+            for i in range(len(articulos_ids)):
+                art_id = articulos_ids[i].strip()
+                if not art_id:
                     continue
-            except (IndexError, ValueError):
-                continue
+                try:
+                    cantidad_val = int(cantidades[i])
+                    if cantidad_val <= 0:
+                        continue
+                except (IndexError, ValueError):
+                    continue
 
-            ArticulosCotizado.objects.create(
-                cotizacion=cotizacion,
-                articulo_id=art_id,
-                cantidad=cantidad_val,
-            )
+                ArticulosCotizado.objects.create(
+                    cotizacion=cotizacion,
+                    articulo_id=art_id,
+                    cantidad=cantidad_val,
+                )
 
-        cotizacion.total, monto_descuento, cotizacion.total_con_descuento = cotizacion.calcular_totales()
-        cotizacion.save()
+            # Recalcular totales y actualizar sólo total y total_con_descuento
+            total, _, total_con_descuento = cotizacion.calcular_totales()
+            cotizacion.total = total
+            cotizacion.total_con_descuento = total_con_descuento or Decimal('0.00')
 
-        messages.success(request, f'Se creó una nueva cotización con ID {cotizacion.id}')
-        return redirect(self.success_url)
+            cotizacion.save()
 
-        
+            messages.success(request, f'Se creó una nueva cotización con ID {cotizacion.id}')
+            return redirect(self.success_url)
+        else:
+            context = {
+                'form': form,
+                'empresas': Empresa.objects.all(),
+                'clientes': Clientes.objects.all(),
+                'articulos_disponibles': Articulo.objects.all(),
+                'fecha_actual': timezone.now().strftime('%Y-%m-%d'),
+                
+            }
+            print("Errores del formulario:", form.errors)
+            return render(request, self.template_name, context)
 
 
 class EliminarCotizacion(LoginRequiredMixin, View):
@@ -96,37 +103,26 @@ class EliminarCotizacion(LoginRequiredMixin, View):
                 messages.error(request, 'Debe seleccionar al menos una cotización.')
         return redirect('mis_cotizaciones')
     
-
-class GuardarCotizacion(LoginRequiredMixin, CreateView):
-    model = Cotizaciones
-    form_class = CotizacionForm
-    template_name = 'cotizaciones/crear_cotizacion.html'
-    success_url = reverse_lazy('mis_cotizaciones')
-
-    def form_valid(self, form):
-        form.instance.usuario = self.request.user
-        response = super().form_valid(form)
-        form.save_m2m() 
-        return response
-    
 def generar_pdf(request, cotizacion_id):
     cotizacion = get_object_or_404(Cotizaciones, id=cotizacion_id)
-    articulos = cotizacion.items.all()  
+    articulos = cotizacion.items.all()
+
+    total, descuento, total_con_descuento = cotizacion.calcular_totales()
 
     context = {
         "cotizacion": cotizacion,
         "articulos": articulos,
-        "form_data": {
-            "fecha": cotizacion.fecha,
-            "numero_referencia": cotizacion.numero_referencia,
-            "condiciones_pago": cotizacion.condiciones_pago,
-            "empresa": cotizacion.empresa.id,
-            "cliente": cotizacion.cliente.id,
-            "descuento": cotizacion.descuento,
-            "observaciones": cotizacion.observaciones or '',
-        },
-        "empresas": [cotizacion.empresa],
-        "clientes": [cotizacion.cliente],
+        "total": total,
+        "total_con_descuento": total_con_descuento,
+        "descuento": float(descuento) if descuento else 0,
+        "costo_envio": cotizacion.costo_envio or Decimal('0.00'),
+        # Si usás otros campos, agregalos acá directo del modelo
+        "observaciones": cotizacion.observaciones or '',
+        "fecha": cotizacion.fecha,
+        "numero_referencia": cotizacion.numero_referencia,
+        "condiciones_pago": cotizacion.condiciones_pago,
+        "empresa": cotizacion.empresa,
+        "cliente": cotizacion.cliente,
     }
 
     html_string = render_to_string("cotizacion_pdf.html", context)

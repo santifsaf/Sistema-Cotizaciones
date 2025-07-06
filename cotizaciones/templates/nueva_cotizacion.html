@@ -7,22 +7,21 @@
             <h1>PRESUPUESTO NO VALIDO COMO FACTURA</h1>
         </header>
 
-        {% if form.errors %}
-        <div class="errores-formulario">
-            <ul>
-            {% for field in form %}
-                {% for error in field.errors %}
-                <li>{{ field.label }}: {{ error }}</li>
-                {% endfor %}
-            {% endfor %}
-            {% for error in form.non_field_errors %}
-                <li>{{ error }}</li>
-            {% endfor %}
-            </ul>
-        </div>
-        {% endif %}
-
         <form method="post" action="{% url 'nueva_cotizacion' %}">
+            {% if form.errors %}
+                <div class="alert alert-danger">
+                    <ul>
+                    {% for field in form %}
+                        {% for error in field.errors %}
+                        <li><strong>{{ field.label }}:</strong> {{ error }}</li>
+                        {% endfor %}
+                    {% endfor %}
+                    {% for error in form.non_field_errors %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                    </ul>
+                </div>
+            {% endif %}
             {% csrf_token %}
             <section class="company-details">
                 <div class="datos-container">
@@ -59,22 +58,24 @@
                             <div id="empresa-info" class="info-box"></div>
                     </div>
                     <!-- Columna derecha: Cliente -->
-                    <div class="columna cliente">
-                        <label for="cliente">Cliente:</label>
-                        <select id="cliente" name="cliente">
-                            <option value="">--</option>
-                            {% for cliente in clientes %}
-                                <option 
-                                    value="{{ cliente.id }}"
-                                    data-empresa="{{ cliente.nombre_empresa }}"
-                                    data-mail-cliente="{{ cliente.mail }}"
-                                    {% if cliente.id == form_data.cliente %}selected{% endif %}
-                                >
-                                    {{ cliente.nombre }}
-                                </option>
-                            {% endfor %}
-                        </select>
-                    </div>
+            <div class="columna cliente">
+                <label for="cliente">Cliente:</label>
+                <select id="cliente" name="cliente">
+                    <option value="">--</option>
+                    {% for cliente in clientes %}
+                        <option 
+                            value="{{ cliente.id }}"
+                            data-empresa="{{ cliente.nombre_empresa }}"
+                            data-mail-cliente="{{ cliente.mail }}"
+                            {% if cliente.id == form_data.cliente %}selected{% endif %}
+                        >
+                            {{ cliente.nombre }}
+                        </option>
+                    {% endfor %}
+                </select>
+
+                <div id="cliente-info"></div>
+            </div>
             </section>
             <section class="invoice-items">
                 <table>
@@ -118,52 +119,37 @@
             </section>
             <section class="notes">
                 <textarea name="observaciones" placeholder="Observaciones"></textarea>
+
             </section>
-            <section class="totals">
-                    <div class="total">
-                        <label for="totalCot">Total</label>
-                            <input type="text" id="totalCot" name="total" placeholder="$0.00" value="{{ cotizacion.total }}" readonly>
-                    </div>
-                </section>
+
+
 
             <section class="totals">
+                <!-- Total General -->
+                <div class="form-group">
+                    <label>Total</label>
+                    <input type="text" id="total" name="total" class="form-control" readonly>   
+                </div>
                 
-                <div class="descuento-input">
-                        <label for="descuento">Descuento (%):</label>
-                        <input
-                            type="number"
-                            name="descuento"
-                            step="0.01"
-                            min="0"
-                            max="100"
-                            value="{{ form_data.descuento|default_if_none:'0' }}"
-                            class="form-control"
-                        />
+                <!-- Total con Descuento -->
+                <div>
+                    <div class="totalConDescuento form-group"></div>
+                </div>
+
+                <div class="form-group totalCostoEnvio" style="display: none;">
+                    <label class="totalEnvioLabel">Envío</label>
+                    <input type="text" name="costo_envio" class="form-control" readonly>
                 </div>
             </section>
 
-            <!-- En la sección de botones -->
-            </section>
             <div class="validez-msg">
                 La validez de este presupuesto es de 1 día desde su emisión. Consultar nuevamente los precios antes de efectuar la compra.
             </div>
                 <div class="botones-cotizacion">
                     <button type="button" onclick="if(confirm('¿Estás seguro? Se perderá la cotización.')) location.reload();">Descartar</button>
-                    <button type="button" onclick="window.print();">Imprimir</button>
                     <button type="button">Enviar</button>
                     <button type="submit">Guardar</button>
                 </div>
-
-            <div style="border: 1px solid red; padding: 10px;">
-                <p>DEBUG:</p>
-                <p>ID Cotización: {{ cotizacion.id }}</p>
-                <p>Total base: {{ total_base }}</p>
-                <p>Descuento (desde cotizacion.descuento): {{ cotizacion.descuento }}</p>
-                <p>Descuento_pct: {{ descuento_pct }}</p>
-                <p>Monto descuento: {{ monto_descuento }}</p>
-                <p>Costo envío: {{ costo_envio }}</p>
-                <p>Total con descuento: {{ total_con_descuento }}</p>
-        </div>
         </form>
     </div>
 
@@ -222,9 +208,10 @@
                 totalGeneral += parsearMoneda(total?.value);
             });
             
-            document.getElementById('totalCot').value = formatearMoneda(totalGeneral);
+            document.getElementById('total').value = formatearMoneda(totalGeneral);
             actualizarAhorroTotalDescuento();
             totalConDescuento();
+            actualizarTotalEnvio();
         }
 
         // --- Autocompletado de campos ---
@@ -365,7 +352,7 @@
             // Select % descuento
             const tdValorDescuento = document.createElement('td');
             const selectValorDescuento = document.createElement('select');
-            selectValorDescuento.name = "porcentajeDescuento";
+            selectValorDescuento.name = "descuento";
             const defaultOption = document.createElement('option');
             defaultOption.value = '';
             defaultOption.textContent = '% de descuento';
@@ -438,23 +425,23 @@
         function actualizarAhorroTotalDescuento() {
             const filaDescuento = document.querySelector('.fila-descuento');
             if (!filaDescuento) return;
-            const selectValorDescuento = filaDescuento.querySelector('select[name="porcentajeDescuento"]');
+            const selectValorDescuento = filaDescuento.querySelector('select[name="descuento"]');
             const inputAhorroTotal = filaDescuento.querySelector('input.form-control');
             if (!selectValorDescuento || !inputAhorroTotal) return;
             const porcentaje = parseFloat(selectValorDescuento.value) || 0;
-            const totalGeneral = parsearMoneda(document.getElementById('totalCot').value);
+            const totalGeneral = parsearMoneda(document.getElementById('total').value);
             inputAhorroTotal.value = porcentaje ? formatearMoneda(totalGeneral * (porcentaje / 100)) : '$0.00';
         }
 
         function totalConDescuento() {
-            const totalGeneral = parsearMoneda(document.getElementById('totalCot').value);
+            const totalGeneral = parsearMoneda(document.getElementById('total').value);
             const filaDescuento = document.querySelector('.fila-descuento');
             const totalConDescuentoDiv = document.querySelector('.totalConDescuento')
 
             totalConDescuentoDiv.innerHTML = '';
 
             if (filaDescuento) {
-                const selectValorDescuento = filaDescuento.querySelector('select[name="porcentajeDescuento"]');
+                const selectValorDescuento = filaDescuento.querySelector('select[name="descuento"]');
                 const porcentaje = parseFloat(selectValorDescuento.value) || 0;
                 if (porcentaje > 0) {
                     const descuento = totalGeneral * (porcentaje / 100);
@@ -522,7 +509,7 @@
             inputCostoEnvio.type = 'number';
             inputCostoEnvio.min = 0;
             inputCostoEnvio.step = '0.01';
-            inputCostoEnvio.className = 'form-control';
+            inputCostoEnvio.className = 'form-control input-costo-envio';
             inputCostoEnvio.placeholder = 'Costo envío';
             
             // Pido el costo con prompt para arrancar (podés sacar el prompt y dejar solo editable)
@@ -547,13 +534,37 @@
             // Evento para eliminar la fila
             btnEliminar.addEventListener('click', function () {
                 nuevaFila.remove();
+                actualizarTotalEnvio();
             });
 
             tdEliminar.appendChild(btnEliminar);
             nuevaFila.appendChild(tdEliminar);
 
             tabla.appendChild(nuevaFila);
+            actualizarTotalEnvio();
         }        
+
+        function actualizarTotalEnvio() {
+            const filaEnvio = document.querySelector('.fila-costo-envio');
+            const bloqueEnvio = document.querySelector('.totalCostoEnvio');
+            const inputEnvio = bloqueEnvio?.querySelector('input[name="costo_envio"]');
+
+            if (!filaEnvio || !inputEnvio) {
+                if (bloqueEnvio) bloqueEnvio.style.display = 'none';
+                return;
+            }
+
+            const inputCostoEnvio = filaEnvio.querySelector('input.input-costo-envio');
+            const costo = parseFloat(inputCostoEnvio?.value || 0);
+
+            if (!isNaN(costo) && costo > 0) {
+                inputEnvio.value = formatearMoneda(costo);
+                bloqueEnvio.style.display = 'flex';
+            } else {
+                inputEnvio.value = '$0.00';
+                bloqueEnvio.style.display = 'none';
+            }
+        }
 
         // --- Inicialización y eventos ---
         window.onload = function () {
@@ -604,6 +615,7 @@
                 infoDiv.innerHTML = '';
             }
         }
+
 
     </script>
 
