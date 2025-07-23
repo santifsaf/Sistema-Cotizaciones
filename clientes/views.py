@@ -5,6 +5,7 @@ from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import ListView, CreateView, UpdateView, View
 from django.urls import reverse_lazy
+from django.db.models import Q
 
 
 
@@ -14,7 +15,14 @@ class MisClientes(LoginRequiredMixin, ListView):
     context_object_name = "clientes"
 
     def get_queryset(self):
-        return Clientes.objects.filter(usuario_log=self.request.user)
+        qs = Clientes.objects.filter(usuario_log=self.request.user)
+        search = self.request.GET.get('search', '').strip()
+        if search:
+            qs = qs.filter(
+                Q(nombre__icontains=search) |
+                Q(nombre_empresa__icontains=search)
+            )
+        return qs
     
  
 
@@ -29,18 +37,15 @@ class NuevoCliente(LoginRequiredMixin, CreateView):
         return super().form_valid(form)
 
 class EliminarCliente(LoginRequiredMixin, View):
+    """Permite eliminar uno o varios clientes seleccionados por el usuario."""
     def post(self, request):
-        if request.method == 'POST' and request.POST.get('accion')=='eliminar':
-            clientes_a_eliminar=request.POST.getlist('clientes_seleccionados[]')
-            if clientes_a_eliminar:
-                Clientes.objects.filter(id__in=clientes_a_eliminar, usuario_log=request.user).delete()
-                messages.success(request, 'Se eliminaron los clientes seleccionados')
-            else:
-                messages.error(request, 'Debe seleccionar al menos un cliente')
-            
-            return redirect('mis_clientes')
+        clientes_a_eliminar = request.POST.getlist('clientes_seleccionados[]')
+        if clientes_a_eliminar:
+            Clientes.objects.filter(id__in=clientes_a_eliminar, usuario_log=request.user).delete()
+            messages.success(request, 'Se eliminaron los clientes seleccionados')
         else:
-            return redirect('mis_clientes')
+            messages.error(request, 'Debe seleccionar al menos un cliente')
+        return redirect('mis_clientes')
 
 
 class ActualizarCliente(LoginRequiredMixin, UpdateView):

@@ -1,22 +1,22 @@
+<!--
+Home principal del sistema de cotizaciones.
+Incluye sección de bienvenida y acceso rápido a la creación de cotizaciones.
+-->
 {% extends "estructura_base.html" %}
 {% load static %}
-{% block content %} 
+{% block content %}
 
-        <section class="hero-section">
-            <div class="container">
-                <div class="row">
-                        <div class="hero-home">
-                            <h1>Bienvenido a tu sistema de cotizaciones</h1>
-                            <p>Gestiona tus ventas de forma simple y profesional.</p>
-                            <a href="{% url 'nueva_cotizacion' %}" class="btn btn-primary btn-lg mt-3">Crear nueva cotización</a>
-                        </div>
-                    <div class="col-lg-6">
-                        <!-- Aquí podrían ir imágenes o contenido adicional -->
-                    </div>
-                </div>
-            </div>
-        </section>
-    </header>
-
+<!-- Hero Section -->
+<section class="hero-section py-5 bg-light">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-lg-8 text-center p-5 bg-white rounded-4 shadow">
+        <h1 class="mb-3 text-primary">Bienvenido a tu sistema de cotizaciones</h1>
+        <p class="mb-4 text-secondary fs-5">Gestiona tus ventas de forma simple y profesional.</p>
+        <a href="{% url 'nueva_cotizacion' %}" class="btn btn-primary btn-lg">Crear nueva cotización</a>
+      </div>
+    </div>
+  </div>
+</section>
 
 {% endblock %}

@@ -513,18 +513,17 @@
                 <span>{{ descuento }}%</span>
             </div>
             {% endif %}
-            
-            {% if costo_envio and costo_envio > 0 %}
-            <div class="totals-row">
-                <span class="totals-label">Costo envío (No incluido):</span>
-                <span>${{ costo_envio }}</span>
-            </div>
-            {% endif %}
 
             <div class="totals-row total-main">
                 <span class="totals-label">Total:</span>
                 <span>${{ total_con_descuento|floatformat:2 }}</span>
             </div>
+            {% if costo_envio and costo_envio > 0 %}
+                <div class="totals-row">
+                    <span class="totals-label">Costo envío:</span>
+                    <span>${{ costo_envio }}</span>
+                </div>
+            {% endif %}
         </div>
 
         <!-- Observaciones -->

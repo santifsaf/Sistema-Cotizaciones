@@ -1,82 +1,98 @@
+<!--
+Template: nueva_cotizacion.html
+Formulario para crear una nueva cotización.
+Incluye selección de empresa, cliente, artículos, descuentos y envío.
+Usa estilos propios en nueva_cotizacion.css y Bootstrap para responsividad.
+-->
 {% extends "estructura_base.html" %}
 {% load static %}
 {% block content %}
-    <link href="{% static 'nueva_cotizacion.css' %}" rel="stylesheet">
-    <div class="container">
-        <header>
-            <h1>PRESUPUESTO NO VALIDO COMO FACTURA</h1>
-        </header>
+    <link href="{% static 'nueva_cotizacion.css' %}" rel="stylesheet"> 
 
-        <form method="post" action="{% url 'nueva_cotizacion' %}">
-            {% if form.errors %}
-                <div class="alert alert-danger">
-                    <ul>
-                    {% for field in form %}
-                        {% for error in field.errors %}
-                        <li><strong>{{ field.label }}:</strong> {{ error }}</li>
-                        {% endfor %}
-                    {% endfor %}
-                    {% for error in form.non_field_errors %}
-                        <li>{{ error }}</li>
-                    {% endfor %}
-                    </ul>
-                </div>
-            {% endif %}
-            {% csrf_token %}
-            <section class="company-details">
-                <div class="datos-container">
-                    <div class="columna">
-                        <label for="fecha">Fecha:</label>
-                            <input type="date" id="fecha" name="fecha" value="{{ fecha_actual }}">
-                    </div>
-                    <div class="columna">
-                        <label for="condiciones-pago">Condición de pago:</label>
-                        <select id="condiciones-pago" name="condiciones_pago">
-                            <option value="Efectivo">Efectivo</option>
-                            <option value="Precio de lista">Precio de lista</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="datos-container">
-                    <!-- Columna izquierda: Empresa -->
-                    <div class="columna empresa">
-                        <label for="empresa">Empresa:</label>
-                            <select id="empresa" name="empresa">
-                                <option value="">--</option>
-                                {% for empresa in empresas %}
-                                    <option 
-                                        value="{{ empresa.id }}"
-                                        data-cuit="{{ empresa.cuit }}"
-                                        data-telefono="{{ empresa.telefono }}"
-                                        data-mail-empresa="{{ empresa.mail }}"
-                                        {% if empresa.id == form_data.empresa %}selected{% endif %}
-                                    >
-                                        {{ empresa.nombre }}
-                                    </option>
-                                {% endfor %}
-                            </select>
-                            <div id="empresa-info" class="info-box"></div>
-                    </div>
-                    <!-- Columna derecha: Cliente -->
-            <div class="columna cliente">
-                <label for="cliente">Cliente:</label>
-                <select id="cliente" name="cliente">
-                    <option value="">--</option>
-                    {% for cliente in clientes %}
-                        <option 
-                            value="{{ cliente.id }}"
-                            data-empresa="{{ cliente.nombre_empresa }}"
-                            data-mail-cliente="{{ cliente.mail }}"
-                            {% if cliente.id == form_data.cliente %}selected{% endif %}
-                        >
-                            {{ cliente.nombre }}
-                        </option>
-                    {% endfor %}
-                </select>
+    <div class="container my-4">
+    <header class="text-center mb-4">
+        <h1 class="h4 text-uppercase">PRESUPUESTO NO VALIDO COMO FACTURA</h1>
+    </header>
 
-                <div id="cliente-info"></div>
+    <form method="post" action="{% url 'nueva_cotizacion' %}">
+        {% csrf_token %}
+
+        <!-- Mensajes de error -->
+        {% if form.errors %}
+        <div class="alert alert-danger">
+        <ul class="mb-0">
+            {% for field in form %}
+            {% for error in field.errors %}
+                <li><strong>{{ field.label }}:</strong> {{ error }}</li>
+            {% endfor %}
+            {% endfor %}
+            {% for error in form.non_field_errors %}
+            <li>{{ error }}</li>
+            {% endfor %}
+        </ul>
+        </div>
+        {% endif %}
+
+        <!-- Detalles empresa y cliente -->
+        <div class="row g-3 mb-4">
+        <div class="col-md-6">
+            <div class="p-3 border rounded bg-light h-100">
+            <label for="fecha" class="form-label fw-bold">Fecha:</label>
+            <input type="date" id="fecha" name="fecha" value="{{ fecha_actual }}" class="form-control">
             </div>
-            </section>
+        </div>
+        <div class="col-md-6">
+            <div class="p-3 border rounded bg-light h-100">
+            <label for="condiciones-pago" class="form-label fw-bold">Condición de pago:</label>
+            <select id="condiciones-pago" name="condiciones_pago" class="form-select">
+                <option value="Efectivo">Efectivo</option>
+                <option value="Precio de lista">Precio de lista</option>
+            </select>
+            </div>
+        </div>
+        </div>
+
+        <div class="row g-3 mb-4">
+        <div class="col-md-6">
+            <div class="p-3 border rounded bg-light h-100">
+            <label for="empresa" class="form-label fw-bold">Empresa:</label>
+            <select id="empresa" name="empresa" class="form-select">
+                <option value="">--</option>
+                {% for empresa in empresas %}
+                <option 
+                    value="{{ empresa.id }}"
+                    data-cuit="{{ empresa.cuit }}"
+                    data-telefono="{{ empresa.telefono }}"
+                    data-mail-empresa="{{ empresa.mail }}"
+                    {% if empresa.id == form_data.empresa %}selected{% endif %}
+                >
+                    {{ empresa.nombre }}
+                </option>
+                {% endfor %}
+            </select>
+            <div id="empresa-info" class="small text-muted mt-2"></div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="p-3 border rounded bg-light h-100">
+            <label for="cliente" class="form-label fw-bold">Cliente:</label>
+            <select id="cliente" name="cliente" class="form-select">
+                <option value="">--</option>
+                {% for cliente in clientes %}
+                <option 
+                    value="{{ cliente.id }}"
+                    data-empresa="{{ cliente.nombre_empresa }}"
+                    data-mail-cliente="{{ cliente.mail }}"
+                    {% if cliente.id == form_data.cliente %}selected{% endif %}
+                >
+                    {{ cliente.nombre }}
+                </option>
+                {% endfor %}
+            </select>
+            <div id="cliente-info" class="small text-muted mt-2"></div>
+            </div>
+        </div>
+        </div>
             <section class="invoice-items">
                 <table>
                     <thead>
@@ -110,513 +126,40 @@
                     </tbody>
 
                 </table>
-                        <div class="botones-articulos">
-                            <button id="agregarArticulo" type="button">Agregar</button>
-                            <button id="eliminarArticulo" type="button">Eliminar</button>
-                            <button id="aplicarDescuento" type="button">Descuento</button>
-                            <button id="sumarCostoEnvio" type="button">Envio</button>
-                        </div>
-            </section>
-            <section class="notes">
-                <textarea name="observaciones" placeholder="Observaciones"></textarea>
-
-            </section>
-
-
-
-            <section class="totals">
-                <!-- Total General -->
-                <div class="form-group">
-                    <label>Total</label>
-                    <input type="text" id="total" name="total" class="form-control" readonly>   
+                <div class="d-flex justify-content-center gap-2 mb-4">
+                <button id="agregarArticulo" type="button" class="btn btn-success">Agregar</button>
+                <button id="eliminarArticulo" type="button" class="btn btn-danger">Eliminar</button>
+                <button id="aplicarDescuento" type="button" class="btn btn-warning">Descuento</button>
+                <button id="sumarCostoEnvio" type="button" class="btn btn-info">Envío</button>
                 </div>
-                
-                <!-- Total con Descuento -->
-                <div>
-                    <div class="totalConDescuento form-group"></div>
+                <!-- Observaciones -->
+                <div class="mb-4">
+                <textarea name="observaciones" id="observaciones" class="form-control" placeholder="Observaciones" rows="3"></textarea>
                 </div>
 
-                <div class="form-group totalCostoEnvio" style="display: none;">
-                    <label class="totalEnvioLabel">Envío</label>
-                    <input type="text" name="costo_envio" class="form-control" readonly>
+
+            </section>
+            <section class="totals mt-4">
+                <div class="row justify-content-center">
+                    <div class="col-auto form-group mb-2 d-flex align-items-center">
+                        <label for="total" class="fw-bold me-2 mb-0">Total</label>
+                        <input type="text" id="total" name="total" class="form-control total-input" readonly value="$0.00" aria-label="Total general">
+                    </div>
+                    <div class="col-auto form-group mb-2 d-flex align-items-center totalConDescuento"></div>
                 </div>
+                <input type="hidden" id="costo_envio" name="costo_envio" value="0">
             </section>
 
-            <div class="validez-msg">
-                La validez de este presupuesto es de 1 día desde su emisión. Consultar nuevamente los precios antes de efectuar la compra.
+            <p class="text-center text-muted small mb-4">
+            La validez de este presupuesto es de 1 día desde su emisión. Consultar nuevamente los precios antes de efectuar la compra.
+            </p>
+            <div class="d-flex justify-content-center gap-2">
+            <button type="button" class="btn btn-secondary" onclick="if(confirm('¿Estás seguro? Se perderá la cotización.')) location.reload();">Descartar</button>
+            <button type="button" class="btn btn-primary">Enviar</button>
+            <button type="submit" class="btn btn-success">Guardar</button>
             </div>
-                <div class="botones-cotizacion">
-                    <button type="button" onclick="if(confirm('¿Estás seguro? Se perderá la cotización.')) location.reload();">Descartar</button>
-                    <button type="button">Enviar</button>
-                    <button type="submit">Guardar</button>
-                </div>
-        </form>
-    </div>
+    </form>
 
-    <script>
-        // --- Utilidades ---
-        function formatearMoneda(valor) {
-            return `$${valor.toFixed(2)}`;
-        }
-        function parsearMoneda(valor) {
-            return parseFloat((valor || '').toString().replace('$', '')) || 0;
-        }
-
-        // --- Eventos de filas ---
-        function asignarEventosFila(fila) {
-            const cantidadInput = fila.querySelector('[name="cantidad"]');
-            if (cantidadInput) {
-                cantidadInput.addEventListener('change', function () {
-                    actualizarTotalesFila(fila);
-                    actualizarTotalesGenerales();
-                });
-            }
-            const articuloSelect = fila.querySelector('[name="articulos_cotizados"]');
-            if (articuloSelect) {
-                articuloSelect.addEventListener('change', completarCampos);
-            }
-        }
-
-        // --- Actualización de totales ---
-        function actualizarTotalesFila(fila) {
-            const precioInput = fila.querySelector('[name="precio"]');
-            const cantidadInput = fila.querySelector('[name="cantidad"]');
-            const totalInput = fila.querySelector('[name="totalArticulo"]');
-            if (!precioInput || !cantidadInput || !totalInput) return;
-
-            const precio = parseFloat(precioInput.getAttribute('data-precio-original')) || 0;
-            const cantidad = parseInt(cantidadInput.value) || 0;
-            const condicionPago = document.getElementById('condiciones-pago').value;
-
-            let precioFinal = precio;
-            if (condicionPago === "Efectivo") {
-                precioFinal = precio * 0.9;
-            }
-
-            const totalCalculado = precioFinal * cantidad;
-            precioInput.value = formatearMoneda(precioFinal);
-            totalInput.value = formatearMoneda(totalCalculado);
-
-            actualizarTotalesGenerales();
-        }
-
-        function actualizarTotalesGenerales() {
-            const filas = document.querySelectorAll('.invoice-items tbody tr:not(.fila-descuento)');
-            let totalGeneral = 0;
-            filas.forEach(fila => {
-                const total = fila.querySelector('[name="totalArticulo"]');
-                totalGeneral += parsearMoneda(total?.value);
-            });
-            
-            document.getElementById('total').value = formatearMoneda(totalGeneral);
-            actualizarAhorroTotalDescuento();
-            totalConDescuento();
-            actualizarTotalEnvio();
-        }
-
-        // --- Autocompletado de campos ---
-        function completarCampos(e) {
-            const fila = e.target.closest('tr');
-            const select = e.target;
-            const descripcion = fila.querySelector('[name="descripcion"]');
-            const precio = fila.querySelector('[name="precio"]');
-            const total = fila.querySelector('[name="totalArticulo"]');
-            const selectedOption = select.options[select.selectedIndex];
-
-            if (selectedOption.value) {
-                descripcion.value = selectedOption.getAttribute('data-descripcion');
-                const precioOriginal = parseFloat(selectedOption.getAttribute('data-precio'));
-                precio.value = formatearMoneda(precioOriginal);
-                precio.setAttribute('data-precio-original', precioOriginal);
-                actualizarTotalesFila(fila);
-            } else {
-                descripcion.value = '';
-                precio.value = '$0.00';
-                total.value = '$0.00';
-                actualizarTotalesFila(fila);
-            }
-            actualizarTotalesGenerales();
-        }
-
-        // --- Artículos ---
-        function agregarArticuloNuevo() {
-            const tabla = document.querySelector('.invoice-items tbody');
-            const nuevaFila = document.createElement('tr');
-            nuevaFila.classList.add('fila-articulo');
-
-            // Cantidad
-            const tdCantidad = document.createElement('td');
-            const inputCantidad = document.createElement('input');
-            inputCantidad.name = "cantidad";
-            inputCantidad.type = "number";
-            inputCantidad.value = "1";
-            inputCantidad.min = 0;
-            inputCantidad.max = 1000;
-            tdCantidad.appendChild(inputCantidad);
-            nuevaFila.appendChild(tdCantidad);
-
-            // Artículo
-            const tdSelect = document.createElement('td');
-            const select = document.createElement('select');
-            select.name = "articulos_cotizados";
-            const defaultOption = document.createElement('option');
-            defaultOption.textContent = '-- Seleccione un artículo --';
-            select.appendChild(defaultOption);
-            const existingSelect = document.getElementById('articulo');
-            if (existingSelect) {
-                Array.from(existingSelect.options).forEach(option => {
-                    select.appendChild(option.cloneNode(true));
-                });
-            }
-            tdSelect.appendChild(select);
-            nuevaFila.appendChild(tdSelect);
-
-            // Descripción, Precio, Total
-            ['descripcion', 'precio', 'totalArticulo'].forEach(name => {
-                const td = document.createElement('td');
-                const input = document.createElement('input');
-                input.type = 'text';
-                input.name = name;
-                input.readOnly = true;
-                input.placeholder = name === 'totalArticulo' ? '$0.00' : '';
-                td.appendChild(input);
-                nuevaFila.appendChild(td);
-            });
-
-            // Checkbox
-            const tdCheckbox = document.createElement('td');
-            const inputCheckbox = document.createElement('input');
-            inputCheckbox.name = "articulos_seleccionados[]";
-            inputCheckbox.type = "checkbox";
-            tdCheckbox.appendChild(inputCheckbox);
-            nuevaFila.appendChild(tdCheckbox);
-
-            // Insertar antes de descuento y el costo de envio si existen
-            const filaDescuento = tabla.querySelector('.fila-descuento');
-            const filaEnvio = tabla.querySelector('.fila-costo-envio');
-
-            let referencia = null;
-
-            if (filaDescuento && filaEnvio) {
-                referencia = filaDescuento.compareDocumentPosition(filaEnvio) & Node.DOCUMENT_POSITION_FOLLOWING
-                    ? filaDescuento
-                    : filaEnvio;
-            } else {
-                referencia = filaDescuento || filaEnvio;
-            }
-
-            if (referencia) {
-                tabla.insertBefore(nuevaFila, referencia);
-            } else {
-                tabla.appendChild(nuevaFila);
-            }
-
-            asignarEventosFila(nuevaFila);
-            actualizarTotalesGenerales();
-        }
-
-        function eliminarArticulosSeleccionados() {
-            const checkboxes = document.querySelectorAll('input[name="articulos_seleccionados[]"]:checked');
-            checkboxes.forEach(checkbox => {
-                const fila = checkbox.closest('tr');
-                fila.remove();
-            });
-            actualizarTotalesGenerales();
-        }
-
-        // --- Descuento ---
-        function aplicarDescuentoNuevo() {
-            const tabla = document.querySelector('.invoice-items tbody');
-            if (tabla.querySelector('.fila-descuento')) return;
-
-            const nuevaFila = document.createElement('tr');
-            nuevaFila.classList.add('fila-descuento');
-
-            // Cantidad (siempre 1, no editable)
-            const tdCantidad = document.createElement('td');
-            const inputCantidad = document.createElement('input');
-            inputCantidad.name = "cantidad";
-            inputCantidad.type = "number";
-            inputCantidad.value = 1;
-            inputCantidad.min = 1;
-            inputCantidad.max = 1;
-            inputCantidad.readOnly = true;
-            tdCantidad.appendChild(inputCantidad);
-            nuevaFila.appendChild(tdCantidad);
-
-            // Texto "Descuento"
-            const tdDescuento = document.createElement('td');
-            tdDescuento.textContent = "Descuento";
-            nuevaFila.appendChild(tdDescuento);
-
-            // Select % descuento
-            const tdValorDescuento = document.createElement('td');
-            const selectValorDescuento = document.createElement('select');
-            selectValorDescuento.name = "descuento";
-            const defaultOption = document.createElement('option');
-            defaultOption.value = '';
-            defaultOption.textContent = '% de descuento';
-            selectValorDescuento.appendChild(defaultOption);
-            [5, 10, 15, 20, 25, 30].forEach(porcentaje => {
-                const option = document.createElement('option');
-                option.value = porcentaje;
-                option.textContent = `${porcentaje}%`;
-                selectValorDescuento.appendChild(option);
-            });
-            tdValorDescuento.appendChild(selectValorDescuento);
-            nuevaFila.appendChild(tdValorDescuento);
-
-            // Texto "Ahorro total"
-            const tdDescuentoTotal = document.createElement('td');
-            tdDescuentoTotal.textContent = "Ahorro total";
-            nuevaFila.appendChild(tdDescuentoTotal);
-
-            // Input ahorro total
-            const tdInputAhorroTotal = document.createElement('td');
-            const inputAhorroTotal = document.createElement('input');
-            inputAhorroTotal.type = 'text';
-            inputAhorroTotal.readOnly = true;
-            inputAhorroTotal.className = 'form-control';
-            inputAhorroTotal.value = '$0.00';
-            tdInputAhorroTotal.appendChild(inputAhorroTotal);
-            nuevaFila.appendChild(tdInputAhorroTotal);
-
-            // Botón eliminar fila
-            const tdEliminar = document.createElement('td');
-            const btnEliminar = document.createElement('span');
-            btnEliminar.id='btn-eliminar-descuento';
-            btnEliminar.textContent = 'x'; 
-            btnEliminar.style.cursor = 'pointer';
-            btnEliminar.style.color = 'red';   
-
-            // Al eliminar la fila de descuento
-            const filaDescuento = document.querySelector('.fila-descuento');
-                btnEliminar.addEventListener('click', function() {
-                    nuevaFila.remove(); 
-                    const totalConDesc = document.querySelector('.totalConDescuento');
-                    if (totalConDesc) {
-                        totalConDesc.innerHTML = '';
-                    }
-                });
-                                    
-
-            // Me aseguro que el costo de envio siempre quede al final 
-            const filaEnvio = tabla.querySelector('.fila-costo-envio'); 
-            if (filaEnvio) {
-                tabla.insertBefore(nuevaFila, filaEnvio); 
-            } else {
-                tabla.appendChild(nuevaFila); 
-            }
-
-            tdEliminar.appendChild(btnEliminar);
-            nuevaFila.appendChild(tdEliminar);
-
-            // Evento para actualizar ahorro y total con descuento
-            selectValorDescuento.addEventListener('change', function () {
-                actualizarAhorroTotalDescuento();
-                totalConDescuento();
-            });
-
-            actualizarAhorroTotalDescuento();
-            totalConDescuento();
-        }
-        
-
-        function actualizarAhorroTotalDescuento() {
-            const filaDescuento = document.querySelector('.fila-descuento');
-            if (!filaDescuento) return;
-            const selectValorDescuento = filaDescuento.querySelector('select[name="descuento"]');
-            const inputAhorroTotal = filaDescuento.querySelector('input.form-control');
-            if (!selectValorDescuento || !inputAhorroTotal) return;
-            const porcentaje = parseFloat(selectValorDescuento.value) || 0;
-            const totalGeneral = parsearMoneda(document.getElementById('total').value);
-            inputAhorroTotal.value = porcentaje ? formatearMoneda(totalGeneral * (porcentaje / 100)) : '$0.00';
-        }
-
-        function totalConDescuento() {
-            const totalGeneral = parsearMoneda(document.getElementById('total').value);
-            const filaDescuento = document.querySelector('.fila-descuento');
-            const totalConDescuentoDiv = document.querySelector('.totalConDescuento')
-
-            totalConDescuentoDiv.innerHTML = '';
-
-            if (filaDescuento) {
-                const selectValorDescuento = filaDescuento.querySelector('select[name="descuento"]');
-                const porcentaje = parseFloat(selectValorDescuento.value) || 0;
-                if (porcentaje > 0) {
-                    const descuento = totalGeneral * (porcentaje / 100);
-                    const totalFinal = totalGeneral - descuento;
-
-                    let input = totalConDescuentoDiv.querySelector('input[name="totalConDescuento"]');
-                    let label = totalConDescuentoDiv.querySelector('label.totalConDescuentoLabel');
-
-                    if (!input) {
-                        label = document.createElement('label');
-                        label.textContent = 'Total con descuento';
-                        label.className = 'totalConDescuentoLabel';
-                        input = document.createElement('input');
-                        input.type = 'text';
-                        input.readOnly = true;
-                        input.className = 'form-control';
-                        input.name = 'totalConDescuento';
-                        totalConDescuentoDiv.appendChild(label);
-                        totalConDescuentoDiv.appendChild(input);
-                    }
-                    input.value = formatearMoneda(totalFinal);
-                }
-            }
-        }
-
-
-        function costoEnvio() {
-            const tabla = document.querySelector('.invoice-items tbody');
-            if (tabla.querySelector('.fila-costo-envio')) return;
-
-            const nuevaFila = document.createElement('tr');
-            nuevaFila.classList.add('fila-costo-envio');
-
-            // Cantidad (siempre 1, no editable)
-            const tdCantidad = document.createElement('td');
-            const inputCantidad = document.createElement('input');
-            inputCantidad.name = "cantidad";
-            inputCantidad.type = "number";
-            inputCantidad.value = 1;
-            inputCantidad.min = 1;
-            inputCantidad.max = 1;
-            inputCantidad.readOnly = true;
-            tdCantidad.appendChild(inputCantidad);
-            nuevaFila.appendChild(tdCantidad);
-
-            // 
-            const tdEnvio = document.createElement('td');
-            tdEnvio.textContent = "Envio";
-            nuevaFila.appendChild(tdEnvio);
-
-            // Select zona envio
-            const localidadIngresada = prompt('Ingrese la localidad de envío (ej: CABA, GBA CORDON 1, etc.)');
-            if (localidadIngresada === null || localidadIngresada.trim() === '') {
-                alert('Localidad inválida. No se agregará la fila.');
-                return;
-            }
-            const tdLocalidad = document.createElement('td');
-            tdLocalidad.textContent = localidadIngresada.trim();
-            nuevaFila.appendChild(tdLocalidad);
-
-
-            // Input costo envio
-            const tdInputCostoEnvio = document.createElement('td');
-            const inputCostoEnvio = document.createElement('input');
-            inputCostoEnvio.type = 'number';
-            inputCostoEnvio.min = 0;
-            inputCostoEnvio.step = '0.01';
-            inputCostoEnvio.className = 'form-control input-costo-envio';
-            inputCostoEnvio.placeholder = 'Costo envío';
-            
-            // Pido el costo con prompt para arrancar (podés sacar el prompt y dejar solo editable)
-            const costoIngresado = prompt('Ingrese el costo de envío (sin $)');
-            if (costoIngresado === null || costoIngresado === '' || isNaN(costoIngresado) || Number(costoIngresado) < 0) {
-                alert('Costo inválido. No se agregará la fila.');
-                return;
-            }
-            inputCostoEnvio.value = Number(costoIngresado).toFixed(2);
-            tdInputCostoEnvio.appendChild(inputCostoEnvio);
-            nuevaFila.appendChild(tdInputCostoEnvio);
-
-
-            
-            const tdEliminar = document.createElement('td');
-            const btnEliminar = document.createElement('span');
-            btnEliminar.textContent = 'x'; 
-            btnEliminar.style.cursor = 'pointer';
-            btnEliminar.style.color = 'red';
-
-
-            // Evento para eliminar la fila
-            btnEliminar.addEventListener('click', function () {
-                nuevaFila.remove();
-                actualizarTotalEnvio();
-            });
-
-            tdEliminar.appendChild(btnEliminar);
-            nuevaFila.appendChild(tdEliminar);
-
-            tabla.appendChild(nuevaFila);
-            actualizarTotalEnvio();
-        }        
-
-        function actualizarTotalEnvio() {
-            const filaEnvio = document.querySelector('.fila-costo-envio');
-            const bloqueEnvio = document.querySelector('.totalCostoEnvio');
-            const inputEnvio = bloqueEnvio?.querySelector('input[name="costo_envio"]');
-
-            if (!filaEnvio || !inputEnvio) {
-                if (bloqueEnvio) bloqueEnvio.style.display = 'none';
-                return;
-            }
-
-            const inputCostoEnvio = filaEnvio.querySelector('input.input-costo-envio');
-            const costo = parseFloat(inputCostoEnvio?.value || 0);
-
-            if (!isNaN(costo) && costo > 0) {
-                inputEnvio.value = formatearMoneda(costo);
-                bloqueEnvio.style.display = 'flex';
-            } else {
-                inputEnvio.value = '$0.00';
-                bloqueEnvio.style.display = 'none';
-            }
-        }
-
-        // --- Inicialización y eventos ---
-        window.onload = function () {
-            document.getElementById('condiciones-pago').addEventListener('change', function () {
-                const filas = document.querySelectorAll('.invoice-items tbody tr');
-                filas.forEach(actualizarTotalesFila);
-                actualizarTotalesGenerales();
-            });
-
-            document.querySelectorAll('.invoice-items tbody tr').forEach(asignarEventosFila);
-
-            const primerSelect = document.getElementById('articulo');
-            if (primerSelect) primerSelect.addEventListener('change', completarCampos);
-
-            document.getElementById('agregarArticulo').addEventListener('click', agregarArticuloNuevo);
-            document.getElementById('eliminarArticulo').addEventListener('click', eliminarArticulosSeleccionados);
-            document.getElementById('aplicarDescuento').addEventListener('click', aplicarDescuentoNuevo);
-            document.getElementById('sumarCostoEnvio').addEventListener('click', costoEnvio);
-
-            document.getElementById('empresa').addEventListener('change', mostrarInfoEmpresa);
-            document.getElementById('cliente').addEventListener('change', mostrarInfoCliente);
-        };
-
-        // --- Info empresa/cliente ---
-        function mostrarInfoEmpresa() {
-            const selected = this.options[this.selectedIndex];
-            const infoDiv = document.getElementById('empresa-info');
-            if (selected.value) {
-                infoDiv.innerHTML = `
-                    <p><strong>CUIT:</strong> ${selected.getAttribute('data-cuit')}</p>
-                    <p><strong>Teléfono:</strong> ${selected.getAttribute('data-telefono')}</p>
-                    <p><strong>Mail:</strong> ${selected.getAttribute('data-mail-empresa')}</p>
-                `;
-            } else {
-                infoDiv.innerHTML = '';
-            }
-        }
-
-        function mostrarInfoCliente() {
-            const selected = this.options[this.selectedIndex];
-            const infoDiv = document.getElementById('cliente-info');
-            if (selected.value) {
-                infoDiv.innerHTML = `
-                    <p><strong>Empresa:</strong> ${selected.getAttribute('data-empresa')}</p>
-                    <p><strong>Mail:</strong> ${selected.getAttribute('data-mail-cliente')}</p>
-                `;
-            } else {
-                infoDiv.innerHTML = '';
-            }
-        }
-
-
-    </script>
+    <script src="{% static 'nueva_cotizacion.js' %}"></script>
 
 {% endblock %}

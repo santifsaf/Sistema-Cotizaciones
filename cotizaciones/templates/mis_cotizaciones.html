@@ -4,12 +4,28 @@
 
 <div class="container py-4">
   <div class="d-flex justify-content-between align-items-center mb-3">
-    <h2 class="mb-0">Mis Cotizaciones</h2>
+    <h2 class="mb-0">COTIZACIONES</h2>
     <a class="btn btn-success" href="{% url 'nueva_cotizacion' %}">Crear nueva cotización</a>
   </div>
+
+  
+  <form method="get" class="row g-2 align-items-center">
+    <div class="col-auto">
+      <input type="text" name="search" value="{{ request.GET.search }}" class="form-control" placeholder="Buscar por número o cliente">
+    </div>
+    <div class="col-auto">
+      <button type="submit" class="btn btn-primary">Buscar</button>
+    </div>
+    <div class="col-auto">
+      <a href="{% url 'mis_cotizaciones' %}" class="btn btn-secondary">Limpiar filtros</a>
+    </div>
+  </form>
+
   <form action="{% url 'eliminar_cotizacion' %}" method="post">
     {% csrf_token %}
+    
     <div class="table-responsive">
+
       <table class="table table-striped align-middle shadow-sm">
         <thead class="table-primary">
           <tr>

@@ -1,28 +1,40 @@
-from django.shortcuts import redirect, render
+from django.shortcuts import render, redirect, get_object_or_404
+from django.urls import reverse_lazy
+from django.utils import timezone
+from django.contrib import messages
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.views.generic import ListView, View
+from django.template.loader import render_to_string
+from django.http import HttpResponse
+from decimal import Decimal
+from django.db.models import Q
+
 from facturacionApp.models import Empresa
 from .models import Clientes, Cotizaciones, ArticulosCotizado
 from articulos.models import Articulo
-from facturacionApp.models import Empresa
 from .forms import CotizacionForm
-from django.contrib import messages
-from django.contrib.auth.mixins import LoginRequiredMixin
-from django.views.generic import ListView, CreateView, View
-from django.urls import reverse_lazy
-from django.utils import timezone 
-from decimal import Decimal
-from django.shortcuts import get_object_or_404
-from django.template.loader import render_to_string
-from django.http import HttpResponse
-from weasyprint import HTML
 
+from weasyprint import HTML
 
 
 # Create your views here.
 
 class MisCotizaciones(LoginRequiredMixin, ListView):
     model = Cotizaciones
-    template_name= "mis_cotizaciones.html"
+    template_name = "mis_cotizaciones.html"
     context_object_name = 'cotizaciones'
+
+    def get_queryset(self):
+        search = self.request.GET.get('search')
+        print(">>>> BUSCANDO:", search)
+        qs = Cotizaciones.objects.filter(usuario=self.request.user)
+        if search:
+            qs = qs.filter(
+                Q(numero_referencia__icontains=search) |
+                Q(cliente__nombre__icontains=search) |
+                Q(cliente__nombre_empresa__icontains=search)
+            )
+        return qs
 
 
 from django.views.generic import View
@@ -43,38 +55,23 @@ class NuevaCotizacion(LoginRequiredMixin, View):
         return render(request, self.template_name, context)
 
     def post(self, request):
+        """
+        Procesa el formulario de cotización y guarda los datos.
+        """
         form = CotizacionForm(request.POST)
         if form.is_valid():
-            print("DEBUG descuento en form.cleaned_data:", form.cleaned_data.get('descuento'))
             cotizacion = form.save(commit=False)
             cotizacion.usuario = request.user
-            cotizacion.save()  # Guardamos para tener ID y FK
+            cotizacion.save()
 
-            cantidades = request.POST.getlist('cantidad')
-            articulos_ids = request.POST.getlist('articulos_cotizados')
+            self._guardar_articulos(request, cotizacion)
 
-            for i in range(len(articulos_ids)):
-                art_id = articulos_ids[i].strip()
-                if not art_id:
-                    continue
-                try:
-                    cantidad_val = int(cantidades[i])
-                    if cantidad_val <= 0:
-                        continue
-                except (IndexError, ValueError):
-                    continue
-
-                ArticulosCotizado.objects.create(
-                    cotizacion=cotizacion,
-                    articulo_id=art_id,
-                    cantidad=cantidad_val,
-                )
-
-            # Recalcular totales y actualizar sólo total y total_con_descuento
+            """ 
+            Recalcula y guarda los totales 
+            """
             total, _, total_con_descuento = cotizacion.calcular_totales()
             cotizacion.total = total
             cotizacion.total_con_descuento = total_con_descuento or Decimal('0.00')
-
             cotizacion.save()
 
             messages.success(request, f'Se creó una nueva cotización con ID {cotizacion.id}')
@@ -86,10 +83,32 @@ class NuevaCotizacion(LoginRequiredMixin, View):
                 'clientes': Clientes.objects.all(),
                 'articulos_disponibles': Articulo.objects.all(),
                 'fecha_actual': timezone.now().strftime('%Y-%m-%d'),
-                
             }
-            print("Errores del formulario:", form.errors)
             return render(request, self.template_name, context)
+
+    def _guardar_articulos(self, request, cotizacion):
+        """
+        Guarda los artículos cotizados asociados a la cotización.
+        """
+        cantidades = request.POST.getlist('cantidad')
+        articulos_ids = request.POST.getlist('articulos_cotizados')
+
+        for i in range(len(articulos_ids)):
+            art_id = articulos_ids[i].strip()
+            if not art_id:
+                continue
+            try:
+                cantidad_val = int(cantidades[i])
+                if cantidad_val <= 0:
+                    continue
+            except (IndexError, ValueError):
+                continue
+
+            ArticulosCotizado.objects.create(
+                cotizacion=cotizacion,
+                articulo_id=art_id,
+                cantidad=cantidad_val,
+            )
 
 
 class EliminarCotizacion(LoginRequiredMixin, View):
@@ -104,6 +123,9 @@ class EliminarCotizacion(LoginRequiredMixin, View):
         return redirect('mis_cotizaciones')
     
 def generar_pdf(request, cotizacion_id):
+    """
+    Genera un PDF de la cotización seleccionada usando WeasyPrint.
+    """
     cotizacion = get_object_or_404(Cotizaciones, id=cotizacion_id)
     articulos = cotizacion.items.all()
 
@@ -116,7 +138,6 @@ def generar_pdf(request, cotizacion_id):
         "total_con_descuento": total_con_descuento,
         "descuento": float(descuento) if descuento else 0,
         "costo_envio": cotizacion.costo_envio or Decimal('0.00'),
-        # Si usás otros campos, agregalos acá directo del modelo
         "observaciones": cotizacion.observaciones or '',
         "fecha": cotizacion.fecha,
         "numero_referencia": cotizacion.numero_referencia,
