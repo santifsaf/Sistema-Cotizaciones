@@ -1,22 +1,117 @@
 <!--
 Home principal del sistema de cotizaciones.
-Incluye sección de bienvenida y acceso rápido a la creación de cotizaciones.
+Versión simple y elegante con manejo de usuarios no autenticados.
 -->
 {% extends "estructura_base.html" %}
 {% load static %}
 {% block content %}
 
-<!-- Hero Section -->
-<section class="hero-section py-5 bg-light">
-  <div class="container">
-    <div class="row justify-content-center">
-      <div class="col-lg-8 text-center p-5 bg-white rounded-4 shadow">
-        <h1 class="mb-3 text-primary">Bienvenido a tu sistema de cotizaciones</h1>
-        <p class="mb-4 text-secondary fs-5">Gestiona tus ventas de forma simple y profesional.</p>
-        <a href="{% url 'nueva_cotizacion' %}" class="btn btn-primary btn-lg">Crear nueva cotización</a>
+<!-- Hero Section Minimalista -->
+<section class="hero-section py-5" style="background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); min-height: 80vh;">
+  <div class="container h-100">
+    <div class="row h-100 justify-content-center align-items-center">
+      <div class="col-lg-8 text-center">
+        <div class="mb-5">
+          <div class="bg-white rounded-circle p-4 d-inline-block shadow-sm mb-4">
+            <svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" fill="#2c3e50" viewBox="0 0 16 16">
+              <path d="M6.5 1A1.5 1.5 0 0 0 5 2.5V3H1.5A1.5 1.5 0 0 0 0 4.5v8A1.5 1.5 0 0 0 1.5 14h13a1.5 1.5 0 0 0 1.5-1.5v-8A1.5 1.5 0 0 0 14.5 3H11v-.5A1.5 1.5 0 0 0 9.5 1h-3zm0 1h3a.5.5 0 0 1 .5.5V3H6v-.5a.5.5 0 0 1 .5-.5zm1.886 6.914L15 7.151V12.5a.5.5 0 0 1-.5.5h-13a.5.5 0 0 1-.5-.5V7.15l6.614 1.764a1.5 1.5 0 0 0 .772 0zM1.5 4h13a.5.5 0 0 1 .5.5v1.616L8.129 7.948a.5.5 0 0 1-.258 0L1 6.116V4.5a.5.5 0 0 1 .5-.5z"/>
+            </svg>
+          </div>
+          <h1 class="display-5 fw-bold text-dark mb-3">Bienvenido a CotizApp</h1>
+          <p class="lead text-muted mb-4">Una solución simple y eficiente para crear y gestionar tus cotizaciones</p>
+          
+          <div class="d-flex justify-content-center gap-3">
+            {% if user.is_authenticated %}
+              <!-- Botones para usuarios autenticados -->
+              <a href="{% url 'nueva_cotizacion' %}" class="btn btn-primary btn-lg px-4 py-3 fw-bold">
+                <i class="bi bi-plus-circle me-2"></i>Nueva Cotización
+              </a>
+              <a href="{% url 'mis_cotizaciones' %}" class="btn btn-outline-secondary btn-lg px-4 py-3">
+                <i class="bi bi-folder me-2"></i>Ver Mis Cotizaciones
+              </a>
+            {% else %}
+              <!-- Botones para usuarios no autenticados -->
+              <a href="{% url 'login' %}" class="btn btn-primary btn-lg px-4 py-3 fw-bold">
+                <i class="bi bi-box-arrow-in-right me-2"></i>Iniciar Sesión
+              </a>
+              <a href="{% url 'registro' %}" class="btn btn-outline-secondary btn-lg px-4 py-3">
+                <i class="bi bi-person-plus me-2"></i>Registrarse
+              </a>
+            {% endif %}
+          </div>
+        </div>
       </div>
     </div>
   </div>
 </section>
+
+<!-- Accesos Directos - Solo para usuarios autenticados -->
+{% if user.is_authenticated %}
+<section class="py-5 bg-white">
+    
+    <div class="row g-4">
+      <!-- Acceso 1 -->
+      <div class="col-md-4">
+        <a href="{% url 'mis_articulos' %}" class="card h-100 border-0 text-decoration-none shadow-sm-hover">
+          <div class="card-body p-4 text-center">
+            <div class="text-primary mb-3">
+              <i class="bi bi-box-seam fs-1"></i>
+            </div>
+            <h4 class="card-title text-dark mb-3">Artículos</h4>
+            <p class="card-text text-muted">
+              Administra tu catálogo de productos y servicios
+            </p>
+          </div>
+        </a>
+      </div>
+      
+      <!-- Acceso 2 -->
+      <div class="col-md-4">
+        <a href="{% url 'mis_clientes' %}" class="card h-100 border-0 text-decoration-none shadow-sm-hover">
+          <div class="card-body p-4 text-center">
+            <div class="text-primary mb-3">
+              <i class="bi bi-people fs-1"></i>
+            </div>
+            <h4 class="card-title text-dark mb-3">Clientes</h4>
+            <p class="card-text text-muted">
+              Gestiona tu base de datos de clientes
+            </p>
+          </div>
+        </a>
+      </div>
+      
+      <!-- Acceso 3 -->
+      <div class="col-md-4">
+        <a href="{% url 'mis_empresas' %}" class="card h-100 border-0 text-decoration-none shadow-sm-hover">
+          <div class="card-body p-4 text-center">
+            <div class="text-primary mb-3">
+              <i class="bi bi-building fs-1"></i>
+            </div>
+            <h4 class="card-title text-dark mb-3">Mi Empresa</h4>
+            <p class="card-text text-muted">
+              Carga los datos de tu empresa
+            </p>
+          </div>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+{% else %}
+<!-- Mensaje para usuarios no autenticados -->
+<section class="py-5 bg-white">
+  <div class="container py-4">
+    <div class="row justify-content-center">
+      <div class="col-lg-8 text-center">
+        <div class="bg-light p-5 rounded-4">
+          <p class="text-muted mb-4">
+            Para acceder a todas las funciones del sistema, por favor inicia sesión o regístrate.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endif %}
 
 {% endblock %}

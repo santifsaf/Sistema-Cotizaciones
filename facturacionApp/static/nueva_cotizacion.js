@@ -94,6 +94,7 @@ function completarCampos(e) {
             // Cantidad
             const tdCantidad = document.createElement('td');
             const inputCantidad = document.createElement('input');
+            inputCantidad.className = "form-control"; 
             inputCantidad.name = "cantidad";
             inputCantidad.type = "number";
             inputCantidad.value = "1";
@@ -105,6 +106,7 @@ function completarCampos(e) {
             // Artículo
             const tdSelect = document.createElement('td');
             const select = document.createElement('select');
+            select.className = "form-control"; //
             select.name = "articulos_cotizados";
             const defaultOption = document.createElement('option');
             defaultOption.textContent = '-- Seleccione un artículo --';
@@ -122,6 +124,7 @@ function completarCampos(e) {
             ['descripcion', 'precio', 'totalArticulo'].forEach(name => {
                 const td = document.createElement('td');
                 const input = document.createElement('input');
+                input.className = 'form-control';
                 input.type = 'text';
                 input.name = name;
                 input.readOnly = true;
@@ -135,6 +138,7 @@ function completarCampos(e) {
             const inputCheckbox = document.createElement('input');
             inputCheckbox.name = "articulos_seleccionados[]";
             inputCheckbox.type = "checkbox";
+            inputCheckbox.className = "form-check-input";
             tdCheckbox.appendChild(inputCheckbox);
             nuevaFila.appendChild(tdCheckbox);
 
@@ -182,6 +186,7 @@ function completarCampos(e) {
             // Cantidad (siempre 1, no editable)
             const tdCantidad = document.createElement('td');
             const inputCantidad = document.createElement('input');
+            inputCantidad.className = "form-control";
             inputCantidad.name = "cantidad";
             inputCantidad.type = "number";
             inputCantidad.value = 1;
@@ -193,12 +198,14 @@ function completarCampos(e) {
 
             // Texto "Descuento"
             const tdDescuento = document.createElement('td');
+            tdDescuento.className = "align-middle";
             tdDescuento.textContent = "Descuento";
             nuevaFila.appendChild(tdDescuento);
 
             // Select % descuento
             const tdValorDescuento = document.createElement('td');
             const selectValorDescuento = document.createElement('select');
+            selectValorDescuento.className = "form-control";
             selectValorDescuento.name = "descuento";
             const defaultOption = document.createElement('option');
             defaultOption.value = '';
@@ -215,6 +222,7 @@ function completarCampos(e) {
 
             // Texto "Ahorro total"
             const tdDescuentoTotal = document.createElement('td');
+            tdDescuentoTotal.className = "align-middle";
             tdDescuentoTotal.textContent = "Ahorro total";
             nuevaFila.appendChild(tdDescuentoTotal);
 
@@ -230,11 +238,12 @@ function completarCampos(e) {
 
             // Botón eliminar fila
             const tdEliminar = document.createElement('td');
-            const btnEliminar = document.createElement('span');
-            btnEliminar.id='btn-eliminar-descuento';
-            btnEliminar.textContent = 'x'; 
-            btnEliminar.style.cursor = 'pointer';
-            btnEliminar.style.color = 'red';   
+            tdEliminar.className = "text-center align-middle"; 
+            const btnEliminar = document.createElement('button');
+            btnEliminar.type = "button";
+            btnEliminar.className = "btn btn-sm btn-outline-danger"; // 
+            btnEliminar.innerHTML = '<i class="fas fa-times"></i>'; // 
+            btnEliminar.title = "Eliminar descuento";
 
             // Al eliminar la fila de descuento
             const filaDescuento = document.querySelector('.fila-descuento');
@@ -336,6 +345,7 @@ function completarCampos(e) {
 
             // 
             const tdEnvio = document.createElement('td');
+             tdEnvio.className = "align-middle"; 
             tdEnvio.textContent = "Envio";
             nuevaFila.appendChild(tdEnvio);
 
@@ -346,6 +356,7 @@ function completarCampos(e) {
                 return;
             }
             const tdLocalidad = document.createElement('td');
+            tdLocalidad.className = "align-middle"; 
             tdLocalidad.textContent = localidadIngresada.trim();
             nuevaFila.appendChild(tdLocalidad);
 
@@ -370,12 +381,14 @@ function completarCampos(e) {
             nuevaFila.appendChild(tdInputCostoEnvio);
 
 
-            
+            // Botón eliminar fila
             const tdEliminar = document.createElement('td');
-            const btnEliminar = document.createElement('span');
-            btnEliminar.textContent = 'x'; 
-            btnEliminar.style.cursor = 'pointer';
-            btnEliminar.style.color = 'red';
+            tdEliminar.className = "text-center align-middle"; 
+            const btnEliminar = document.createElement('button');
+            btnEliminar.type = "button";
+            btnEliminar.className = "btn btn-sm btn-outline-danger"; // 
+            btnEliminar.innerHTML = '<i class="fas fa-times"></i>'; // 
+            btnEliminar.title = "Eliminar descuento";
 
 
             // Evento para eliminar la fila

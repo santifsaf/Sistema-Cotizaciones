@@ -92,23 +92,23 @@ Usa estilos propios en nueva_cotizacion.css y Bootstrap para responsividad.
             <div id="cliente-info" class="small text-muted mt-2"></div>
             </div>
         </div>
-        </div>
+        <div class="table-responsive">
             <section class="invoice-items">
-                <table>
+                <table class="table table-bordered">
                     <thead>
                         <tr>
-                            <th>Cant.</th>
-                            <th>Nombre</th>
-                            <th>Descripción</th>
-                            <th>Precio unit.</th>
-                            <th>Total</th>
+                        <th style="width: 8%;">Cant.</th>
+                        <th style="width: 25%;">Nombre</th>
+                        <th style="width: 40%;">Descripción</th>
+                        <th style="width: 16%;">Precio unit.</th>
+                        <th style="width: 16%;">Total</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
-                            <td><input type="number" name="cantidad" value="1" min="1" max="1000"></td>
+                            <td><input class="form-control" type="number" name="cantidad" value="1" min="1" max="1000"></td>
                             <td>
-                                <select id="articulo" name="articulos_cotizados">
+                                <select class="form-control"id="articulo" name="articulos_cotizados">
                                     <option value="">-- Seleccione un artículo --</option>
                                     {% for articulo in articulos_disponibles %}
                                         <option value="{{ articulo.id }}" 
@@ -119,9 +119,9 @@ Usa estilos propios en nueva_cotizacion.css y Bootstrap para responsividad.
                                     {% endfor %}
                                 </select>
                             </td>
-                            <td><input type="text" name="descripcion" placeholder="Descripción" readonly></td>
-                            <td><input type="text" name="precio" placeholder="$0.00" readonly></td>
-                            <td><input type="text" name="totalArticulo" placeholder="$0.00" readonly></td>
+                            <td><input class="form-control" type="text" name="descripcion" placeholder="Descripción" readonly></td>
+                            <td><input class="form-control" type="text" name="precio" placeholder="$0.00" readonly></td>
+                            <td><input class="form-control" type="text" name="totalArticulo" placeholder="$0.00" readonly></td>
                         </tr>
                     </tbody>
 
