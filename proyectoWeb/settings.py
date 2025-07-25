@@ -40,7 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'facturacionApp',
+    'cotizApp',
     'articulos',
     'clientes',
     'cotizaciones',
@@ -131,7 +131,7 @@ USE_TZ = True
 STATIC_URL = 'static/'        
 
 STATICFILES_DIRS = [
-    BASE_DIR / "facturacionApp/static",    
+    BASE_DIR / "cotizApp/static",    
 ]
 
 # STATIC_ROOT= BASE_DIR / 'staticfiles'    

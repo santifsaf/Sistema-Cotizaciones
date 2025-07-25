@@ -1,5 +1,5 @@
 from django.db import models
-from facturacionApp.models import Empresa
+from cotizApp.models import Empresa
 from clientes.models import Clientes
 from articulos.models import Articulo
 from django.contrib.auth.models import User

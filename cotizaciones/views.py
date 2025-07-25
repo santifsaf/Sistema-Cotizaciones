@@ -9,7 +9,7 @@ from django.http import HttpResponse
 from decimal import Decimal
 from django.db.models import Q
 
-from facturacionApp.models import Empresa
+from cotizApp.models import Empresa
 from .models import Clientes, Cotizaciones, ArticulosCotizado
 from articulos.models import Articulo
 from .forms import CotizacionForm

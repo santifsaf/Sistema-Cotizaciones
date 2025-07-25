@@ -5,7 +5,7 @@ from django.contrib.auth.models import User
 
 class Articulo(models.Model):
     usuario_log=models.ForeignKey(User, on_delete=models.CASCADE)
-    imagen=models.ImageField(upload_to='articulos', default='proyectoWeb/media/articulos/sin imagen.jpg')
+    imagen=models.ImageField(upload_to='articulos', default='proyectoWeb/media/articulos/sin imagen.jpg', blank=True, null=True)
     nombre=models.CharField(max_length=30)
     descripcion=models.CharField(max_length=80)
     precio=models.IntegerField()

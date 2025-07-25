@@ -1,82 +1,64 @@
-# Proyecto 
+# 📄 CotizApp
 
-Este proyecto permite gestionar empresas, clientes, artículos y cotizaciones, con generación de PDFs y autenticación de usuarios.
-
-# App Cotizaciones
-
-Esta app gestiona la creación, edición y eliminación de cotizaciones.
-
-
-### Modelos 
-
-- **Cotizaciones**: Representa una cotización, con campos para usuario, cliente, empresa, totales y descuentos.
-- **ArticulosCotizado**: Relaciona artículos con cotizaciones, incluye cantidad y subtotal.
-
-Cada cotización calcula automáticamente sus totales y genera un número de referencia único.
-
-## Vistas 
-
-- `MisCotizaciones`: Listado de cotizaciones del usuario.
-- `NuevaCotizacion`: Formulario para crear una nueva cotización.
-- `EliminarCotizacion`: Permite eliminar cotizaciones seleccionadas.
-- `generar_pdf`: Exporta una cotización en PDF.
-
-
-## Cómo funciona
-
-1. El usuario crea una cotización seleccionando los datos de su empresa, el cliente, y artículos.
-2. Se calculan los totales y descuentos automáticamente.
-3. Las cotizaciones pueden exportarse en PDF.
+**CotizApp** es una aplicación web desarrollada en **Django** que permite gestionar artículos, clientes y empresas para crear cotizaciones de forma simple y profesional.  
+Podés loguearte, cargar previamente tus artículos, clientes y datos de tu empresa, y luego crear cotizaciones interactivas que se pueden descargar en PDF, imprimir o enviar por mail. 
 
 ---
 
-# App Clientes
+## 🚀 Funcionalidades principales
 
-Esta app gestiona los clientes del sistema de cotizaciones.
-
-## Modelos
-
-- **Cliente**: Información básica, empresa asociada, contacto.
-
-## Vistas
-
-- Listado de clientes
-- Alta/edición/eliminación de clientes
-
-## Uso
-
-Accede al panel de clientes para ver, agregar o modificar registros.
+✅ Registro e inicio de sesión de usuarios.  
+✅ Carga y administración de artículos.  
+✅ Carga y administración de clientes.  
+✅ Carga de datos de tu empresa (para incluir en la cotización).  
+✅ Creación de cotizaciones a partir de artículos cargados:  
+- Totales, descuentos y cantidad de articulos cotizados actualizados dinámicamente mediante un script JS.  
+✅ Visualización y descarga de cotizaciones en **PDF** (gracias a WeasyPrint).  
+✅ Interfaz responsive básica con **Bootstrap**.
 
 ---
 
-# App Artículos
+## 🛠️ Tecnologías utilizadas
 
-Gestiona los artículos disponibles para cotizar.
-
-## Modelos
-
-- **Artículo**: Nombre, descripción, precio, stock.
-
-## Vistas
-
-- Listado de artículos
-- Alta/edición/eliminación
+- [Django 5.1](https://www.djangoproject.com/)
+- [Django REST Framework 3.15.2](https://www.django-rest-framework.org/)
+- [django-import-export 4.1.1](https://django-import-export.readthedocs.io/)
+- [WeasyPrint 66.0](https://weasyprint.org/)
+- Base de datos: **SQLite**
+- Frontend: **HTML**, **CSS básico**, **Bootstrap**, **JavaScript puro**
+- Control de versiones: **GitHub**
 
 ---
 
-# App Facturación
+## 📦 Requerimientos
 
-Administra empresas y cotizaciones.
+Archivo `requirements.txt` 
 
-## Modelos
+Instalalos con:
 
-- **Empresa**
-- **Cotización**
-- **ArtículosCotizado**
+```bash
+pip install -r requirements.txt
 
-## Vistas
 
-- Listado de empresas
-- Listado y gestión de cotizaciones
 
----
+⚙️ Instalación y ejecución
+
+1. Clonar el repositorio:
+git clone https://github.com/usuario/CotizApp.git
+cd CotizApp
+
+2. Crear entorno virtual (opcional pero recomendado):
+python -m venv venv
+source venv/bin/activate  # En Windows: venv\Scripts\activate
+
+3. Instalar dependencias:
+pip install -r requirements.txt
+
+4. Aplicar migraciones:
+python manage.py migrate
+
+5.Crear un superusuario:
+python manage.py createsuperuser
+
+6.Ejecutar el servidor de desarrollo:
+python manage.py runserver
