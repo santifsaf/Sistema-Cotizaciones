@@ -6,10 +6,6 @@ import re
 
 
 class CotizacionForm(forms.ModelForm):
-    cliente = forms.ModelChoiceField(
-        queryset=Clientes.objects.all(),
-        widget=forms.Select
-    )
 
     # 🔧 Redefinimos como CharField para poder limpiar manualmente
     total = forms.CharField()

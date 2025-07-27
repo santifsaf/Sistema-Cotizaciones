@@ -13,7 +13,7 @@ class Cotizaciones(models.Model):
     fecha = models.DateField(null=True, blank=True)
     condiciones_pago = models.CharField(max_length=50, null=True, blank=True)
     numero_referencia=models.CharField(unique=True, editable=False, blank=True, max_length=20)
-    empresa = models.ForeignKey(Empresa, on_delete=models.SET_NULL, null=True)
+    empresa = models.ForeignKey(Empresa, on_delete=models.SET_NULL, null=True, blank=True)
     cliente=models.ForeignKey(Clientes, on_delete=models.SET_NULL, null=True, blank=True)
     observaciones = models.TextField(null=True, blank=True)
     descuento = models.DecimalField(max_digits=5, decimal_places=2, default=0, null=True, blank=True)

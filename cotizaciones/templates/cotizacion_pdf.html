@@ -36,14 +36,21 @@
         .container {
             max-width: 1000px;
             margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            min-height: calc(100vh - 120px);
+        }
+        
+        .main-content {
+            flex-grow: 1;
         }
         
         /* Encabezado */
         .header {
             text-align: center;
-            margin-bottom: 40px;
+            margin-bottom: 20px;
             position: relative;
-            padding: 0 0 20px 0;
+            padding: 0 0 10px 0;
         }
         
         .header::after {
@@ -59,7 +66,7 @@
         
         h1 {
             color: var(--color-primary);
-            font-size: 24px;
+            font-size: 20px;
             font-weight: 600;
             margin-bottom: 8px;
             text-transform: uppercase;
@@ -67,18 +74,36 @@
         }
         
         .subtitle {
-            font-size: 16px;
+            font-size: 14px;
             color: var(--color-accent);
             font-weight: 400;
+        }
+        
+        /* Información del presupuesto */
+        .presupuesto-info {
+            margin-bottom: 20px;
+            gap: 10px;
+        }
+        
+        .presupuesto-info .info-box {
+            padding: 10px;
+        }
+        
+        .presupuesto-info .info-row {
+            margin-bottom: 4px;
+        }
+        
+        .presupuesto-info .info-label {
+            font-size: 12px;
         }
         
         /* Fila centrada */
         .fila-centrada {
             display: flex;
             justify-content: space-between;
-            margin-bottom: 30px;
+            margin-bottom: 20px;
             flex-wrap: wrap;
-            gap: 20px;
+            gap: 10px;
         }
         
         .fila-centrada .columna {
@@ -89,15 +114,15 @@
         .info-box {
             border: 1px solid var(--color-border);
             border-radius: 6px;
-            padding: 20px;
+            padding: 10px;
             background-color: var(--color-secondary);
             box-shadow: 0 2px 4px rgba(0,0,0,0.05);
         }
         
         .info-box h3 {
             color: var(--color-primary);
-            font-size: 16px;
-            margin-bottom: 15px;
+            font-size: 14px;
+            margin-bottom: 8px;
             padding-bottom: 8px;
             border-bottom: 1px solid var(--color-border);
         }
@@ -111,6 +136,11 @@
         .info-label {
             font-weight: 600;
             color: var(--color-accent);
+        }
+        
+        /* Fuentes secundarias */
+        .info-row span {
+            font-size: 12px;
         }
         
         /* Tabla de artículos */
@@ -168,30 +198,62 @@
         .totals-container {
             background-color: var(--color-secondary);
             border-radius: 6px;
-            padding: 20px;
-            max-width: 400px;
+            padding: 10px;
+            margin-bottom: 20px;
+            max-width: 350px;
             margin-left: auto;
             box-shadow: 0 2px 4px rgba(0,0,0,0.05);
             page-break-inside: avoid;
         }
         
+        
         .totals-row {
             display: flex;
             justify-content: space-between;
-            padding: 8px 0;
+            padding: 4px 0;
         }
         
         .totals-label {
             font-weight: 600;
+            font-size: 12px;
         }
         
         .total-main {
-            font-size: 18px;
+            font-size: 16px;
             font-weight: 700;
             color: var(--color-primary);
             border-top: 2px solid var(--color-border);
-            margin-top: 5px;
-            padding-top: 10px;
+            margin-top: 4px;
+            padding-top: 4px;
+        }
+        
+        .subtotal-note {
+            font-size: 11px;
+            color: var(--color-accent);
+            font-style: italic;
+            text-align: center;
+            margin-top: 8px;
+        }
+        
+        /* Contenedor para observaciones y validez que se mantiene al final */
+        .bottom-content {
+            margin-top: auto;
+            page-break-inside: avoid;
+        }
+        
+        /* Observaciones */
+        .observaciones {
+            margin-top: 30px;
+            padding: 15px;
+            border: 1px dashed var(--color-border);
+            background-color: rgba(248, 249, 250, 0.5);
+            page-break-inside: avoid;
+        }
+        
+        .observaciones h3 {
+            color: var(--color-primary);
+            margin-bottom: 10px;
+            font-size: 16px;
         }
         
         /* Mensaje de validez */
@@ -200,10 +262,11 @@
             border: 1px solid rgba(40, 167, 69, 0.3);
             border-radius: 6px;
             padding: 15px;
-            margin-top: 40px;
+            margin-top: 20px;
             font-size: 13px;
             text-align: center;
             color: var(--color-accent);
+            page-break-inside: avoid;
         }
         
         /* Footer */
@@ -218,7 +281,6 @@
             border-top: 1px solid var(--color-border);
             display: flex;
             justify-content: space-between;
-            
         }
         
         .footer-left {
@@ -243,91 +305,8 @@
             opacity: 0.3;
         }
 
-        .page-break {
-            page-break-before: always;
-        }
-        
-        /* Observaciones */
-        .observaciones {
-            margin-top: 30px;
-            padding: 15px;
-            border: 1px dashed var(--color-border);
-            background-color: rgba(248, 249, 250, 0.5);
-            page-break-inside: avoid;
-        }
-        
-        .observaciones h3 {
-            color: var(--color-primary);
-            margin-bottom: 10px;
-            font-size: 16px;
-        }
-        
-        
-        /* ————— Comprimir Header ————— */
-        .header {
-        margin-bottom: 20px;       /* antes 40px */
-        padding-bottom: 10px;      /* antes 20px */
-        }
-        .header h1 {
-        font-size: 20px;           /* antes 24px */
-        }
-        .subtitle {
-        font-size: 14px;           /* antes 16px */
-        }
-
-        /* ————— Información de la cotización ————— */
-        .presupuesto-info {
-        margin-bottom: 20px;       /* antes 30px */
-        gap: 10px;                 /* antes 20px */
-        }
-        .presupuesto-info .info-box {
-        padding: 10px;             /* antes 20px */
-        }
-        .presupuesto-info .info-row {
-        margin-bottom: 4px;        /* antes 8px */
-        }
-        .presupuesto-info .info-label {
-        font-size: 12px;           /* antes 14px */
-        }
-
-        /* ————— Empresa / Cliente ————— */
-        .fila-centrada {
-        margin-bottom: 20px;       /* antes 30px */
-        gap: 10px;                 /* antes 20px */
-        }
-        .fila-centrada .info-box {
-        padding: 10px;             /* antes 20px */
-        }
-        .fila-centrada .info-box h3 {
-        font-size: 14px;           /* antes 16px */
-        margin-bottom: 8px;        /* antes 15px */
-        }
-
-        /* ————— Fuentes secundarias ————— */
-        .info-row span {
-        font-size: 12px;           /* reduce un poco el texto */
-        }
-
-        /* ————— Comprimir Totales ————— */
-        .totals-container {
-        padding: 10px;            /* antes 20px */
-        margin-bottom: 20px;      /* en caso de que haya margen */
-        max-width: 350px;         /* antes 400px */
-        }
-        .totals-row {
-        padding: 4px 0;           /* antes 8px */
-        }
-        .totals-label {
-        font-size: 12px;          /* antes 14px */
-        }
-        .total-main {
-        font-size: 16px;          /* antes 18px */
-        padding-top: 4px;         /* antes 10px */
-        margin-top: 4px;          /* antes 5px */
-        }
 
         
-
         /* Impresión */
         @media print {
             body {
@@ -339,6 +318,29 @@
             .container {
                 max-width: 100%;
                 padding: 10px;
+                min-height: calc(100vh - 50px);
+                display: flex;
+                flex-direction: column;
+            }
+            
+            .main-content {
+                flex-grow: 1;
+            }
+            
+            .bottom-content {
+                margin-top: auto;
+                break-inside: avoid;
+                page-break-inside: avoid;
+            }
+            
+            .observaciones {
+                break-inside: avoid;
+                page-break-inside: avoid;
+            }
+            
+            .validez-msg {
+                break-inside: avoid;
+                page-break-inside: avoid;
             }
             
             .footer {
@@ -348,9 +350,7 @@
                 right: 20px;
             }
             
-            .no-print {
-                display: none;
-            }
+
             
             .watermark {
                 opacity: 0.1;
@@ -372,174 +372,156 @@
     <div class="watermark">PRESUPUESTO</div>
     
     <div class="container">
-        <!-- Encabezado -->
-        <header class="header">
-            <h1>Presupuesto</h1>
-            <div class="subtitle">Documento no válido como factura</div>
-        </header>
+        <div class="main-content">
+            <!-- Encabezado -->
+            <header class="header">
+                <h1>Presupuesto</h1>
+                <div class="subtitle">Documento no válido como factura</div>
+            </header>
 
-        <!-- Información del presupuesto -->
-        <div class="presupuesto-info">
-            <div class="info-box">
-                <div class="info-row">
-                    <span class="info-label">Fecha:</span>
-                    <span>{{ cotizacion.fecha|date:"d/m/Y" }}</span>
+            <!-- Información del presupuesto -->
+            <div class="presupuesto-info">
+                <div class="info-box">
+                    <div class="info-row">
+                        <span class="info-label">Fecha:</span>
+                        <span>{{ cotizacion.fecha|date:"d/m/Y" }}</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Número de Referencia:</span>
+                        <span class="referencia">{{ cotizacion.numero_referencia }}</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Condición de pago:</span>
+                        <span>{{ cotizacion.condiciones_pago }}</span>
+                    </div>
                 </div>
-                <div class="info-row">
-                    <span class="info-label">Número de Referencia:</span>
-                    <span class="referencia">{{ cotizacion.numero_referencia }}</span>
+            </div>
+
+            <!-- Empresa y Cliente -->
+            <div class="fila-centrada">
+                <!-- Empresa -->
+                <div class="columna">
+                    <div class="info-box">
+                        <h3>Emisor</h3>
+                        <div class="info-row">
+                            <span class="info-label">Nombre:</span>
+                            <span>{{ empresa.nombre }}</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">CUIT:</span>
+                            <span>{{ empresa.cuit }}</span>
+                        </div>
+                        {% if empresa.direccion %}
+                        <div class="info-row">
+                            <span class="info-label">Dirección:</span>
+                            <span>{{ empresa.direccion }}</span>
+                        </div>
+                        {% endif %}
+                        <div class="info-row">
+                            <span class="info-label">Teléfono:</span>
+                            <span>{{ empresa.telefono }}</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Mail:</span>
+                            <span>{{ empresa.mail }}</span>
+                        </div>
+                    </div>
                 </div>
-                <div class="info-row">
-                    <span class="info-label">Condición de pago:</span>
-                    <span>{{ cotizacion.condiciones_pago }}</span>
+
+                <!-- Cliente -->
+                <div class="columna">
+                    <div class="info-box">
+                        <h3>Cliente</h3>
+                        {% if cliente.nombre_empresa %}
+                        <div class="info-row">
+                            <span class="info-label">Empresa:</span>
+                            <span>{{ cliente.nombre_empresa }}</span>
+                        </div>
+                        {% endif %}
+                        {% if cliente.cuit %}
+                        <div class="info-row">
+                            <span class="info-label">CUIT:</span>
+                            <span>{{ cliente.cuit }}</span>
+                        </div>
+                        {% endif %}
+                        {% if cliente.direccion %}
+                        <div class="info-row">
+                            <span class="info-label">Dirección:</span>
+                            <span>{{ cliente.direccion }}</span>
+                        </div>
+                        {% endif %}
+                        <div class="info-row">
+                            <span class="info-label">Mail:</span>
+                            <span>{{ cliente.mail }}</span>
+                        </div>
+                    </div>
                 </div>
-                {% if cotizacion.valido_hasta %}
-                <div class="info-row">
-                    <span class="info-label">Válido hasta:</span>
-                    <span>{{ cotizacion.valido_hasta|date:"d/m/Y" }}</span>
+            </div>
+
+            <!-- Artículos -->
+            <h2 class="section-title">Detalle de Productos/Servicios</h2>
+            <div class="table-container">
+                <table aria-label="Detalle de artículos del presupuesto">
+                    <thead>
+                        <tr>
+                            <th width="10%">Cant.</th>
+                            <th width="25%">Nombre</th>
+                            <th width="35%">Descripción</th>
+                            <th width="15%">Precio Unit.</th>
+                            <th width="15%">Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in articulos %}
+                        <tr>
+                            <td>{{ item.cantidad }}</td>
+                            <td>{{ item.articulo.nombre }}</td>
+                            <td>{{ item.articulo.descripcion|default:"-" }}</td>
+                            <td>${{ item.articulo.precio|floatformat:2 }}</td>
+                            <td>${{ item.subtotal|floatformat:2 }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+        <!-- Contenido que siempre va al final -->
+        <div class="bottom-content">
+            <!-- Totales completos -->
+            <div class="totals-container">
+                <div class="totals-row">
+                    <span class="totals-label">Subtotal:</span>
+                    <span>${{ total|floatformat:2 }}</span>
+                </div>
+                
+                {% if descuento and descuento > 0 %}
+                <div class="totals-row">
+                    <span class="totals-label">Descuento:</span>
+                    <span>{{ descuento }}%</span>
                 </div>
                 {% endif %}
-            </div>
-        </div>
 
-        <!-- Empresa y Cliente -->
-        <div class="fila-centrada">
-            <!-- Empresa -->
-            <div class="columna">
-                <div class="info-box">
-                    <h3>Empresa</h3>
-                    <div class="info-row">
-                        <span class="info-label">Nombre:</span>
-                        <span>{{ empresa.nombre }}</span>
-                    </div>
-                    <div class="info-row">
-                        <span class="info-label">CUIT:</span>
-                        <span>{{ empresa.cuit }}</span>
-                    </div>
-                    {% if empresa.direccion %}
-                    <div class="info-row">
-                        <span class="info-label">Dirección:</span>
-                        <span>{{ empresa.direccion }}</span>
-                    </div>
-                    {% endif %}
-                    <div class="info-row">
-                        <span class="info-label">Teléfono:</span>
-                        <span>{{ empresa.telefono }}</span>
-                    </div>
-                    <div class="info-row">
-                        <span class="info-label">Mail:</span>
-                        <span>{{ empresa.mail }}</span>
-                    </div>
+                <div class="totals-row total-main">
+                    <span class="totals-label">Total:</span>
+                    <span>${{ total_con_descuento|floatformat:2 }}</span>
                 </div>
+                {% if costo_envio and costo_envio > 0 %}
+                    <div class="totals-row">
+                        <span class="totals-label">Costo envío:</span>
+                        <span>${{ costo_envio }}</span>
+                    </div>
+                {% endif %}
+            </div>
+            <!-- Observaciones -->
+            <div class="observaciones">
+                <h3>Observaciones</h3>
+                <p>{{ cotizacion.observaciones|default:"" }}</p>
             </div>
 
-            <!-- Cliente -->
-            <div class="columna">
-                <div class="info-box">
-                    <h3>Cliente</h3>
-                    <div class="info-row">
-                        <span class="info-label">Nombre:</span>
-                        <span>{{ cliente.nombre }}</span>
-                    </div>
-                    {% if cliente.nombre_empresa %}
-                    <div class="info-row">
-                        <span class="info-label">Empresa:</span>
-                        <span>{{ cliente.nombre_empresa }}</span>
-                    </div>
-                    {% endif %}
-                    {% if cliente.cuit %}
-                    <div class="info-row">
-                        <span class="info-label">CUIT:</span>
-                        <span>{{ cliente.cuit }}</span>
-                    </div>
-                    {% endif %}
-                    {% if cliente.direccion %}
-                    <div class="info-row">
-                        <span class="info-label">Dirección:</span>
-                        <span>{{ cliente.direccion }}</span>
-                    </div>
-                    {% endif %}
-                    <div class="info-row">
-                        <span class="info-label">Mail:</span>
-                        <span>{{ cliente.mail }}</span>
-                    </div>
-                    {% if cliente.telefono %}
-                    <div class="info-row">
-                        <span class="info-label">Teléfono:</span>
-                        <span>{{ cliente.telefono }}</span>
-                    </div>
-                    {% endif %}
-                </div>
+            <!-- Mensaje de validez -->
+            <div class="validez-msg">
+                Este presupuesto es válido por 1 día desde su emisión. Se recomienda consultar nuevamente los precios antes de efectuar la compra.
             </div>
-        </div>
-
-        <!-- Artículos -->
-        <h2 class="section-title">Detalle de Productos/Servicios</h2>
-        <div class="table-container">
-            <table aria-label="Detalle de artículos del presupuesto">
-                <thead>
-                    <tr>
-                        <th width="10%">Cant.</th>
-                        <th width="25%">Nombre</th>
-                        <th width="35%">Descripción</th>
-                        <th width="15%">Precio Unit.</th>
-                        <th width="15%">Total</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for item in articulos %}
-                    <tr>
-                        <td>{{ item.cantidad }}</td>
-                        <td>{{ item.articulo.nombre }}</td>
-                        <td>{{ item.articulo.descripcion|default:"-" }}</td>
-                        <td>${{ item.articulo.precio|floatformat:2 }}</td>
-                        <td>${{ item.subtotal|floatformat:2 }}</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
-
-        <!-- Totales -->
-        <div class="totals-container">
-            <div class="totals-row">
-                <span class="totals-label">Subtotal:</span>
-                <span>${{ total|floatformat:2 }}</span>
-            </div>
-            
-            {% if descuento and descuento > 0 %}
-            <div class="totals-row">
-                <span class="totals-label">Descuento:</span>
-                <span>{{ descuento }}%</span>
-            </div>
-            {% endif %}
-
-            <div class="totals-row total-main">
-                <span class="totals-label">Total:</span>
-                <span>${{ total_con_descuento|floatformat:2 }}</span>
-            </div>
-            {% if costo_envio and costo_envio > 0 %}
-                <div class="totals-row">
-                    <span class="totals-label">Costo envío:</span>
-                    <span>${{ costo_envio }}</span>
-                </div>
-            {% endif %}
-        </div>
-
-        <!-- Observaciones -->
-        <div class="observaciones">
-            <h3>Observaciones</h3>
-            <p>{{ cotizacion.observaciones|default:"" }}</p>
-        </div>
-
-        <!-- Mensaje de validez -->
-        <div class="validez-msg">
-            {% if cotizacion.valido_hasta %}
-                Este presupuesto es válido hasta el {{ cotizacion.valido_hasta|date:"d/m/Y" }}.
-            {% else %}
-                Este presupuesto es válido por 1 día desde su emisión.
-            {% endif %}
-            Se recomienda consultar nuevamente los precios antes de efectuar la compra.
         </div>
     </div>
 
@@ -553,18 +535,5 @@
         </div>
     </footer>
 
-    <!-- Script para numeración de páginas (solo para impresión) -->
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Numeración de páginas para impresión
-            if(window.location.href.indexOf('print') > -1) {
-                var totalPages = Math.ceil(document.body.scrollHeight / 1123); // A4 a 96dpi
-                var pageElements = document.getElementsByClassName('page-number');
-                for(var i = 0; i < pageElements.length; i++) {
-                    pageElements[i].textContent = '1 de ' + totalPages;
-                }
-            }
-        });
-    </script>
 </body>
 </html>

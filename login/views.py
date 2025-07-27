@@ -12,6 +12,7 @@ from django.contrib.auth.views import (
 )
 from django.urls import reverse_lazy
 from django.contrib import messages
+from django.conf import settings
 
 class vistaRegistro(View):
     def get(self, request):
@@ -34,12 +35,17 @@ class CustomLoginView(LoginView):
     template_name = 'registration/login.html'
     redirect_authenticated_user = True
     authentication_form = CustomAuthenticationForm  
-    
+
     def form_valid(self, form):
         remember_me = form.cleaned_data.get('remember_me')
+
         if not remember_me:
-            # Si el usuario no quiere ser recordado, la sesión expirará al cerrar el navegador
+            # sesión solo hasta cerrar el navegador
             self.request.session.set_expiry(0)
+        else:
+            # sesión persiste por 30 días (en segundos)
+            self.request.session.set_expiry(60 * 60 * 24 * 30)
+
         return super().form_valid(form)
 
 
@@ -55,9 +61,21 @@ class CustomPasswordResetView(PasswordResetView):
             'Si el correo electrónico está registrado, recibirás un enlace para restablecer tu contraseña.'
         )
         return super().form_valid(form)
+    
+    def get_email_context(self, email):
+        context = super().get_email_context(email)
+        context['domain'] = getattr(settings, 'DEFAULT_DOMAIN', '127.0.0.1:8000')
+        context['protocol'] = 'http'
+        return context
+
+
 
 class CustomPasswordResetDoneView(PasswordResetDoneView):
-    template_name = 'registration/password_reset_done.html'
+    template_name = 'registration/password_reset_ok.html'
+
+    def dispatch(self, request, *args, **kwargs):
+        print("CustomPasswordResetDoneView cargado")
+        return super().dispatch(request, *args, **kwargs)
 
 class CustomPasswordResetConfirmView(PasswordResetConfirmView):
     template_name = 'registration/password_reset_confirm.html'

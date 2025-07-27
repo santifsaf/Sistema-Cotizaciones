@@ -82,6 +82,7 @@ Usa estilos propios en nueva_cotizacion.css y Bootstrap para responsividad.
                 <option 
                     value="{{ cliente.id }}"
                     data-empresa="{{ cliente.nombre_empresa }}"
+                    data-cuit-cliente="{{ cliente.cuit }}"
                     data-mail-cliente="{{ cliente.mail }}"
                     {% if cliente.id == form_data.cliente %}selected{% endif %}
                 >
@@ -155,7 +156,6 @@ Usa estilos propios en nueva_cotizacion.css y Bootstrap para responsividad.
             </p>
             <div class="d-flex justify-content-center gap-2">
             <button type="button" class="btn btn-secondary" onclick="if(confirm('¿Estás seguro? Se perderá la cotización.')) location.reload();">Descartar</button>
-            <button type="button" class="btn btn-primary">Enviar</button>
             <button type="submit" class="btn btn-success">Guardar</button>
             </div>
     </form>

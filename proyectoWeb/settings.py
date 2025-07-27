@@ -158,22 +158,20 @@ LOGOUT_REDIRECT_URL = '/home/'
 LOGIN_REDIRECT_URL = '/home/'
 
 
-# Configuración de email
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-
-# Para desarrollo (imprime emails en consola)
+# Configuración de email para desarrollo
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
-# Configuración para Gmail (ejemplo)
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'tu_email@gmail.com'  
-EMAIL_HOST_PASSWORD = 'tu_app_password'  
-
-# Email por defecto para enviar
-DEFAULT_FROM_EMAIL = 'tu_email@gmail.com'
-SERVER_EMAIL = 'tu_email@gmail.com'
+# Para producción con Gmail 
+# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+# EMAIL_HOST = 'smtp.gmail.com'
+# EMAIL_PORT = 587
+# EMAIL_USE_TLS = True
+# EMAIL_HOST_USER = 'tu_email@gmail.com'
+# EMAIL_HOST_PASSWORD = 'tu_app_password'  # ¡No uses tu contraseña real, usa App Password!
+# DEFAULT_FROM_EMAIL = 'tu_email@gmail.com'
+# SERVER_EMAIL = 'tu_email@gmail.com'
 
 # Configuración para reset de contraseña
 PASSWORD_RESET_TIMEOUT = 3600  
+
+DEFAULT_DOMAIN = '127.0.0.1:8000'

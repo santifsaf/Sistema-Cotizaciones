@@ -108,9 +108,6 @@ function completarCampos(e) {
             const select = document.createElement('select');
             select.className = "form-control"; //
             select.name = "articulos_cotizados";
-            const defaultOption = document.createElement('option');
-            defaultOption.textContent = '-- Seleccione un artículo --';
-            select.appendChild(defaultOption);
             const existingSelect = document.getElementById('articulo');
             if (existingSelect) {
                 Array.from(existingSelect.options).forEach(option => {
@@ -231,7 +228,7 @@ function completarCampos(e) {
             const inputAhorroTotal = document.createElement('input');
             inputAhorroTotal.type = 'text';
             inputAhorroTotal.readOnly = true;
-            inputAhorroTotal.className = 'form-control';
+            inputAhorroTotal.className = 'form-control input-ahorro-total';
             inputAhorroTotal.value = '$0.00';
             tdInputAhorroTotal.appendChild(inputAhorroTotal);
             nuevaFila.appendChild(tdInputAhorroTotal);
@@ -282,7 +279,7 @@ function completarCampos(e) {
             const filaDescuento = document.querySelector('.fila-descuento');
             if (!filaDescuento) return;
             const selectValorDescuento = filaDescuento.querySelector('select[name="descuento"]');
-            const inputAhorroTotal = filaDescuento.querySelector('input.form-control');
+            const inputAhorroTotal = filaDescuento.querySelector('input.input-ahorro-total');
             if (!selectValorDescuento || !inputAhorroTotal) return;
             const porcentaje = parseFloat(selectValorDescuento.value) || 0;
             const totalGeneral = parsearMoneda(document.getElementById('total').value);
@@ -472,6 +469,7 @@ function completarCampos(e) {
             if (selected.value) {
                 infoDiv.innerHTML = `
                     <p><strong>Empresa:</strong> ${selected.getAttribute('data-empresa')}</p>
+                    <p><strong>Cuit:</strong> ${selected.getAttribute('data-cuit-cliente')}</p>
                     <p><strong>Mail:</strong> ${selected.getAttribute('data-mail-cliente')}</p>
                 `;
             } else {
