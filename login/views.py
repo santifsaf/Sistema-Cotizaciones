@@ -4,19 +4,18 @@ from django.contrib.auth import login
 from django.contrib import messages
 from django.contrib.auth.views import LoginView
 from .forms import CustomUserCreationForm, CustomAuthenticationForm
+from django.urls import reverse_lazy
+from django.conf import settings
 from django.contrib.auth.views import (
     PasswordResetView, 
     PasswordResetDoneView, 
     PasswordResetConfirmView, 
     PasswordResetCompleteView
 )
-from django.urls import reverse_lazy
-from django.contrib import messages
-from django.conf import settings
 
-class vistaRegistro(View):
+class RegistroView(View):
     def get(self, request):
-        form = CustomUserCreationForm()  # Usa el formulario personalizado
+        form = CustomUserCreationForm()  
         return render(request, "registration/registro.html", {"form": form})
 
     def post(self, request):
@@ -33,10 +32,16 @@ class vistaRegistro(View):
 
 class CustomLoginView(LoginView):
     template_name = 'registration/login.html'
-    redirect_authenticated_user = True
     authentication_form = CustomAuthenticationForm  
 
     def form_valid(self, form):
+        """
+        Si el formulario es válido:
+        - Inicia sesión normalmente.
+        - Establece el tiempo de expiración de sesión según el campo 'remember_me':
+        - Si está desmarcado: la sesión expira al cerrar el navegador.
+        - Si está marcado: la sesión dura 30 días.
+        """
         remember_me = form.cleaned_data.get('remember_me')
 
         if not remember_me:
@@ -48,8 +53,24 @@ class CustomLoginView(LoginView):
 
         return super().form_valid(form)
 
+    def dispatch(self, request, *args, **kwargs):
+        """
+        Si el usuario ya está autenticado, lo redirige a la página de inicio ('home').
+        Evita que vea el formulario de login si ya inició sesión.
+        """
+        if request.user.is_authenticated:
+            return redirect('home')
+        return super().dispatch(request, *args, **kwargs)
+
 
 class CustomPasswordResetView(PasswordResetView):
+    """
+    Vista para solicitar el reseteo de contraseña mediante email.
+
+    - Muestra un mensaje genérico (por seguridad) si se envía un mail válido.
+    - Usa plantillas personalizadas para el email y el HTML.
+    - Usa contexto adicional para armar correctamente el link (protocolo y dominio).
+    """
     template_name = 'registration/password_reset.html'
     email_template_name = 'registration/password_reset_email.html'
     subject_template_name = 'registration/password_reset_subject.txt'
@@ -71,13 +92,16 @@ class CustomPasswordResetView(PasswordResetView):
 
 
 class CustomPasswordResetDoneView(PasswordResetDoneView):
+    """
+    Vista que informa al usuario que se envió el email de recuperación (si corresponde).
+    """
     template_name = 'registration/password_reset_ok.html'
 
-    def dispatch(self, request, *args, **kwargs):
-        print("CustomPasswordResetDoneView cargado")
-        return super().dispatch(request, *args, **kwargs)
-
 class CustomPasswordResetConfirmView(PasswordResetConfirmView):
+    """
+    Vista que permite al usuario establecer una nueva contraseña,
+    accediendo desde el link del email recibido.
+    """
     template_name = 'registration/password_reset_confirm.html'
     success_url = reverse_lazy('password_reset_complete')
     
@@ -86,4 +110,7 @@ class CustomPasswordResetConfirmView(PasswordResetConfirmView):
         return super().form_valid(form)
 
 class CustomPasswordResetCompleteView(PasswordResetCompleteView):
+    """
+    Vista final que confirma que el cambio de contraseña fue exitoso.
+    """
     template_name = 'registration/password_reset_complete.html'

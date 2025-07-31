@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import CustomLoginView, vistaRegistro
+from .views import CustomLoginView, RegistroView
 from django.contrib.auth.views import LogoutView
 from .views import (
     CustomPasswordResetView,
@@ -9,7 +9,7 @@ from .views import (
 )
 
 urlpatterns = [
-    path('', vistaRegistro.as_view(), name="registro"),
+    path('', RegistroView.as_view(), name="registro"),
     path('registration/login/', CustomLoginView.as_view(), name='login'),
     path('logout/', LogoutView.as_view(next_page='login'), name='logout'),
 

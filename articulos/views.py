@@ -8,6 +8,10 @@ from django.db.models import Q
 
 @login_required
 def mis_articulos(request):
+    """
+    Lista artículos del usuario con funcionalidad de búsqueda.
+    Busca en nombre y descripción del artículo.
+    """
     search = request.GET.get('search', '').strip()
     articulos = Articulo.objects.filter(usuario_log=request.user)
     if search:

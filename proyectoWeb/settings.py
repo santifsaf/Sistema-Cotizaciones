@@ -30,7 +30,6 @@ INSTALLED_APPS = [
     'cotizaciones',
     'login',
     'import_export',
-    'rest_framework',
 ]
 
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
@@ -159,3 +158,23 @@ SERVER_EMAIL = config('SERVER_EMAIL', default='noreply@tudominio.com')
 # Configuración para reset de contraseña
 PASSWORD_RESET_TIMEOUT = config('PASSWORD_RESET_TIMEOUT', default=3600, cast=int)
 DEFAULT_DOMAIN = config('DEFAULT_DOMAIN', default='127.0.0.1:8000')
+
+# # En settings.py para producción
+# if not DEBUG:
+#     SECURE_SSL_REDIRECT = True
+#     SECURE_HSTS_SECONDS = 31536000
+#     SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+#     SECURE_HSTS_PRELOAD = True
+#     SESSION_COOKIE_SECURE = True
+#     CSRF_COOKIE_SECURE = True
+
+SECURE_BROWSER_XSS_FILTER = True
+SECURE_CONTENT_TYPE_NOSNIFF = True
+SECURE_REFERRER_POLICY = 'strict-origin-when-cross-origin'
+
+# # Instalar todo junto para producicon:
+# pip install django-ratelimit
+# pip install gunicorn
+# pip install whitenoise
+# pip install dj-database-url
+# pip install psycopg2-binary

@@ -8,7 +8,6 @@ from django.template.loader import render_to_string
 from django.http import HttpResponse
 from decimal import Decimal
 from django.db.models import Q
-
 from cotizApp.models import Empresa
 from .models import Clientes, Cotizaciones, ArticulosCotizado
 from articulos.models import Articulo
@@ -17,41 +16,50 @@ from .forms import CotizacionForm
 from weasyprint import HTML
 
 
-# Create your views here.
 
 class MisCotizaciones(LoginRequiredMixin, ListView):
+    """
+    Vista para listar cotizaciones del usuario con funcionalidad de búsqueda.
+    Busca por número de referencia y datos del cliente.
+    """
     model = Cotizaciones
     template_name = "mis_cotizaciones.html"
     context_object_name = 'cotizaciones'
 
     def get_queryset(self):
         search = self.request.GET.get('search')
-        print(">>>> BUSCANDO:", search)
         qs = Cotizaciones.objects.filter(usuario=self.request.user)
+
         if search:
             qs = qs.filter(
                 Q(numero_referencia__icontains=search) |
-                Q(cliente__nombre__icontains=search) |
-                Q(cliente__nombre_empresa__icontains=search)
+                Q(cliente__isnull=False) & (
+                    Q(cliente__nombre__icontains=search) |
+                    Q(cliente__nombre_empresa__icontains=search)
+                )
             )
+
         return qs
 
 
-from django.views.generic import View
-
 class NuevaCotizacion(LoginRequiredMixin, View):
+    """Vista para crear nuevas cotizaciones con artículos asociados."""
     template_name = 'nueva_cotizacion.html'
     success_url = reverse_lazy('mis_cotizaciones')
 
-    def get(self, request):
-        form = CotizacionForm()
-        context = {
+    def _get_context_data(self, form):
+        return {
             'form': form,
             'empresas': Empresa.objects.all(),
-            'clientes': Clientes.objects.all(),
-            'articulos_disponibles': Articulo.objects.all(),
+            'clientes': Clientes.objects.filter(usuario_log=self.request.user),
+            'articulos_disponibles': Articulo.objects.filter(usuario_log=self.request.user),
             'fecha_actual': timezone.now().strftime('%Y-%m-%d'),
         }
+
+    def get(self, request):
+        """Renderiza formulario de nueva cotización."""
+        form = CotizacionForm()
+        context = self._get_context_data(form)
         return render(request, self.template_name, context)
 
     def post(self, request):
@@ -62,29 +70,21 @@ class NuevaCotizacion(LoginRequiredMixin, View):
         if form.is_valid():
             cotizacion = form.save(commit=False)
             cotizacion.usuario = request.user
-            cotizacion.save()
+            cotizacion.save()  
 
+            """Guardar artículos"""
             self._guardar_articulos(request, cotizacion)
 
-            """ 
-            Recalcula y guarda los totales 
-            """
-            total, _, total_con_descuento = cotizacion.calcular_totales()
-            cotizacion.total = total
-            cotizacion.total_con_descuento = total_con_descuento or Decimal('0.00')
-            cotizacion.save()
+            """Recalcular totales después de guardar los artículos"""
+            cotizacion.save() 
 
-            messages.success(request, f'Se creó una nueva cotización con ID {cotizacion.id}')
+            messages.success(request, f'Se creó una nueva cotización {cotizacion.numero_referencia}')
             return redirect(self.success_url)
         else:
-            context = {
-                'form': form,
-                'empresas': Empresa.objects.all(),
-                'clientes': Clientes.objects.all(),
-                'articulos_disponibles': Articulo.objects.all(),
-                'fecha_actual': timezone.now().strftime('%Y-%m-%d'),
-            }
+            context = self._get_context_data(form)
             return render(request, self.template_name, context)
+    
+        
 
     def _guardar_articulos(self, request, cotizacion):
         """
@@ -122,34 +122,50 @@ class EliminarCotizacion(LoginRequiredMixin, View):
                 messages.error(request, 'Debe seleccionar al menos una cotización.')
         return redirect('mis_cotizaciones')
     
+from django.contrib import messages
+from django.shortcuts import redirect
+import logging
+
+logger = logging.getLogger(__name__)
+
 def generar_pdf(request, cotizacion_id):
     """
-    Genera un PDF de la cotización seleccionada usando WeasyPrint.
+    Genera un PDF de la cotización
     """
-    cotizacion = get_object_or_404(Cotizaciones, id=cotizacion_id)
-    articulos = cotizacion.items.all()
+    try:
+        cotizacion = get_object_or_404(
+            Cotizaciones, 
+            id=cotizacion_id, 
+            usuario=request.user
+        )
+        
+        articulos = cotizacion.items.select_related('articulo').all()
+        subtotal, descuento_pct, total_con_descuento = cotizacion.calcular_totales()
 
-    total, descuento, total_con_descuento = cotizacion.calcular_totales()
+        context = {
+            "cotizacion": cotizacion,
+            "articulos": articulos,
+            "total": subtotal,  
+            "total_con_descuento": total_con_descuento,  
+            "descuento": float(descuento_pct) if descuento_pct else 0,
+            "costo_envio": cotizacion.costo_envio or Decimal('0.00'),
+            "observaciones": cotizacion.observaciones or '',
+            "fecha": cotizacion.fecha,
+            "numero_referencia": cotizacion.numero_referencia,
+            "condiciones_pago": cotizacion.condiciones_pago,
+            "empresa": cotizacion.empresa,
+            "cliente": cotizacion.cliente,
+        }
 
-    context = {
-        "cotizacion": cotizacion,
-        "articulos": articulos,
-        "total": total,
-        "total_con_descuento": total_con_descuento,
-        "descuento": float(descuento) if descuento else 0,
-        "costo_envio": cotizacion.costo_envio or Decimal('0.00'),
-        "observaciones": cotizacion.observaciones or '',
-        "fecha": cotizacion.fecha,
-        "numero_referencia": cotizacion.numero_referencia,
-        "condiciones_pago": cotizacion.condiciones_pago,
-        "empresa": cotizacion.empresa,
-        "cliente": cotizacion.cliente,
-    }
+        html_string = render_to_string("cotizacion_pdf.html", context)
+        html = HTML(string=html_string, base_url=request.build_absolute_uri())
+        pdf = html.write_pdf()
 
-    html_string = render_to_string("cotizacion_pdf.html", context)
-    html = HTML(string=html_string, base_url=request.build_absolute_uri())
-    pdf = html.write_pdf()
-
-    response = HttpResponse(pdf, content_type='application/pdf')
-    response['Content-Disposition'] = f'filename="cotizacion_{cotizacion.id}.pdf"'
-    return response
+        response = HttpResponse(pdf, content_type='application/pdf')
+        response['Content-Disposition'] = f'filename="cotizacion_{cotizacion.numero_referencia}.pdf"'
+        return response
+        
+    except Exception as e:
+        logger.error(f"Error generando PDF para cotización {cotizacion_id}: {str(e)}")
+        messages.error(request, "Error al generar el PDF. Intente nuevamente.")
+        return redirect('mis_cotizaciones')

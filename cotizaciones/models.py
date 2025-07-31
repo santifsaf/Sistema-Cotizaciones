@@ -25,47 +25,65 @@ class Cotizaciones(models.Model):
     
     def calcular_totales(self):
         """
-        Calcula el total, el descuento aplicado y el total con descuento de la cotización.
+        Calcula totales:
+        - total: subtotal sin descuento
+        - total_con_descuento: total con descuento aplicado
         """
         articulos = self.items.all()
-        total = Decimal('0.00')
+        subtotal = Decimal('0.00')
 
+        # Validar descuento
         try:
-            descuento = Decimal(str(self.descuento).replace(",", ".")) if self.descuento else Decimal('0.00')
+            descuento_pct = (
+                Decimal(str(self.descuento).replace(",", "."))
+                if self.descuento else Decimal('0.00')
+            )
         except InvalidOperation:
-            descuento = Decimal('0.00')
+            descuento_pct = Decimal('0.00')
 
-        # Validación de rango de descuento
-        descuento = max(Decimal('0.00'), min(descuento, Decimal('100.00')))
+        descuento_pct = max(Decimal('0.00'), min(descuento_pct, Decimal('100.00')))
 
+        # Calcular subtotal (sin descuento)
         for item in articulos:
-            precio_unitario = item.articulo.precio or Decimal('0.00')
-            if self.condiciones_pago == 'Efectivo':
-                precio_unitario *= (Decimal('1.00') - (descuento / 100))
-            subtotal = precio_unitario * item.cantidad
-            total += subtotal
+            precio = item.articulo.precio or Decimal('0.00')
+            subtotal += precio * item.cantidad
 
-        descuento_monto = total * (descuento / 100)
-        total_con_descuento = total - descuento_monto
+        # Aplicar descuento al subtotal
+        descuento_monto = subtotal * (descuento_pct / 100)
+        total_con_descuento = max(subtotal - descuento_monto, Decimal('0.00'))
 
-        if total_con_descuento < 0:
-            total_con_descuento = Decimal('0.00')
-
-        return total, descuento, total_con_descuento
+        return subtotal, descuento_pct, total_con_descuento
 
     def save(self, *args, **kwargs):
         """
-        Sobrescribe el método save para generar automáticamente el número de referencia.
+        1) Genera 'numero_referencia' único si no existe.
+        2) Recalcula y asigna 'total' y 'total_con_descuento' antes de guardar.
+        3) Llama al super().save().
         """
+        # ——————————————
+        # 1. Generar referencia
+        # ——————————————
         if not self.numero_referencia:
             with transaction.atomic():
-                ultimo_num = (
+                ultimo = (
                     Cotizaciones.objects
-                    .annotate(numero=Cast(Substr('numero_referencia', 5), IntegerField()))
-                    .aggregate(ultimo=Max('numero'))['ultimo'] or 0
+                    .annotate(n=Cast(Substr('numero_referencia', 5), IntegerField()))
+                    .aggregate(maxn=Max('n'))['maxn'] or 0
                 )
-                nuevo_num = ultimo_num + 1
-                self.numero_referencia = f'COT-{nuevo_num:05d}'
+                self.numero_referencia = f'COT-{ultimo+1:05d}'
+            super().save(*args, **kwargs)
+            return
+
+        # ——————————————
+        # 2. Recalcular totales
+        # ——————————————
+        subtotal, _, total_con_desc = self.calcular_totales()
+        self.total = subtotal  # Este es el subtotal sin descuento
+        self.total_con_descuento = total_con_desc  # Este es el total con descuento
+
+        # ——————————————
+        # 3. Guardar
+        # ——————————————
         super().save(*args, **kwargs)
 
 

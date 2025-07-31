@@ -1,0 +1,197 @@
+[
+{
+  "model": "cotizApp.empresa",
+  "pk": 1,
+  "fields": {
+    "nombre": "TechSolutions",
+    "cuit": "30-12345678-9",
+    "telefono": "1122334455",
+    "mail": "contacto@techsolutions.com",
+    "created": "2025-07-25T00:52:04.796Z",
+    "updated": "2025-07-24"
+  }
+},
+{
+  "model": "cotizApp.empresa",
+  "pk": 2,
+  "fields": {
+    "nombre": "GastroMax",
+    "cuit": "30-98765432-1",
+    "telefono": "1133445566",
+    "mail": "ventas@gastromax.com",
+    "created": "2025-07-25T00:52:04.801Z",
+    "updated": "2025-07-24"
+  }
+},
+{
+  "model": "cotizApp.empresa",
+  "pk": 3,
+  "fields": {
+    "nombre": "ConstruirYA",
+    "cuit": "30-11223344-5",
+    "telefono": "1144556677",
+    "mail": "info@construirya.com",
+    "created": "2025-07-25T00:52:04.806Z",
+    "updated": "2025-07-24"
+  }
+},
+{
+  "model": "cotizApp.empresa",
+  "pk": 4,
+  "fields": {
+    "nombre": "EcoLimpio",
+    "cuit": "30-55667788-1",
+    "telefono": "1155667788",
+    "mail": "soporte@ecolimpio.com",
+    "created": "2025-07-25T00:52:04.810Z",
+    "updated": "2025-07-24"
+  }
+},
+{
+  "model": "cotizApp.empresa",
+  "pk": 5,
+  "fields": {
+    "nombre": "LogisPro",
+    "cuit": "30-66778899-3",
+    "telefono": "1166778899",
+    "mail": "logistica@logispro.com",
+    "created": "2025-07-25T00:52:04.814Z",
+    "updated": "2025-07-24"
+  }
+},
+{
+  "model": "articulos.articulo",
+  "pk": 6,
+  "fields": {
+    "usuario_log": 1,
+    "imagen": "articulos/mouse_gamer_pro_m9_rgb_4000dpi_preto_64387_fortrek_28591_2_20190325221745.webp",
+    "nombre": "Mouse Gamer",
+    "descripcion": "Mouse óptico RGB de alta precisión",
+    "precio": 45000,
+    "created": "2025-07-25T00:57:18.196Z",
+    "updated": "2025-07-24"
+  }
+},
+{
+  "model": "articulos.articulo",
+  "pk": 7,
+  "fields": {
+    "usuario_log": 1,
+    "imagen": "articulos/OIP.webp",
+    "nombre": "Teclado Mecánico",
+    "descripcion": "Teclado mecánico retroiluminado",
+    "precio": 75000,
+    "created": "2025-07-25T00:57:43.233Z",
+    "updated": "2025-07-24"
+  }
+},
+{
+  "model": "articulos.articulo",
+  "pk": 8,
+  "fields": {
+    "usuario_log": 1,
+    "imagen": "articulos/OIP_1.webp",
+    "nombre": "Monitor 24\"",
+    "descripcion": "Monitor LED FullHD 24 pulgadas",
+    "precio": 180000,
+    "created": "2025-07-25T00:58:04.062Z",
+    "updated": "2025-07-24"
+  }
+},
+{
+  "model": "articulos.articulo",
+  "pk": 9,
+  "fields": {
+    "usuario_log": 1,
+    "imagen": "articulos/OIP_qcmXfgN.webp",
+    "nombre": "Auriculares Pro",
+    "descripcion": "Auriculares con cancelación de ruido",
+    "precio": 150000,
+    "created": "2025-07-25T00:58:17.530Z",
+    "updated": "2025-07-24"
+  }
+},
+{
+  "model": "articulos.articulo",
+  "pk": 10,
+  "fields": {
+    "usuario_log": 1,
+    "imagen": "articulos/OIP_2.webp",
+    "nombre": "Webcam HD",
+    "descripcion": "Cámara web 1440p con micrófono",
+    "precio": 88200,
+    "created": "2025-07-25T00:58:37.429Z",
+    "updated": "2025-07-24"
+  }
+},
+{
+  "model": "clientes.clientes",
+  "pk": 6,
+  "fields": {
+    "usuario_log": 1,
+    "nombre": "Juan Pérez",
+    "nombre_empresa": "JP Import",
+    "cuit": "444444444",
+    "telefono": "1166112233",
+    "mail": "juanperez@example.com",
+    "created": "2025-07-25T00:59:02.629Z",
+    "updated": "2025-07-24"
+  }
+},
+{
+  "model": "clientes.clientes",
+  "pk": 7,
+  "fields": {
+    "usuario_log": 1,
+    "nombre": "María López",
+    "nombre_empresa": "ML Textiles",
+    "cuit": "444444444",
+    "telefono": "1177223344",
+    "mail": "maria.lopez@example.com",
+    "created": "2025-07-25T00:59:27.789Z",
+    "updated": "2025-07-24"
+  }
+},
+{
+  "model": "clientes.clientes",
+  "pk": 8,
+  "fields": {
+    "usuario_log": 1,
+    "nombre": "Carlos Díaz",
+    "nombre_empresa": "CD Servicios",
+    "cuit": "444444444",
+    "telefono": "1188334455",
+    "mail": "carlos.diaz@example.com",
+    "created": "2025-07-25T00:59:54.406Z",
+    "updated": "2025-07-24"
+  }
+},
+{
+  "model": "clientes.clientes",
+  "pk": 9,
+  "fields": {
+    "usuario_log": 1,
+    "nombre": "Ana Torres",
+    "nombre_empresa": "AT Logística",
+    "cuit": "444444444",
+    "telefono": "1199445566",
+    "mail": "ana.torres@example.com",
+    "created": "2025-07-25T01:00:11.822Z",
+    "updated": "2025-07-24"
+  }
+},
+{
+  "model": "clientes.clientes",
+  "pk": 10,
+  "fields": {
+    "usuario_log": 1,
+    "nombre": "Luis Gómez",
+    "nombre_empresa": "LG Distribuciones",
+    "cuit": "444444444",
+    "telefono": "1100556677",
+    "mail": "luis.gomez@example.com",
+    "created": "2025-07-25T01:00:30.428Z",
+    "updated": "2025-07-24"
+  }
+}
+]

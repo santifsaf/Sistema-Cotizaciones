@@ -1,5 +1,4 @@
 Django==5.1
 django_import_export==4.1.1
-djangorestframework==3.15.2
 weasyprint==66.0
 python-decouple==3.8
