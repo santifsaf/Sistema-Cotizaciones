@@ -2,3 +2,5 @@ Django==5.1
 django_import_export==4.1.1
 weasyprint==66.0
 python-decouple==3.8
+django-crispy-forms==2.1
+crispy-bootstrap5==2024.2

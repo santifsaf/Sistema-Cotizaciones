@@ -122,11 +122,6 @@ class EliminarCotizacion(LoginRequiredMixin, View):
                 messages.error(request, 'Debe seleccionar al menos una cotización.')
         return redirect('mis_cotizaciones')
     
-from django.contrib import messages
-from django.shortcuts import redirect
-import logging
-
-logger = logging.getLogger(__name__)
 
 def generar_pdf(request, cotizacion_id):
     """
@@ -166,6 +161,5 @@ def generar_pdf(request, cotizacion_id):
         return response
         
     except Exception as e:
-        logger.error(f"Error generando PDF para cotización {cotizacion_id}: {str(e)}")
         messages.error(request, "Error al generar el PDF. Intente nuevamente.")
         return redirect('mis_cotizaciones')

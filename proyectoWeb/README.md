@@ -24,13 +24,40 @@ Podés loguearte, cargar previamente tus artículos, clientes y datos de tu empr
 - [Django 5.1](https://www.djangoproject.com/)
 - [django-import-export 4.1.1](https://django-import-export.readthedocs.io/)
 - [WeasyPrint 66.0](https://weasyprint.org/)
+- **Docker** para containerización
 - Base de datos: **SQLite**
 - Frontend: **HTML**, **CSS**, **Bootstrap**, **JavaScript**
 - Control de versiones: **GitHub**
 
 ---
 
-## 📦 Instalación y configuración
+## 🐳 Ejecución con Docker (Recomendado)
+
+Para facilitar la configuración y despliegue, el proyecto está completamente dockerizado:
+
+### Opción 1: Docker Compose (la más fácil)
+```bash
+# Clonar el repositorio
+git clone https://github.com/usuario/proyectoWeb.git
+cd proyectoWeb
+
+# Levantar la aplicación
+docker-compose up
+
+# La app estará disponible en http://localhost:8000
+```
+
+### Comandos útiles de Docker
+```bash
+docker-compose build      # Construir la imagen (solo la primera vez)
+docker-compose up -d      # Levantar en segundo plano
+docker-compose down       # Detener y limpiar contenedores
+docker-compose logs       # Ver logs de la aplicación
+```
+
+---
+
+## 📦 Instalación manual (sin Docker)
 
 ### Requerimientos
 Ver archivo `requirements.txt` para todas las dependencias.
@@ -43,7 +70,7 @@ git clone https://github.com/usuario/proyectoWeb.git
 cd proyectoWeb
 ```
 
-2. **Crear entorno virtual (recomendado):**
+2. **Crear entorno virtual:**
 ```bash
 python -m venv venv
 source venv/bin/activate  # En Windows: venv\Scripts\activate
@@ -113,18 +140,18 @@ Una vez cargados los datos, podrás crear cotizaciones usando los artículos y c
 
 ```
 proyectoWeb/
-├── cotizApp/          # App principal y configuración Django
-├── login/             # Gestión de usuarios y autenticación
-├── articulos/         # CRUD de artículos (FBV)
-├── clientes/          # CRUD de clientes (CBV)
-├── cotizaciones/      # CRUD de cotizaciones (CBV)
-├── static/            # Archivos estáticos globales
-├── fixtures/          # Datos de demostración
-├── media/             # Archivos subidos por usuarios
-└── requirements.txt   # Dependencias del proyecto
+├── fixtures         # Datos de demostración  
+├── requirements.txt  # Dependencias del proyecto 
+├── docker-compose.yml # Configuración de Docker
+├── Dockerfile        # Imagen de Docker
+├── media/            # Archivos subidos por usuarios  
+├── cotizApp/         # App principal y configuración Django
+│   └── static/       # Archivos estáticos de cotizApp
+├── login/            # Gestión de usuarios, autenticación y recuperación personalizada de credenciales
+├── articulos/        # CRUD de artículos (FBV)
+├── clientes/         # CRUD de clientes (CBV)
+└── cotizaciones/     # CRUD de cotizaciones (CBV) con funcionalidad para generar PDFs
 ```
-
-**Nota**: Cada app contiene sus propios templates en `app/templates/`
 
 ---
 
@@ -138,13 +165,8 @@ El proyecto implementa **ambos enfoques de Django** para demostrar versatilidad 
 
 Esta decisión fue **intencional** para mostrar dominio de ambas metodologías. En proyectos reales, se recomienda mantener consistencia según las preferencias del equipo y la complejidad de la lógica de negocio.
 
-### Otras decisiones de arquitectura
-
-No se implementó **API REST** ya que el proyecto funciona completamente desde el navegador mediante vistas clásicas de Django. Se puede agregar fácilmente con Django REST Framework si se requiere una aplicación móvil o frontend moderno.
-
-**Caché**: No se aplicó cacheado porque el sistema no maneja alto tráfico ni grandes volúmenes de datos. 
-
-**Seguridad**: El proyecto usa el sistema de sesiones estándar de Django. No se incluyó seguimiento de tokens avanzado porque no hay sesiones distribuidas ni múltiples dispositivos por usuario.
+### Containerización con Docker
+Aunque CotizApp no es una aplicación compleja que requiera necesariamente Docker, decidí implementar containerización como una oportunidad de aprendizaje y buenas prácticas de desarrollo. Docker facilita la reproducibilidad del entorno y simplifica el proceso de setup para otros desarrolladores.
 
 ---
 
@@ -160,6 +182,7 @@ No se implementó **API REST** ya que el proyecto funciona completamente desde e
 
 ### Para desarrolladores:
 1. **Clone** → Descargar repositorio
-2. **Setup** → Configurar entorno
-3. **Fixtures** → Cargar datos demo
+2. **Docker** → `docker-compose up` y listo
+3. **Fixtures** → Cargar datos demo (opcional)
 4. **Testing** → Probar funcionalidades
+

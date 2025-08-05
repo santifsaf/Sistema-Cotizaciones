@@ -139,6 +139,8 @@ MESSAGE_TAGS = {
 
 LOGOUT_REDIRECT_URL = '/home/'
 LOGIN_REDIRECT_URL = '/home/'
+LOGIN_URL = '/registration/login/'
+LOGIN_REDIRECT_URL = '/home/' 
 
 SECRET_KEY = config('SECRET_KEY')
 DEBUG = config('DEBUG', default=False, cast=bool)
