@@ -18,6 +18,7 @@ ALLOWED_HOSTS = []
 INSTALLED_APPS = [
     'crispy_forms',
     'crispy_bootstrap5',
+    'login',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -28,14 +29,15 @@ INSTALLED_APPS = [
     'articulos',
     'clientes',
     'cotizaciones',
-    'login',
     'import_export',
+    'axes',
 ]
 
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
 CRISPY_TEMPLATE_PACK = 'bootstrap5'
 
 MIDDLEWARE = [
+    'axes.middleware.AxesMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -45,12 +47,27 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+AUTHENTICATION_BACKENDS = [
+    "axes.backends.AxesBackend",  # primero para que evalue intentos fallidos
+    "django.contrib.auth.backends.ModelBackend",
+]
+
+# Opciones recomendadas
+AXES_FAILURE_LIMIT = 5  # después de 5 intentos falla bloquea
+AXES_COOLOFF_TIME = 1  # en horas; acá 1 hora de bloqueo
+AXES_LOCK_OUT_BY_COMBINATION_USER_AND_IP = True  # más estricto
+AXES_USE_USER_AGENT = False  # opcional, simplifica
+AXES_ONLY_USER_FAILURES = False  # si True bloquea por usuario sin importar IP
+
+# Para ver logs (útil en debug)
+AXES_VERBOSE = True
+
 ROOT_URLCONF = 'proyectoWeb.urls'
 
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'templates'],
+        'DIRS': [BASE_DIR / 'login' / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -86,6 +103,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
     {
         'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+        'OPTIONS': {'min_length': 8,}
     },
     {
         'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',

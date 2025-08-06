@@ -8,13 +8,13 @@ WORKDIR /app
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 
-# Copiar e instalar dependencias Python
+# Copia e instala dependencias Python
 COPY requirements.txt .
 RUN pip install --upgrade pip
 RUN pip install -r requirements.txt
 
 
-# Instalar librerías necesarias del sistema
+# Instala librerías necesarias del sistema
 RUN apt-get update && apt-get install -y \
     build-essential \
     libpango-1.0-0 \
@@ -25,7 +25,7 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 
-# Copiar el código fuente de la app
+# Copia el código fuente de la app
 COPY . .
 
 CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]

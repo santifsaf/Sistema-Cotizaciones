@@ -3,39 +3,218 @@
 **CotizApp** es una aplicación web desarrollada en **Django** que permite gestionar artículos, clientes y empresas para crear cotizaciones de forma simple y profesional.  
 Podés loguearte, cargar previamente tus artículos, clientes y datos de tu empresa, y luego crear cotizaciones interactivas que se pueden descargar en PDF, imprimir o enviar por mail. 
 
----
-
+## ------------------------------------------------------------------------------------------------------------------
 ## 🚀 Funcionalidades principales
 
-✅ Registro e inicio de sesión de usuarios  
-✅ Views personalizadas para la recuperación de contraseña  
-✅ Carga y administración de artículos  
-✅ Carga y administración de clientes  
+✅ Views personalizadas para el registro, inicio de sesión de usuarios y la recuperación de contraseña via mail (Bloqueo automático tras 5 intentos fallidos)
+✅ Carga y gestión de artículos con filtros de busqueda (nombre o descripcion).   
+✅ Carga y gestión de clientes con filtros de busqueda (nombre o empresa).  
 ✅ Carga de datos de tu empresa (para incluir en la cotización)  
-✅ Creación de cotizaciones a partir de artículos cargados:  
-- Totales, descuentos y cantidad de artículos cotizados actualizados dinámicamente mediante JavaScript  
+✅ Creación de cotizaciones a partir de artículos cargados (Permite exportar a PDF):  
+- Totales, descuentos y cantidad de artículos cotizados actualizados dinámicamente mediante JavaScript.  
 ✅ Visualización y descarga de cotizaciones en **PDF** (gracias a WeasyPrint)  
+- Filtros de busqueda (número de cotizacion o por cliente)
 ✅ Interfaz responsive básica con **Bootstrap**
 
----
+## ------------------------------------------------------------------------------------------------------------------
 
 ## 🛠️ Tecnologías utilizadas
 
-- [Django 5.1](https://www.djangoproject.com/)
-- [django-import-export 4.1.1](https://django-import-export.readthedocs.io/)
-- [WeasyPrint 66.0](https://weasyprint.org/)
-- **Docker** para containerización
-- Base de datos: **SQLite**
-- Frontend: **HTML**, **CSS**, **Bootstrap**, **JavaScript**
-- Control de versiones: **GitHub**
+django-axes==8.0.0
+Django 5.1
+django-import-export 4.1.1
+WeasyPrint 66.0
+Docker para containerización
+Base de datos: SQLite
+Frontend: HTML, CSS, Bootstrap, JavaScript
+Control de versiones: GitHub
 
----
+## ------------------------------------------------------------------------------------------------------------------
 
-## 🐳 Ejecución con Docker (Recomendado)
+
+## 📁 Estructura del proyecto
+
+```
+proyectoWeb/
+├── .env.example       # variables de entorno (oculto)
+├── .gitignore         # Archivos ignorados por Git (oculto)
+├── fixtures           # Datos de demostración  
+├── requirements.txt   # Dependencias del proyecto 
+├── docker-compose.yml # Configuración de Docker
+├── Dockerfile         # Imagen de Docker
+├── media              # Archivos subidos por usuarios  
+├── cotizApp/          # App principal y configuración Django
+│   └── static/        # Archivos estáticos de cotizApp
+├── login/             # Gestión de usuarios, autenticación y recuperación personalizada de credenciales
+├── articulos/         # CRUD de artículos (FBV)
+├── clientes/          # CRUD de clientes (CBV)
+└── cotizaciones/      # CRUD de cotizaciones (CBV) con interfaz interactiva y generación de PDFs
+```
+
+## ------------------------------------------------------------------------------------------------------------------
+## 🗄️ Arquitectura de Base de Datos
+
+    User {
+        int id PK
+        string username
+        string email
+        string first_name
+        string last_name
+        datetime date_joined
+        boolean is_active
+    }
+
+    Empresa {
+        int id PK
+        int usuario_log_id FK
+        string nombre
+        string cuit
+        string telefono
+        string mail
+        datetime created
+        date updated
+    }
+
+    Clientes {
+        int id PK
+        int usuario_log_id FK
+        string nombre
+        string nombre_empresa
+        string cuit
+        string telefono
+        string mail
+        datetime created
+        date updated
+    }
+
+    Articulo {
+        int id PK
+        int usuario_log_id FK
+        string imagen
+        string nombre
+        string descripcion
+        int precio
+        datetime created
+        date updated
+    }
+
+    Cotizaciones {
+        int id PK
+        int usuario_id FK
+        date fecha
+        string condiciones_pago
+        string numero_referencia UK
+        int empresa_id FK
+        int cliente_id FK
+        text observaciones
+        decimal descuento
+        decimal total
+        decimal total_con_descuento
+        decimal costo_envio
+        datetime created
+        datetime updated
+    }
+
+    ArticulosCotizado {
+        int id PK
+        int cotizacion_id FK
+        int articulo_id FK
+        int cantidad
+    }
+
+## 🔗 Relaciones del Sistema
+Relaciones de Usuario (User)
+
+User → Empresa (uno a muchos): Cada usuario puede crear múltiples empresas, pero cada empresa pertenece a un solo usuario
+User → Clientes (uno a muchos): Cada usuario puede gestionar múltiples clientes, pero cada cliente está asociado a un solo usuario
+User → Articulo (uno a muchos): Cada usuario puede crear múltiples artículos, pero cada artículo pertenece a un solo usuario
+User → Cotizaciones (uno a muchos): Cada usuario puede generar múltiples cotizaciones, pero cada cotización es creada por un solo usuario
+
+## Relaciones de Cotizaciones
+
+Empresa → Cotizaciones (uno a muchos): Una empresa puede aparecer en múltiples cotizaciones, pero cada cotización está asociada a una sola empresa
+Clientes → Cotizaciones (uno a muchos): Un cliente puede tener múltiples cotizaciones, pero cada cotización pertenece a un solo cliente
+Cotizaciones → ArticulosCotizado (uno a muchos): Una cotización puede contener múltiples artículos (items), estableciendo la relación padre-hijo
+
+## Relación Muchos a Muchos
+
+Articulo ↔ Cotizaciones (muchos a muchos): Un artículo puede aparecer en múltiples cotizaciones y una cotización puede contener múltiples artículos. Esta relación se gestiona a través de la tabla intermedia ArticulosCotizado, que además almacena la cantidad de cada artículo en la cotización.
+
+## ------------------------------------------------------------------------------------------------------------------
+
+## 📊 Datos de Demostración
+
+**Para desarrolladores que clonan el repositorio:** Este proyecto incluye un fixture completo con datos de ejemplo para probar todas las funcionalidades.
+
+### Cargar datos demo
+```bash
+python manage.py loaddata fixtures/demo_data.json
+```
+
+**El fixture incluye:**
+- **5 Empresas**: TechSolutions, GastroMax, ConstruirYA, EcoLimpio, LogisPro
+- **5 Artículos tech**: Mouse Gamer ($45.000), Teclado Mecánico ($75.000), Monitor 24" ($180.000), Auriculares Pro ($150.000), Webcam HD ($88.200)
+- **5 Clientes empresariales**: JP Import, ML Textiles, CD Servicios, AT Logística, LG Distribuciones
+
+Una vez cargados los datos, podrás crear cotizaciones usando los artículos y clientes pre-cargados.
+
+## ------------------------------------------------------------------------------------------------------------------
+
+## 📧 Configuración de Email
+
+Este proyecto incluye funcionalidad de reset de contraseña por email con views personalizadas.
+
+💡 Esta configuración ya está implementada en este proyecto. Solo es necesario editar el .env con los datos de tu cuenta si querés cambiar el remitente o desplegar el proyecto en otro entorno.
+
+Requiere las siguientes variables de entorno en un archivo .env:
+
+EMAIL_BACKEND=django.core.mail.backends.smtp.EmailBackend
+EMAIL_HOST=smtp.gmail.com
+EMAIL_PORT=587
+EMAIL_USE_TLS=True
+EMAIL_HOST_USER=nombre_de_app@gmail.com
+EMAIL_HOST_PASSWORD=tu_app_password
+DEFAULT_FROM_EMAIL=nombre_de_app@gmail.com
+⚠️ Importante: se debe generar una contraseña de aplicación desde la cuenta de Gmail, no usar la contraseña personal.
+
+## ------------------------------------------------------------------------------------------------------------------
+
+## 🔐 Seguridad: Protección contra intentos de login fallidos (django-axes)
+
+Este proyecto usa django-axes para prevenir ataques. 
+
+Después de 5 intentos fallidos, el usuario o IP queda bloqueado temporalmente.
+
+## ⚙️ Configuración
+Límite de intentos: 5
+
+Tiempo de bloqueo: 1 hora
+
+Bloqueo combinado por usuario + IP
+
+## 🛠️ Desbloquear usuarios (desde la terminal)
+Accedé al shell de Django:
+python manage.py shell
+Y ejecutá:
+from axes.handlers.proxy import AxesProxyHandler
+
+# Desbloquear por nombre de usuario
+AxesProxyHandler.reset_attempts(username='usuario')
+
+# O por dirección IP
+AxesProxyHandler.reset_attempts(ip_address='127.0.0.1')
+
+# O desbloquear todo 
+AxesProxyHandler.reset_attempts()
+
+
+## ------------------------------------------------------------------------------------------------------------------
+
+## 🐳 Ejecución con Docker 
 
 Para facilitar la configuración y despliegue, el proyecto está completamente dockerizado:
 
-### Opción 1: Docker Compose (la más fácil)
+### Opción 1: Docker Compose 
 ```bash
 # Clonar el repositorio
 git clone https://github.com/usuario/proyectoWeb.git
@@ -55,7 +234,7 @@ docker-compose down       # Detener y limpiar contenedores
 docker-compose logs       # Ver logs de la aplicación
 ```
 
----
+## ------------------------------------------------------------------------------------------------------------------
 
 ## 📦 Instalación manual (sin Docker)
 
@@ -96,64 +275,7 @@ python manage.py createsuperuser
 python manage.py runserver
 ```
 
----
-
-## 📧 Configuración de Email
-
-Este proyecto incluye funcionalidad de **reset de contraseña por email** con views personalizadas.
-
-### Desarrollo
-- Configurado para mostrar emails en consola
-- No requiere configuración adicional
-
-### Producción
-Requiere configurar variables de entorno. Crear archivo `.env`:
-
-```env
-EMAIL_BACKEND=django.core.mail.backends.smtp.EmailBackend
-EMAIL_HOST_USER=tu_email@gmail.com
-EMAIL_HOST_PASSWORD=tu_app_password
-DEFAULT_FROM_EMAIL=tu_email@gmail.com
-```
-
----
-
-## 📊 Datos de Demostración
-
-**Para desarrolladores que clonan el repositorio:** Este proyecto incluye un fixture completo con datos de ejemplo para probar todas las funcionalidades.
-
-### Cargar datos demo
-```bash
-python manage.py loaddata fixtures/demo_data.json
-```
-
-**El fixture incluye:**
-- **5 Empresas**: TechSolutions, GastroMax, ConstruirYA, EcoLimpio, LogisPro
-- **5 Artículos tech**: Mouse Gamer ($45.000), Teclado Mecánico ($75.000), Monitor 24" ($180.000), Auriculares Pro ($150.000), Webcam HD ($88.200)
-- **5 Clientes empresariales**: JP Import, ML Textiles, CD Servicios, AT Logística, LG Distribuciones
-
-Una vez cargados los datos, podrás crear cotizaciones usando los artículos y clientes pre-cargados.
-
----
-
-## 📁 Estructura del proyecto
-
-```
-proyectoWeb/
-├── fixtures         # Datos de demostración  
-├── requirements.txt  # Dependencias del proyecto 
-├── docker-compose.yml # Configuración de Docker
-├── Dockerfile        # Imagen de Docker
-├── media/            # Archivos subidos por usuarios  
-├── cotizApp/         # App principal y configuración Django
-│   └── static/       # Archivos estáticos de cotizApp
-├── login/            # Gestión de usuarios, autenticación y recuperación personalizada de credenciales
-├── articulos/        # CRUD de artículos (FBV)
-├── clientes/         # CRUD de clientes (CBV)
-└── cotizaciones/     # CRUD de cotizaciones (CBV) con funcionalidad para generar PDFs
-```
-
----
+## ------------------------------------------------------------------------------------------------------------------
 
 ## 🔍 Decisiones técnicas
 
@@ -163,12 +285,12 @@ El proyecto implementa **ambos enfoques de Django** para demostrar versatilidad 
 - **Artículos**: Function-Based Views (FBV) - enfoque tradicional y directo
 - **Clientes y Cotizaciones**: Class-Based Views (CBV) - enfoque orientado a objetos
 
-Esta decisión fue **intencional** para mostrar dominio de ambas metodologías. En proyectos reales, se recomienda mantener consistencia según las preferencias del equipo y la complejidad de la lógica de negocio.
+Esta decisión fue intencional para mostrar dominio de ambas metodologías. En proyectos reales, se recomienda mantener consistencia según las preferencias del equipo y la complejidad de la lógica de negocio.
 
 ### Containerización con Docker
-Aunque CotizApp no es una aplicación compleja que requiera necesariamente Docker, decidí implementar containerización como una oportunidad de aprendizaje y buenas prácticas de desarrollo. Docker facilita la reproducibilidad del entorno y simplifica el proceso de setup para otros desarrolladores.
+Aunque CotizApp no es una aplicación con muchas dependencias, decidí implementar containerización como una oportunidad de aprendizaje y buenas prácticas de desarrollo. Docker facilita la reproducibilidad del entorno y simplifica el proceso para otros desarrolladores.
 
----
+## ------------------------------------------------------------------------------------------------------------------
 
 ## 🎯 Uso del sistema
 

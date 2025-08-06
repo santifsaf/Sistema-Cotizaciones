@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.core.exceptions import ValidationError
 
 # Create your models here.
 
@@ -18,5 +19,18 @@ class Articulo(models.Model):
 
     def __str__(self):
         return self.nombre
+
+    def clean(self):
+        """Validaciones personalizadas del modelo"""
+        super().clean()
+        
+        # Validar que el precio no sea negativo
+        if self.precio is not None and self.precio < 0:
+            raise ValidationError({
+                'precio': 'El precio no puede ser negativo.'
+            })    
     
-    
+    def save(self, *args, **kwargs):
+        """Ejecutar validaciones antes de guardar"""
+        self.full_clean() 
+        super().save(*args, **kwargs)

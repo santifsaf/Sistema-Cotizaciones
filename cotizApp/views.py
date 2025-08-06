@@ -15,7 +15,7 @@ def mis_empresas(request):
     Muestra la lista de empresas registradas.
     Solo accesible para usuarios autenticados.
     """
-    empresas = Empresa.objects.all()
+    empresas = Empresa.objects.filter(usuario_log=request.user)  
     return render(request, "mis_empresas.html", {"empresas": empresas})
 
 @login_required
@@ -28,7 +28,9 @@ def nueva_empresa(request):
     if request.method == 'POST':
         form = EmpresaForm(request.POST)
         if form.is_valid():
-            form.save()
+            empresa = form.save(commit=False) 
+            empresa.usuario_log = request.user 
+            empresa.save() 
             messages.success(request, 'La empresa fue creada correctamente.')
             return redirect('mis_empresas')
         else:
@@ -46,7 +48,7 @@ def eliminar_empresa(request):
     if request.method == 'POST' and request.POST.get('accion') == 'eliminar':
         empresas_a_eliminar = request.POST.getlist('empresas_seleccionadas[]')
         if empresas_a_eliminar:
-            Empresa.objects.filter(id__in=empresas_a_eliminar).delete()
+            Empresa.objects.filter(id__in=empresas_a_eliminar,usuario_log=request.user).delete()
             messages.success(request, 'Las empresas seleccionadas se han eliminado correctamente.')
         else:
             messages.error(request, 'Debe seleccionar al menos una empresa.')
@@ -60,7 +62,7 @@ def actualizar_empresa(request, empresa_id):
     Si el método es POST, valida y guarda los cambios.
     Si no, muestra el formulario con los datos actuales.
     """
-    empresa = get_object_or_404(Empresa, id=empresa_id)
+    empresa = get_object_or_404(Empresa, id=empresa_id, usuario_log=request.user)
     if request.method == 'POST':
         form = EmpresaForm(request.POST, request.FILES, instance=empresa)
         if form.is_valid():
