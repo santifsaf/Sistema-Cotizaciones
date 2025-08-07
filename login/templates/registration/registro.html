@@ -24,7 +24,7 @@
             {% endfor %}
           {% endif %}
           
-          <form id="register-form" method="post" autocomplete="off" novalidate>
+          <form id="register-form" method="post" autocomplete="off" novalidate onkeydown="return event.key !== 'Enter';">
             {% csrf_token %}
             
             <!-- Campo Username -->
