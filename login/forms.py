@@ -59,8 +59,11 @@ class CustomUserCreationForm(UserCreationForm):
 
     def clean_email(self):
         email = self.cleaned_data.get('email')
-        if User.objects.filter(email=email).exists():
-            raise ValidationError("Ya existe un usuario con este correo electrónico.")
+        
+        if email and email.strip():  
+            if User.objects.filter(email=email).exists():
+                raise ValidationError("Ya existe un usuario con este correo electrónico.")
+        
         return email
 
     def save(self, commit=True):

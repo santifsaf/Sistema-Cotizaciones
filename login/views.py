@@ -25,11 +25,14 @@ class RegistroView(View):
             login(request, user)
             return redirect('home')
         else:
-            for field, errors in form.errors.items():
-                for error in errors:
-                    messages.error(request, f"{field.capitalize()}: {error}")
-            return render(request, "registration/registro.html", {"form": form})
-
+            try:
+                for field, errors in form.errors.items():
+                    for error in errors:
+                        messages.error(request, f"{field.capitalize()}: {error}")
+            except:
+                messages.error(request, "Por favor revisa los campos del formulario")
+        return render(request, "registration/registro.html", {"form": form})
+    
 class CustomLoginView(LoginView):
     template_name = 'registration/login.html'
     authentication_form = CustomAuthenticationForm  
