@@ -1,6 +1,7 @@
 from pathlib import Path
 from django.contrib.messages import constants as messages
 from decouple import config
+import dj_database_url
 import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -81,14 +82,11 @@ WSGI_APPLICATION = 'proyectoWeb.wsgi.application'
 
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'cotizAppdb',
-        'USER': 'postgres',
-        'PASSWORD': 'Camoris0605',
-        'HOST': 'localhost',
-        'PORT': '5432',
-    }
+    'default': dj_database_url.config(
+        default=config('DATABASE_URL', default='postgres://postgres:password@localhost:5432/cotizAppdb'),
+        conn_max_age=600,
+        ssl_require=not config('DEBUG', default=False, cast=bool),
+    )
 }
 
 
@@ -171,21 +169,21 @@ SERVER_EMAIL = config('SERVER_EMAIL', default='noreply@tudominio.com')
 PASSWORD_RESET_TIMEOUT = config('PASSWORD_RESET_TIMEOUT', default=3600, cast=int)
 DEFAULT_DOMAIN = config('DEFAULT_DOMAIN', default='127.0.0.1:8000')
 
-# # En settings.py para producción
-# if not DEBUG:
-#     SECURE_SSL_REDIRECT = True
-#     SECURE_HSTS_SECONDS = 31536000
-#     SECURE_HSTS_INCLUDE_SUBDOMAINS = True
-#     SECURE_HSTS_PRELOAD = True
-#     SESSION_COOKIE_SECURE = True
-#     CSRF_COOKIE_SECURE = True
+# En settings.py para producción
+if not DEBUG:
+     SECURE_SSL_REDIRECT = True
+     SECURE_HSTS_SECONDS = 31536000
+     SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+     SECURE_HSTS_PRELOAD = True
+     SESSION_COOKIE_SECURE = True
+     CSRF_COOKIE_SECURE = True
 
-    # SESSION_COOKIE_HTTPONLY = True
-    # CSRF_COOKIE_HTTPONLY = True
-    # X_FRAME_OPTIONS = 'DENY'
+     SESSION_COOKIE_HTTPONLY = True
+     CSRF_COOKIE_HTTPONLY = True
+     X_FRAME_OPTIONS = 'DENY'
     
-    # # Para servidores proxy (como Nginx)
-    # SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+    # Para servidores proxy (como Nginx)
+     SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
     
 
 SECURE_BROWSER_XSS_FILTER = True
