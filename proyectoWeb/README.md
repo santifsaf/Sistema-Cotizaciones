@@ -25,7 +25,7 @@ Django 5.1
 django-import-export 4.1.1
 WeasyPrint 66.0
 Docker para containerización
-Base de datos: SQLite
+Base de datos: Postgres
 Frontend: HTML, CSS, Bootstrap, JavaScript
 Control de versiones: GitHub
 
@@ -148,7 +148,7 @@ Articulo ↔ Cotizaciones (muchos a muchos): Un artículo puede aparecer en múl
 
 ### Cargar datos demo
 ```bash
-python manage.py loaddata fixtures/demo_data.json
+python manage.py loaddata demo_basic_data_utf8
 ```
 
 **El fixture incluye:**

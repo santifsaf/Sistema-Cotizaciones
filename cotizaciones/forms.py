@@ -7,7 +7,7 @@ import re
 
 class CotizacionForm(forms.ModelForm):
 
-    # 🔧 Redefinimos como CharField para poder limpiar manualmente
+    # Redefinimos como CharField para poder limpiar manualmente
     total = forms.CharField()
     total_con_descuento = forms.CharField(required=False)
     costo_envio = forms.CharField(required=False)
@@ -31,13 +31,10 @@ class CotizacionForm(forms.ModelForm):
             return None
         if isinstance(valor, str):
             valor = valor.strip()
-            # Quita todo excepto dígitos, punto, coma, negativo
             valor = re.sub(r'[^0-9,.\-]', '', valor)
             if ',' in valor and '.' in valor:
-                # Caso "6.930,00" -> "6930.00"
                 valor = valor.replace('.', '').replace(',', '.')
             elif ',' in valor:
-                # Caso "6930,00" -> "6930.00"
                 valor = valor.replace(',', '.')
         try:
             return Decimal(valor)

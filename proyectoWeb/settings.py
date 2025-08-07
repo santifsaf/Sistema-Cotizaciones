@@ -1,19 +1,18 @@
 from pathlib import Path
 from django.contrib.messages import constants as messages
 from decouple import config
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
-
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
+FIXTURE_DIRS = [
+    os.path.join(BASE_DIR, 'proyectoWeb', 'fixtures'),
+]
 
 
 ALLOWED_HOSTS = []
 
 
-# Application definition
 
 INSTALLED_APPS = [
     'crispy_forms',
@@ -37,30 +36,28 @@ CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
 CRISPY_TEMPLATE_PACK = 'bootstrap5'
 
 MIDDLEWARE = [
-    'axes.middleware.AxesMiddleware',
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'axes.middleware.AxesMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+
 AUTHENTICATION_BACKENDS = [
-    "axes.backends.AxesBackend",  # primero para que evalue intentos fallidos
+    "axes.backends.AxesBackend", 
     "django.contrib.auth.backends.ModelBackend",
 ]
-
-# Opciones recomendadas
-AXES_FAILURE_LIMIT = 5  # después de 5 intentos falla bloquea
-AXES_COOLOFF_TIME = 1  # en horas; acá 1 hora de bloqueo
-AXES_LOCK_OUT_BY_COMBINATION_USER_AND_IP = True  # más estricto
-AXES_USE_USER_AGENT = False  # opcional, simplifica
-AXES_ONLY_USER_FAILURES = False  # si True bloquea por usuario sin importar IP
-
-# Para ver logs (útil en debug)
+AXES_FAILURE_LIMIT = 5  
+AXES_COOLOFF_TIME = 1 
+AXES_LOCKOUT_PARAMETERS = ['username', 'ip_address']
 AXES_VERBOSE = True
+AXES_RESET_ON_SUCCESS = True 
+AXES_ENABLE_ADMIN = True
 
 ROOT_URLCONF = 'proyectoWeb.urls'
 
@@ -83,19 +80,17 @@ TEMPLATES = [
 WSGI_APPLICATION = 'proyectoWeb.wsgi.application'
 
 
-# Database
-# https://docs.djangoproject.com/en/5.0/ref/settings/#databases
-
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'cotizAppdb',
+        'USER': 'postgres',
+        'PASSWORD': 'Camoris0605',
+        'HOST': 'localhost',
+        'PORT': '5432',
     }
 }
 
-
-# Password validation
-# https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -113,10 +108,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
-# Internationalization
-# https://docs.djangoproject.com/en/5.0/topics/i18n/
-
 LANGUAGE_CODE = 'en-us'
 
 TIME_ZONE = 'UTC'
@@ -126,23 +117,19 @@ USE_I18N = True
 USE_TZ = True
 
 
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/5.0/howto/static-files/
-
 STATIC_URL = 'static/'        
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 STATICFILES_DIRS = [
     BASE_DIR / "cotizApp/static",    
 ]
 
-# STATIC_ROOT= BASE_DIR / 'staticfiles'    
+STATIC_ROOT= BASE_DIR / 'staticfiles'    
 
-MEDIA_URL='proyectoWeb/media/' 
+MEDIA_URL = '/media/'
 
 MEDIA_ROOT=BASE_DIR / 'proyectoWeb/media'  
 
-# Default primary key field type
-# https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
@@ -162,6 +149,11 @@ LOGIN_REDIRECT_URL = '/home/'
 
 SECRET_KEY = config('SECRET_KEY')
 DEBUG = config('DEBUG', default=False, cast=bool)
+
+EXTERNAL_HOSTNAME = os.environ.get('RENDER_EXTERNAL_HOSTNAME')
+
+ALLOWED_HOSTS = [EXTERNAL_HOSTNAME] if EXTERNAL_HOSTNAME else ['localhost', '127.0.0.1']
+
 
 # Configuración de email
 EMAIL_BACKEND = config('EMAIL_BACKEND', default='django.core.mail.backends.console.EmailBackend')
@@ -188,13 +180,14 @@ DEFAULT_DOMAIN = config('DEFAULT_DOMAIN', default='127.0.0.1:8000')
 #     SESSION_COOKIE_SECURE = True
 #     CSRF_COOKIE_SECURE = True
 
+    # SESSION_COOKIE_HTTPONLY = True
+    # CSRF_COOKIE_HTTPONLY = True
+    # X_FRAME_OPTIONS = 'DENY'
+    
+    # # Para servidores proxy (como Nginx)
+    # SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+    
+
 SECURE_BROWSER_XSS_FILTER = True
 SECURE_CONTENT_TYPE_NOSNIFF = True
 SECURE_REFERRER_POLICY = 'strict-origin-when-cross-origin'
-
-# # Instalar todo junto para producicon:
-# pip install django-ratelimit
-# pip install gunicorn
-# pip install whitenoise
-# pip install dj-database-url
-# pip install psycopg2-binary

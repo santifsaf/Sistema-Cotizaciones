@@ -3,7 +3,7 @@ from .forms import ArticuloForm
 from .models import Articulo
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.db.models import Q
+
 
 
 @login_required
@@ -15,10 +15,12 @@ def mis_articulos(request):
     search = request.GET.get('search', '').strip()
     articulos = Articulo.objects.filter(usuario_log=request.user)
     if search:
-        articulos = articulos.filter(
-            Q(nombre__icontains=search) |
-            Q(descripcion__icontains=search)
-        )
+        # Filtrar por nombre
+        articulos_por_nombre = articulos.filter(nombre__icontains=search)
+        # Filtrar por descripción
+        articulos_por_descripcion = articulos.filter(descripcion__icontains=search)
+        # Combinar ambos querysets
+        articulos = articulos_por_nombre.union(articulos_por_descripcion)
     return render(request, "mis_articulos.html", {"articulos": articulos})
 
 @login_required

@@ -7,7 +7,6 @@ from django.views.generic import ListView, View
 from django.template.loader import render_to_string
 from django.http import HttpResponse
 from decimal import Decimal
-from django.db.models import Q
 from cotizApp.models import Empresa
 from .models import Clientes, Cotizaciones, ArticulosCotizado
 from articulos.models import Articulo
@@ -31,13 +30,20 @@ class MisCotizaciones(LoginRequiredMixin, ListView):
         qs = Cotizaciones.objects.filter(usuario=self.request.user)
 
         if search:
-            qs = qs.filter(
-                Q(numero_referencia__icontains=search) |
-                Q(cliente__isnull=False) & (
-                    Q(cliente__nombre__icontains=search) |
-                    Q(cliente__nombre_empresa__icontains=search)
-                )
+
+            cotiz_por_ref = qs.filter(numero_referencia__icontains=search)
+            
+            cotiz_por_nombre_cliente = qs.filter(
+                cliente__isnull=False,
+                cliente__nombre__icontains=search
             )
+
+            cotiz_por_empresa_cliente = qs.filter(
+                cliente__isnull=False,
+                cliente__nombre_empresa__icontains=search
+            )
+            
+            qs = cotiz_por_ref.union(cotiz_por_nombre_cliente, cotiz_por_empresa_cliente)
 
         return qs
 

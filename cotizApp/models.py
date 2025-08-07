@@ -2,8 +2,6 @@ from django.db import models
 from django.contrib.auth.models import User
 
 
-# Create your models here.
-
 class Empresa(models.Model):
     usuario_log=models.ForeignKey(User, on_delete=models.CASCADE)
     nombre=models.CharField(max_length=30)

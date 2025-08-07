@@ -5,7 +5,6 @@ from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import ListView, CreateView, UpdateView, View
 from django.urls import reverse_lazy
-from django.db.models import Q
 
 
 
@@ -18,10 +17,12 @@ class MisClientes(LoginRequiredMixin, ListView):
         qs = Clientes.objects.filter(usuario_log=self.request.user)
         search = self.request.GET.get('search', '').strip()
         if search:
-            qs = qs.filter(
-                Q(nombre__icontains=search) |
-                Q(nombre_empresa__icontains=search)
-            )
+            # Filtrar por nombre
+            clientes_por_nombre = qs.filter(nombre__icontains=search)
+            # Filtrar por empresa
+            clientes_por_empresa = qs.filter(nombre_empresa__icontains=search)
+            # Combinar ambos querysets
+            qs = clientes_por_nombre.union(clientes_por_empresa)
         return qs
     
  

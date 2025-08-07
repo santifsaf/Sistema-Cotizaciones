@@ -45,10 +45,8 @@ class CustomLoginView(LoginView):
         remember_me = form.cleaned_data.get('remember_me')
 
         if not remember_me:
-            # sesión solo hasta cerrar el navegador
             self.request.session.set_expiry(0)
         else:
-            # sesión persiste por 30 días (en segundos)
             self.request.session.set_expiry(60 * 60 * 24 * 30)
 
         return super().form_valid(form)
@@ -75,6 +73,7 @@ class CustomPasswordResetView(PasswordResetView):
     email_template_name = 'registration/password_reset_email.html'
     subject_template_name = 'registration/password_reset_subject.txt'
     success_url = reverse_lazy('password_reset_done')
+    html_email_template_name = 'registration/password_reset_email.html'
     
     def form_valid(self, form):
         messages.success(

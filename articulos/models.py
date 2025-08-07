@@ -2,7 +2,6 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 
-# Create your models here.
 
 class Articulo(models.Model):
     usuario_log=models.ForeignKey(User, on_delete=models.CASCADE)
@@ -24,7 +23,6 @@ class Articulo(models.Model):
         """Validaciones personalizadas del modelo"""
         super().clean()
         
-        # Validar que el precio no sea negativo
         if self.precio is not None and self.precio < 0:
             raise ValidationError({
                 'precio': 'El precio no puede ser negativo.'
