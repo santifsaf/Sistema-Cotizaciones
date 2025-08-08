@@ -23,7 +23,7 @@ Versión simple y elegante con manejo de usuarios no autenticados.
           <div class="d-flex justify-content-center gap-3">
             {% if user.is_authenticated %}
               <!-- Botones para usuarios autenticados -->
-              <a href="{% url 'nueva_cotizacion' %}" class="btn btn-primary btn-lg px-4 py-3 fw-bold">
+              <a href="{% url 'nueva_cotizacion' %}" class="btn btn-primary-custom btn-lg px-4 py-3 fw-bold">
                 <i class="bi bi-plus-circle me-2"></i>Nueva Cotización
               </a>
               <a href="{% url 'mis_cotizaciones' %}" class="btn btn-outline-secondary btn-lg px-4 py-3">
