@@ -12,6 +12,7 @@ urlpatterns = [
     path('cotizaciones/', include('cotizaciones.urls')),
     path('', Home.as_view(), name='home'),
     path('accounts/', include('login.urls')), 
+    path('accounts/', include('allauth.urls')),
 ]
 
 urlpatterns+=static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

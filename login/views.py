@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.views import View
-from django.contrib.auth import login
+from django.contrib.auth import login, authenticate
 from django.contrib import messages
 from django.contrib.auth.views import LoginView
 from .forms import CustomUserCreationForm, CustomAuthenticationForm
@@ -15,22 +15,34 @@ from django.contrib.auth.views import (
 
 class RegistroView(View):
     def get(self, request):
-        form = CustomUserCreationForm()  
+        form = CustomUserCreationForm()
         return render(request, "registration/registro.html", {"form": form})
 
     def post(self, request):
         form = CustomUserCreationForm(request.POST)
         if form.is_valid():
+            # Guardar el usuario
             user = form.save()
-            login(request, user)
-            return redirect('home')
+
+            # Autenticarlo para obtener el backend correcto
+            user = authenticate(
+                request,
+                username=form.cleaned_data["username"],
+                password=form.cleaned_data["password1"]
+            )
+
+            # Iniciar sesión
+            if user is not None:
+                login(request, user)
+                return redirect('home')
+            else:
+                messages.error(request, "No se pudo iniciar sesión automáticamente. Intenta loguearte manualmente.")
         else:
-            try:
-                for field, errors in form.errors.items():
-                    for error in errors:
-                        messages.error(request, f"{field.capitalize()}: {error}")
-            except:
-                messages.error(request, "Por favor revisa los campos del formulario")
+            # Manejo de errores del formulario
+            for field, errors in form.errors.items():
+                for error in errors:
+                    messages.error(request, f"{field.capitalize()}: {error}")
+
         return render(request, "registration/registro.html", {"form": form})
     
 class CustomLoginView(LoginView):
@@ -88,7 +100,7 @@ class CustomPasswordResetView(PasswordResetView):
     def get_email_context(self, email):
         context = super().get_email_context(email)
         context['domain'] = getattr(settings, 'DEFAULT_DOMAIN', '127.0.0.1:8000')
-        context['protocol'] = 'http'
+        context['protocol'] = getattr(settings, 'DEFAULT_PROTOCOL', 'http')
         return context
 
 

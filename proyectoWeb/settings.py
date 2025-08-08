@@ -31,7 +31,30 @@ INSTALLED_APPS = [
     'cotizaciones',
     'import_export',
     'axes',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.google',
 ]
+
+SITE_ID = 1 
+SOCIALACCOUNT_PROVIDERS = {
+    'google': {
+        'APP': {
+            'client_id': config('GOOGLE_CLIENT_ID'),
+            'secret': config('GOOGLE_SECRET'),
+            'key': ''
+        },
+        'SCOPE': [
+            'profile',
+            'email',
+        ],
+        'AUTH_PARAMS': {
+            'access_type': 'online',
+        }
+    }
+}
+
 
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
 CRISPY_TEMPLATE_PACK = 'bootstrap5'
@@ -46,13 +69,16 @@ MIDDLEWARE = [
     'axes.middleware.AxesMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'allauth.account.middleware.AccountMiddleware',
 ]
 
 
 AUTHENTICATION_BACKENDS = [
     "axes.backends.AxesBackend", 
     "django.contrib.auth.backends.ModelBackend",
+    'allauth.account.auth_backends.AuthenticationBackend',
 ]
+
 AXES_FAILURE_LIMIT = 5  
 AXES_COOLOFF_TIME = 1 
 AXES_LOCKOUT_PARAMETERS = ['username', 'ip_address']
@@ -142,7 +168,7 @@ MESSAGE_TAGS = {
 
 LOGOUT_REDIRECT_URL = '/home/'
 LOGIN_REDIRECT_URL = '/home/'
-LOGIN_URL = '/registration/login/'
+LOGIN_URL = '/accounts/'
 LOGIN_REDIRECT_URL = '/home/' 
 
 SECRET_KEY = config('SECRET_KEY')
@@ -168,6 +194,7 @@ SERVER_EMAIL = config('SERVER_EMAIL', default='noreply@tudominio.com')
 # Configuración para reset de contraseña
 PASSWORD_RESET_TIMEOUT = config('PASSWORD_RESET_TIMEOUT', default=3600, cast=int)
 DEFAULT_DOMAIN = config('DEFAULT_DOMAIN', default='127.0.0.1:8000')
+DEFAULT_PROTOCOL = config('DEFAULT_PROTOCOL', default='http')
 
 # En settings.py para producción
 if not DEBUG:
