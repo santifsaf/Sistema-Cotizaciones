@@ -55,6 +55,7 @@ SOCIALACCOUNT_PROVIDERS = {
     }
 }
 
+SOCIALACCOUNT_ADAPTER = 'login.adapters.MySocialAccountAdapter'
 
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
 CRISPY_TEMPLATE_PACK = 'bootstrap5'
@@ -168,7 +169,7 @@ MESSAGE_TAGS = {
 
 LOGOUT_REDIRECT_URL = '/home/'
 LOGIN_REDIRECT_URL = '/home/'
-LOGIN_URL = '/accounts/'
+LOGIN_URL = '/login/registration/login/'
 LOGIN_REDIRECT_URL = '/home/' 
 
 SECRET_KEY = config('SECRET_KEY')

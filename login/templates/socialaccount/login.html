@@ -1,0 +1,35 @@
+{% extends "estructura_base.html" %}
+{% load i18n %}
+
+{% block content %}
+<div class="container-fluid min-vh-100 d-flex align-items-center justify-content-center bg-light">
+  <div class="row w-100 justify-content-center">
+    <div class="col-lg-5 col-md-7 col-sm-9">
+      <div class="card shadow-lg border-0 rounded-4 overflow-hidden">
+        
+        <div class="card-header bg-primary-custom text-white p-4 text-center border-0 rounded-top-4">
+          <h3 class="fw-light mb-0">{% trans "Google" %}</h3>
+        </div>
+        
+        <div class="card-body p-4 text-center">
+          <p class="text-muted mb-4 small">
+            {% blocktrans %}Estás a punto de iniciar sesión usando tu cuenta de Google.{% endblocktrans %}
+          </p>
+          
+          <form method="post">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger btn-lg w-100 rounded-3 mb-3">
+              <i class="fab fa-google me-2"></i> {% trans "Iniciar sesión con Google" %}
+            </button>
+          </form>
+          
+          <a href="{% url 'login' %}" class="btn btn-primary-custom btn-lg w-100 rounded-3">
+            <i class="fas fa-user-circle me-2"></i> Crear otra cuenta
+          </a>
+        </div>
+        
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

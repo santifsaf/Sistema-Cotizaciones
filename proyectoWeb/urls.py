@@ -11,7 +11,7 @@ urlpatterns = [
     path('clientes/', include('clientes.urls')),
     path('cotizaciones/', include('cotizaciones.urls')),
     path('', Home.as_view(), name='home'),
-    path('accounts/', include('login.urls')), 
+    path('login/', include('login.urls')), 
     path('accounts/', include('allauth.urls')),
 ]
 

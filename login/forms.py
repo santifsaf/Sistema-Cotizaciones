@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 
 
+
 class CustomUserCreationForm(UserCreationForm):
     email = forms.EmailField(required=True, widget=forms.EmailInput(attrs={'placeholder': 'Correo electrónico'}))
     first_name = forms.CharField(max_length=30, required=True, widget=forms.TextInput(attrs={'placeholder': 'Nombre'}))
@@ -56,3 +57,4 @@ class CustomPasswordResetForm(PasswordResetForm):
     def clean_email(self):
         # No revelamos si el email existe o no por seguridad
         return self.cleaned_data.get('email').strip().lower()
+
