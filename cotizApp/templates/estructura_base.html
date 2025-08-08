@@ -85,6 +85,36 @@
     .navbar-toggler:focus {
       box-shadow: none;
     }
+  .bg-primary-custom {
+    background-color: var(--primary-color) !important;
+  }
+
+  .btn-primary-custom {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+    color: white;
+    transition: background-color 0.3s, border-color 0.3s;
+  }
+
+  .btn-primary-custom:hover,
+  .btn-primary-custom:focus {
+    background-color: #243141;
+    border-color: #243141;
+    color: white;
+  }
+
+  .link-custom {
+    color: var(--primary-color);
+    text-decoration: underline;
+    transition: color 0.3s, text-decoration 0.3s;
+  }
+
+  .link-custom:hover,
+  .link-custom:focus {
+    color: #243141;
+    text-decoration: none;
+  }
+
     
     @media (max-width: 991.98px) {
       .navbar-collapse {
