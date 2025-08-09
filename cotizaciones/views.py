@@ -125,10 +125,10 @@ class EliminarCotizacion(LoginRequiredMixin, View):
         print(f"Accion: {accion}, Cotizaciones a eliminar: {cotizaciones_a_eliminar}")
 
         if accion == 'eliminar' and cotizaciones_a_eliminar:
-            count, _ = Cotizaciones.objects.filter(id__in=cotizaciones_a_eliminar).delete()
-            messages.success(request, f'Se eliminaron {count} cotización(es) correctamente.')
+            Cotizaciones.objects.filter(id__in=cotizaciones_a_eliminar).delete()
+            messages.success(request, 'Se eliminaron las cotizaciones seleccionadas.')
         else:
-            messages.error(request, 'Debe seleccionar al menos una cotización o acción inválida.')
+            messages.error(request, 'Debe seleccionar al menos una cotización.')
         return redirect('mis_cotizaciones')
     
 

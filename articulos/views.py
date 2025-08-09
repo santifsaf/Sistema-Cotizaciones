@@ -54,13 +54,8 @@ def eliminar_articulo(request):
     if request.method == 'POST':
         articulos_a_eliminar = request.POST.getlist('articulos_seleccionados[]')
         if articulos_a_eliminar:
-            qs = Articulo.objects.filter(id__in=articulos_a_eliminar, usuario_log=request.user)
-            cantidad = qs.count()
-            if cantidad:
-                qs.delete()
-                messages.success(request, f'Se eliminaron {cantidad} artículo(s) correctamente.')
-            else:
-                messages.error(request, 'No se encontró ningún artículo para eliminar.')
+            Articulo.objects.filter(id__in=articulos_a_eliminar, usuario_log=request.user).delete()
+            messages.success(request, 'Se eliminaron los articulos seleccionados.')
         else:
             messages.error(request, 'Debe seleccionar al menos un artículo.')
     
