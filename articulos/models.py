@@ -1,11 +1,11 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
-
+from cloudinary.models import CloudinaryField
 
 class Articulo(models.Model):
     usuario_log=models.ForeignKey(User, on_delete=models.CASCADE)
-    imagen=models.ImageField(upload_to='articulos', default='proyectoWeb/media/articulos/sin imagen.jpg', blank=True, null=True)
+    imagen = CloudinaryField('image', blank=True, null=True, default='sin_imagen_opeh5q')
     nombre=models.CharField(max_length=30)
     descripcion=models.CharField(max_length=80)
     precio=models.IntegerField()

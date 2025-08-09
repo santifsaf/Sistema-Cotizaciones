@@ -28,13 +28,22 @@ class MisClientes(LoginRequiredMixin, ListView):
  
 
 class NuevoCliente(LoginRequiredMixin, CreateView):
-    model= Clientes
-    form_class=ClienteForm
-    template_name="nuevo_cliente.html"
-    success_url=reverse_lazy('mis_clientes')
+    model = Clientes
+    form_class = ClienteForm
+    template_name = "nuevo_cliente.html"
+    success_url = reverse_lazy('mis_clientes')
 
     def form_valid(self, form):
-        form.instance.usuario_log = self.request.user 
+        form.instance.usuario_log = self.request.user
+
+        # Evitar duplicados: mismo nombre + usuario
+        if Clientes.objects.filter(
+            nombre__iexact=form.cleaned_data['nombre'].strip(),
+            usuario_log=self.request.user
+        ).exists():
+            messages.error(self.request, "Ese cliente ya existe.")
+            return redirect('nuevo_cliente')
+
         return super().form_valid(form)
 
 class EliminarCliente(LoginRequiredMixin, View):

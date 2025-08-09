@@ -69,7 +69,7 @@
   "pk": 6,
   "fields": {
     "usuario_log": 1,
-    "imagen": "articulos/mouse_gamer_pro_m9_rgb_4000dpi_preto_64387_fortrek_28591_2_20190325221745.webp",
+    "imagen": "mouse_gamer_pro_m9_rgb_4000dpi_preto_64387_fortrek_28591_2_20190325221745_iesm7f",
     "nombre": "Mouse Gamer",
     "descripcion": "Mouse óptico RGB de alta precisión",
     "precio": 45000,
@@ -82,7 +82,7 @@
   "pk": 7,
   "fields": {
     "usuario_log": 1,
-    "imagen": "articulos/OIP.webp",
+    "imagen": "OIP_ff8qw1",
     "nombre": "Teclado Mecánico",
     "descripcion": "Teclado mecánico retroiluminado",
     "precio": 75000,
@@ -95,7 +95,7 @@
   "pk": 8,
   "fields": {
     "usuario_log": 1,
-    "imagen": "articulos/OIP_1.webp",
+    "imagen": "OIP_1_apvxpr",
     "nombre": "Monitor 24\"",
     "descripcion": "Monitor LED FullHD 24 pulgadas",
     "precio": 180000,
@@ -108,7 +108,7 @@
   "pk": 9,
   "fields": {
     "usuario_log": 1,
-    "imagen": "articulos/OIP_qcmXfgN.webp",
+    "imagen": "OIP_qcmXfgN_ztxuqm",
     "nombre": "Auriculares Pro",
     "descripcion": "Auriculares con cancelación de ruido",
     "precio": 150000,
@@ -121,7 +121,7 @@
   "pk": 10,
   "fields": {
     "usuario_log": 1,
-    "imagen": "articulos/OIP_2.webp",
+    "imagen": "OIP_2_saruv7",
     "nombre": "Webcam HD",
     "descripcion": "Cámara web 1440p con micrófono",
     "precio": 88200,

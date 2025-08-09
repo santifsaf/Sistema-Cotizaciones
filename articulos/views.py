@@ -26,34 +26,39 @@ def mis_articulos(request):
 @login_required
 def nuevo_articulo(request):
     if request.method == 'POST':
-        form=ArticuloForm(request.POST, request.FILES)
-        if form.is_valid(): 
-            Articulo=form.save(commit=False)
-            Articulo.usuario_log=request.user
-            Articulo.save()
-            messages.success(request, 'El articulo fue creado correctamente.')
+        form = ArticuloForm(request.POST, request.FILES)
+        if form.is_valid():
+            nombre = form.cleaned_data['nombre'].strip()
+
+            # Validar duplicado
+            if Articulo.objects.filter(nombre__iexact=nombre, usuario_log=request.user).exists():
+                messages.error(request, 'Ya existe un artículo con ese nombre.')
+                return redirect('nuevo_articulo')
+
+            articulo = form.save(commit=False)
+            articulo.usuario_log = request.user
+            articulo.save()
+            messages.success(request, 'El artículo fue creado correctamente.')
             return redirect('nuevo_articulo')
         else:
             messages.error(request, 'Por favor, complete correctamente los campos solicitados.')
     else:
-        form=ArticuloForm()
+        form = ArticuloForm()
 
     return render(request, 'nuevo_articulo.html', {'form': form})
         
 
 @login_required
 def eliminar_articulo(request):
-    if request.method == 'POST' and request.POST.get('accion') == 'eliminar':
+    if request.method == 'POST':
         articulos_a_eliminar = request.POST.getlist('articulos_seleccionados[]')
         if articulos_a_eliminar:
-            Articulo.objects.filter(id__in=articulos_a_eliminar, usuario_log=request.user).delete()
-            messages.success(request, 'Los artículos seleccionados se han eliminado correctamente.')
+            eliminados = Articulo.objects.filter(id__in=articulos_a_eliminar, usuario_log=request.user).delete()
+            messages.success(request, f'Se eliminaron {eliminados[0]} artículo(s) correctamente.')
         else:
             messages.error(request, 'Debe seleccionar al menos un artículo.')
-
-        return redirect('mis_articulos')
-    else:
-        return redirect('mis_articulos')
+    
+    return redirect('mis_articulos')
     
 
 @login_required

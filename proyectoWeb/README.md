@@ -290,6 +290,32 @@ Esta decisión fue intencional para mostrar dominio de ambas metodologías. En p
 ### Containerización con Docker
 Aunque CotizApp no es una aplicación con muchas dependencias, decidí implementar containerización como una oportunidad de aprendizaje y buenas prácticas de desarrollo. Docker facilita la reproducibilidad del entorno y simplifica el proceso para otros desarrolladores.
 
+### Personalización del login con Google
+
+Para manejar logins con Google, se implementó un **SocialAccountAdapter** personalizado sobre `django-allauth`.  
+Este adapter intercepta el flujo en el método `pre_social_login` y:
+
+- Verifica si ya existe un usuario con el email proporcionado.
+- Si existe, conecta automáticamente la cuenta social con el usuario y realiza el login sin pasar por el registro.
+- Evita duplicación de usuarios y mejora la experiencia de login.
+- Mantiene la compatibilidad con futuras actualizaciones de `django-allauth` sin modificar su código fuente.
+
+Esta decisión técnica permite centralizar la lógica de vinculación de cuentas y mantener el código desacoplado, siguiendo las buenas prácticas recomendadas por Django Allauths
+
+## Uso de Cloudinary para almacenamiento de medios
+Se eligió Cloudinary para alojar las imágenes subidas por usuarios (artículos, etc.) por su plan gratuito, CDN global y optimización automática de imágenes.
+
+El campo imagen del modelo Articulo usa CloudinaryField para integración directa con Cloudinary.
+
+Esto elimina la necesidad de almacenar y servir archivos estáticos o media desde el servidor local, mejorando rendimiento y escalabilidad.
+
+Los fixtures referencian imágenes mediante el public_id de Cloudinary.
+
+Se mantiene un placeholder (imagen por defecto) alojado en Cloudinary para artículos sin imagen asignada.
+
+Las credenciales sensibles (API key, secret) se gestionan con variables de entorno para proteger la seguridad.
+
+En desarrollo local se recomienda usar un fallback a imágenes locales para evitar dependencia directa de Cloudinary.
 ## ------------------------------------------------------------------------------------------------------------------
 
 ## 🎯 Uso del sistema

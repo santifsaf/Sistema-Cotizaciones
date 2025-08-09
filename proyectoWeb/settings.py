@@ -3,6 +3,7 @@ from django.contrib.messages import constants as messages
 from decouple import config
 import dj_database_url
 import os
+import cloudinary
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -141,6 +142,12 @@ USE_I18N = True
 
 USE_TZ = True
 
+cloudinary.config(
+    cloud_name = os.getenv('CLOUDINARY_CLOUD_NAME'),
+    api_key = os.getenv('CLOUDINARY_API_KEY'),
+    api_secret = os.getenv('CLOUDINARY_API_SECRET'),
+    secure = True,
+)
 
 STATIC_URL = 'static/'        
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
