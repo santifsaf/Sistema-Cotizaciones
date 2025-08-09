@@ -23,7 +23,7 @@
 
   <form action="{% url 'eliminar_cotizacion' %}" method="post">
     {% csrf_token %}
-    
+    <input type="hidden" name="accion" value="eliminar">
     <div class="table-responsive">
 
       <table class="table table-striped align-middle shadow-sm">

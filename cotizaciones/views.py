@@ -119,13 +119,16 @@ class NuevaCotizacion(LoginRequiredMixin, View):
 
 class EliminarCotizacion(LoginRequiredMixin, View):
     def post(self, request):
-        if request.POST.get('accion') == 'eliminar':
-            cotizaciones_a_eliminar = request.POST.getlist('cotizaciones_seleccionadas[]')
-            if cotizaciones_a_eliminar:
-                Cotizaciones.objects.filter(id__in=cotizaciones_a_eliminar).delete()
-                messages.success(request, 'Se eliminaron correctamente las cotizaciones seleccionadas.')
-            else:
-                messages.error(request, 'Debe seleccionar al menos una cotización.')
+        print("POST data:", request.POST)
+        accion = request.POST.get('accion')
+        cotizaciones_a_eliminar = request.POST.getlist('cotizaciones_seleccionadas[]')
+        print(f"Accion: {accion}, Cotizaciones a eliminar: {cotizaciones_a_eliminar}")
+
+        if accion == 'eliminar' and cotizaciones_a_eliminar:
+            count, _ = Cotizaciones.objects.filter(id__in=cotizaciones_a_eliminar).delete()
+            messages.success(request, f'Se eliminaron {count} cotización(es) correctamente.')
+        else:
+            messages.error(request, 'Debe seleccionar al menos una cotización o acción inválida.')
         return redirect('mis_cotizaciones')
     
 
