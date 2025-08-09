@@ -63,7 +63,8 @@
             <div class="card h-100 border-0 shadow-sm overflow-hidden">
               <div class="position-relative">
                 {% if articulo.imagen %}
-                  <img src="{{ articulo.imagen.url }}" loading="lazy" class="card-img-top object-fit-cover" style="height: 140px;" alt="{{ articulo.nombre }}">
+                  <img src="{{ articulo.imagen.url }}" loading="lazy" class="card-img-top object-fit-cover" style="height: 140px; cursor:pointer;" alt="{{ articulo.nombre }}"
+                      data-bs-toggle="modal" data-bs-target="#imageModal" data-bs-image="{{ articulo.imagen.url }}">
                 {% else %}
                   <div class="bg-light d-flex align-items-center justify-content-center" style="height: 140px;">
                     <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="#6c757d" class="bi bi-image" viewBox="0 0 16 16">
@@ -121,11 +122,33 @@
   </form>
 </div>
 
-<script>
-  // Seleccionar todos los artículos
-  document.getElementById('seleccionar-todos').addEventListener('change', e => {
-    document.querySelectorAll('input[name="articulos_seleccionados[]"]').forEach(c => c.checked = e.target.checked);
-  });
-</script>
+  <script>
+    // Seleccionar todos los artículos
+    document.getElementById('seleccionar-todos').addEventListener('change', e => {
+      document.querySelectorAll('input[name="articulos_seleccionados[]"]').forEach(c => c.checked = e.target.checked);
+    });
+  </script>
+
+  <!-- Modal -->
+  <div class="modal fade" id="imageModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content bg-transparent border-0">
+        <div class="modal-body p-0">
+          <img id="imagenModalSrc" src="" class="img-fluid rounded" alt="Imagen ampliada">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const imagenModal = document.getElementById('imageModal');
+    const imagenModalSrc = document.getElementById('imagenModalSrc');
+
+    imagenModal.addEventListener('show.bs.modal', function (event) {
+      const trigger = event.relatedTarget;
+      const src = trigger.getAttribute('data-bs-image');
+      imagenModalSrc.src = src;
+    });
+  </script>
 
 {% endblock %}

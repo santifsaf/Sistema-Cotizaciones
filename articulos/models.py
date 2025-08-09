@@ -2,6 +2,9 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from cloudinary.models import CloudinaryField
+from django.dispatch import receiver
+from django.db.models.signals import post_delete
+import cloudinary.uploader
 
 class Articulo(models.Model):
     usuario_log=models.ForeignKey(User, on_delete=models.CASCADE)
@@ -32,3 +35,11 @@ class Articulo(models.Model):
         """Ejecutar validaciones antes de guardar"""
         self.full_clean() 
         super().save(*args, **kwargs)
+
+
+@receiver(post_delete, sender=Articulo)
+def borrar_imagen_cloudinary(sender, instance, **kwargs):
+    if instance.imagen:
+        public_id = instance.imagen.public_id
+        if public_id:
+            cloudinary.uploader.destroy(public_id)
