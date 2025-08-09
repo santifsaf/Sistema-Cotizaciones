@@ -69,11 +69,12 @@ class Cotizaciones(models.Model):
                 )
                 self.numero_referencia = f'COT-{ultimo+1:05d}'
 
+        super().save(*args, **kwargs)
+
         subtotal, _, total_con_desc = self.calcular_totales()
         self.total = subtotal
         self.total_con_descuento = total_con_desc
-
-        super().save(*args, **kwargs)
+        super().save(update_fields=['total', 'total_con_descuento'])
 
 
 class ArticulosCotizado(models.Model):
