@@ -52,7 +52,6 @@ def eliminar_empresa(request):
             messages.success(request, 'Las empresas seleccionadas se han eliminado correctamente.')
         else:
             messages.error(request, 'Debe seleccionar al menos una empresa.')
-        return redirect('mis_empresas')
     return redirect('mis_empresas')
 
 @login_required

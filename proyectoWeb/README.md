@@ -1,3 +1,17 @@
+## Índice
+1. [Descripción General]
+2. [Funcionalidades Principales]
+3. [Tecnologías Utilizadas]
+4. [Estructura del Proyecto]
+5. [Arquitectura de Base de Datos]
+6. [Relaciones del Sistema]
+7. [Datos de Demostración]
+8. [Configuración de Mail]
+9. [Seguridad y Protección de Login]
+10. [Decisiones Técnicas]
+12. [Instalación Manual]
+13. [Uso del Sistema]
+
 # 📄 CotizApp
 
 **CotizApp** es una aplicación web desarrollada en **Django** que permite gestionar artículos, clientes y empresas para crear cotizaciones de forma simple y profesional.  
@@ -20,11 +34,8 @@ Podés loguearte, cargar previamente tus artículos, clientes y datos de tu empr
 
 ## 🛠️ Tecnologías utilizadas
 
-django-axes==8.0.0
-Django 5.1
-django-import-export 4.1.1
-WeasyPrint 66.0
 Docker para containerización
+Backend: Django 
 Base de datos: Postgres
 Frontend: HTML, CSS, Bootstrap, JavaScript
 Control de versiones: GitHub
@@ -160,7 +171,7 @@ Una vez cargados los datos, podrás crear cotizaciones usando los artículos y c
 
 ## ------------------------------------------------------------------------------------------------------------------
 
-## 📧 Configuración de Email
+## 📧 Configuración de Mail
 
 Este proyecto incluye funcionalidad de reset de contraseña por email con views personalizadas.
 
@@ -207,74 +218,6 @@ AxesProxyHandler.reset_attempts(ip_address='127.0.0.1')
 # O desbloquear todo 
 AxesProxyHandler.reset_attempts()
 
-
-## ------------------------------------------------------------------------------------------------------------------
-
-## 🐳 Ejecución con Docker 
-
-Para facilitar la configuración y despliegue, el proyecto está completamente dockerizado:
-
-### Opción 1: Docker Compose 
-```bash
-# Clonar el repositorio
-git clone https://github.com/usuario/proyectoWeb.git
-cd proyectoWeb
-
-# Levantar la aplicación
-docker-compose up
-
-# La app estará disponible en http://localhost:8000
-```
-
-### Comandos útiles de Docker
-```bash
-docker-compose build      # Construir la imagen (solo la primera vez)
-docker-compose up -d      # Levantar en segundo plano
-docker-compose down       # Detener y limpiar contenedores
-docker-compose logs       # Ver logs de la aplicación
-```
-
-## ------------------------------------------------------------------------------------------------------------------
-
-## 📦 Instalación manual (sin Docker)
-
-### Requerimientos
-Ver archivo `requirements.txt` para todas las dependencias.
-
-### Pasos de instalación
-
-1. **Clonar el repositorio:**
-```bash
-git clone https://github.com/usuario/proyectoWeb.git
-cd proyectoWeb
-```
-
-2. **Crear entorno virtual:**
-```bash
-python -m venv venv
-source venv/bin/activate  # En Windows: venv\Scripts\activate
-```
-
-3. **Instalar dependencias:**
-```bash
-pip install -r requirements.txt
-```
-
-4. **Aplicar migraciones:**
-```bash
-python manage.py migrate
-```
-
-5. **Crear un superusuario:**
-```bash
-python manage.py createsuperuser
-```
-
-6. **Ejecutar el servidor de desarrollo:**
-```bash
-python manage.py runserver
-```
-
 ## ------------------------------------------------------------------------------------------------------------------
 
 ## 🔍 Decisiones técnicas
@@ -316,6 +259,82 @@ Se mantiene un placeholder (imagen por defecto) alojado en Cloudinary para artí
 Las credenciales sensibles (API key, secret) se gestionan con variables de entorno para proteger la seguridad.
 
 En desarrollo local se recomienda usar un fallback a imágenes locales para evitar dependencia directa de Cloudinary.
+
+## UptimeRobot 
+Se implementó un monitor externo utilizando UptimeRobot para verificar la disponibilidad del sistema cada 5 minutos. Esto se debe a que el servicio de hosting gratuito puede poner la aplicación en estado de suspensión tras periodos de inactividad.
+
+
+## ------------------------------------------------------------------------------------------------------------------
+
+🐳 Ejecución con Docker
+Para facilitar la configuración y despliegue, el proyecto está completamente dockerizado.
+
+Requisitos:
+Docker y Docker Compose instalados
+Variables de entorno configuradas (por ejemplo, DATABASE_URL, SECRET_KEY, etc.).
+
+### Opción 1: Docker Compose 
+```bash
+# Clonar el repositorio
+git clone https://github.com/santifsaf/Sistema-Cotizaciones.git
+cd Sistema-Cotizaciones
+
+# Levantar la aplicación
+docker-compose up
+
+# La app estará disponible en http://localhost:8000
+```
+
+### Comandos útiles de Docker
+```bash
+docker-compose build      # Construir la imagen (solo la primera vez)
+docker-compose up -d      # Levantar en segundo plano
+docker-compose down       # Detener y limpiar contenedores
+docker-compose logs       # Ver logs de la aplicación
+```
+
+## ------------------------------------------------------------------------------------------------------------------
+
+## 📦 Instalación manual (sin Docker)
+
+### Requerimientos
+Ver archivo `requirements.txt` para todas las dependencias.
+
+
+### Pasos de instalación
+
+1. **Clonar el repositorio:**
+```bash
+git clone https://github.com/santifsaf/Sistema-Cotizaciones.git
+cd Sistema-Cotizaciones
+```
+
+2. **Crear entorno virtual:**
+```bash
+python -m venv venv
+source venv/bin/activate  # En Windows: venv\Scripts\activate
+```
+
+3. **Instalar dependencias:**
+```bash
+pip install -r requirements.txt
+```
+
+4. **Aplicar migraciones:**
+```bash
+python manage.py migrate
+```
+
+5. **Crear un superusuario:**
+```bash
+python manage.py createsuperuser
+```
+
+6. **Ejecutar el servidor de desarrollo:**
+```bash
+python manage.py runserver
+```
+
 ## ------------------------------------------------------------------------------------------------------------------
 
 ## 🎯 Uso del sistema
@@ -327,10 +346,3 @@ En desarrollo local se recomienda usar un fallback a imágenes locales para evit
 4. **Inventario** → Cargar artículos propios
 5. **Clientes** → Agregar información de clientes
 6. **Cotizaciones** → Crear y generar PDFs
-
-### Para desarrolladores:
-1. **Clone** → Descargar repositorio
-2. **Docker** → `docker-compose up` y listo
-3. **Fixtures** → Cargar datos demo (opcional)
-4. **Testing** → Probar funcionalidades
-

@@ -1,6 +1,7 @@
 # Archivos sensibles
 .env
 *.env
+.env.db
 
 # Python
 __pycache__/

@@ -60,9 +60,6 @@ class Cotizaciones(models.Model):
         2) Recalcula y asigna 'total' y 'total_con_descuento' antes de guardar.
         3) Llama al super().save().
         """
-        # ——————————————
-        # 1. Generar referencia
-        # ——————————————
         if not self.numero_referencia:
             with transaction.atomic():
                 ultimo = (
@@ -71,19 +68,11 @@ class Cotizaciones(models.Model):
                     .aggregate(maxn=Max('n'))['maxn'] or 0
                 )
                 self.numero_referencia = f'COT-{ultimo+1:05d}'
-            super().save(*args, **kwargs)
-            return
 
-        # ——————————————
-        # 2. Recalcular totales
-        # ——————————————
         subtotal, _, total_con_desc = self.calcular_totales()
-        self.total = subtotal  # Este es el subtotal sin descuento
-        self.total_con_descuento = total_con_desc  # Este es el total con descuento
+        self.total = subtotal
+        self.total_con_descuento = total_con_desc
 
-        # ——————————————
-        # 3. Guardar
-        # ——————————————
         super().save(*args, **kwargs)
 
 

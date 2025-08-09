@@ -23,7 +23,9 @@ class Articulo(models.Model):
         return self.nombre
 
     def clean(self):
-        """Validaciones personalizadas del modelo"""
+        """
+        Verifica que el precio no sea negativo.
+        """
         super().clean()
         
         if self.precio is not None and self.precio < 0:
@@ -39,6 +41,10 @@ class Articulo(models.Model):
 
 @receiver(post_delete, sender=Articulo)
 def borrar_imagen_cloudinary(sender, instance, **kwargs):
+    """
+    Signal para borrar la imagen de Cloudinary asociada a un Articulo
+    cuando este es eliminado de la base de datos.
+    """
     if instance.imagen:
         public_id = instance.imagen.public_id
         if public_id:

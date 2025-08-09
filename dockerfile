@@ -10,7 +10,7 @@ ENV PYTHONUNBUFFERED=1
 
 # Copia e instala dependencias Python
 COPY requirements.txt .
-RUN pip install --upgrade pip
+RUN pip install --upgrade pip && pip install -r requirements.txt --no-cache-dir
 RUN pip install -r requirements.txt
 
 

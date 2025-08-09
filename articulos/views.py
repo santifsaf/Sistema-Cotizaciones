@@ -3,6 +3,7 @@ from .forms import ArticuloForm
 from .models import Articulo
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.db.models import Q
 
 
 
@@ -10,21 +11,21 @@ from django.contrib.auth.decorators import login_required
 def mis_articulos(request):
     """
     Lista artículos del usuario con funcionalidad de búsqueda.
-    Busca en nombre y descripción del artículo.
+    Busca por nombre y descripción del artículo.
     """
     search = request.GET.get('search', '').strip()
     articulos = Articulo.objects.filter(usuario_log=request.user)
     if search:
-        # Filtrar por nombre
-        articulos_por_nombre = articulos.filter(nombre__icontains=search)
-        # Filtrar por descripción
-        articulos_por_descripcion = articulos.filter(descripcion__icontains=search)
-        # Combinar ambos querysets
-        articulos = articulos_por_nombre.union(articulos_por_descripcion)
+        articulos = articulos.filter(Q(nombre__icontains=search) | Q(descripcion__icontains=search))
     return render(request, "mis_articulos.html", {"articulos": articulos})
 
 @login_required
 def nuevo_articulo(request):
+    """
+    Muestra formulario para crear un artículo nuevo.
+    Valida duplicados por nombre para el usuario.
+    Guarda artículo y asigna usuario.
+    """ 
     if request.method == 'POST':
         form = ArticuloForm(request.POST, request.FILES)
         if form.is_valid():
