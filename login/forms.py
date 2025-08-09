@@ -46,9 +46,38 @@ class CustomUserCreationForm(UserCreationForm):
 
 
 class CustomAuthenticationForm(AuthenticationForm):
-    username = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Nombre de usuario'}))
+    username = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Nombre de usuario o correo electrónico'}))
     password = forms.CharField(widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Contraseña'}))
     remember_me = forms.BooleanField(required=False, widget=forms.CheckboxInput(attrs={'class': 'form-check-input'}))
+
+    def clean(self):
+        username_or_email = self.cleaned_data.get('username')
+        password = self.cleaned_data.get('password')
+
+        if username_or_email and password:
+            from django.contrib.auth import authenticate
+            user = None
+
+            # Primero intentar usuario normal
+            user = authenticate(self.request, username=username_or_email, password=password)
+
+            # Si no se autentica, buscar por email
+            if user is None:
+                try:
+                    from django.contrib.auth.models import User
+                    user_obj = User.objects.get(email__iexact=username_or_email)
+                    user = authenticate(self.request, username=user_obj.username, password=password)
+                except User.DoesNotExist:
+                    pass
+
+            if user is None:
+                raise forms.ValidationError("Usuario o contraseña incorrectos.")
+
+            self.user_cache = user
+
+        return self.cleaned_data
+    
+
 
 
 class CustomPasswordResetForm(PasswordResetForm):
