@@ -10,5 +10,7 @@ dj-database-url==3.0.1
 whitenoise==6.9.0
 gunicorn==23.0.0
 django-allauth==65.10.0
+PyJWT==2.10.1
 requests==2.32.4
+cryptography==41.0.3
 cloudinary==1.44.1
