@@ -56,7 +56,7 @@ class NuevaCotizacion(LoginRequiredMixin, View):
     def _get_context_data(self, form):
         return {
             'form': form,
-            'empresas': Empresa.objects.all(),
+            'empresas': Empresa.objects.filter(usuario_log=self.request.user),
             'clientes': Clientes.objects.filter(usuario_log=self.request.user),
             'articulos_disponibles': Articulo.objects.filter(usuario_log=self.request.user),
             'fecha_actual': timezone.now().strftime('%Y-%m-%d'),
