@@ -16,7 +16,7 @@
 # 📄 CotizApp
 
 **CotizApp** es una aplicación web desarrollada en **Django** que permite gestionar artículos, clientes y empresas para crear cotizaciones de forma simple y profesional.  
-Podés loguearte, cargar previamente tus artículos, clientes y datos de tu empresa, y luego crear cotizaciones interactivas que se pueden descargar en PDF, imprimir o enviar por mail. 
+Podés loguearte, cargar previamente tus artículos, clientes y datos de tu empresa, y luego crear cotizaciones con la opcion de descargarlas en PDF.  
 
 ## ------------------------------------------------------------------------------------------------------------------
 ## 🚀 Funcionalidades principales
@@ -35,14 +35,12 @@ Podés loguearte, cargar previamente tus artículos, clientes y datos de tu empr
 
 ## 🛠️ Tecnologías utilizadas
 
-django-axes==8.0.0
-Django 5.1
-django-import-export 4.1.1
-WeasyPrint 66.0
-Docker para containerización
+Backend: Django
 Base de datos: Postgres
 Frontend: HTML, CSS, Bootstrap, JavaScript
 Control de versiones: GitHub
+Cloudinary para gestion de imagenes.
+Docker para containerización.
 
 ## ------------------------------------------------------------------------------------------------------------------
 
@@ -105,7 +103,7 @@ proyectoWeb/
     Articulo {
         int id PK
         int usuario_log_id FK
-        string imagen
+        imagen
         string nombre
         string descripcion
         int precio
