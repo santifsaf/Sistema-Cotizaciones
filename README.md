@@ -39,7 +39,8 @@ Backend: Django
 Base de datos: Postgres
 Frontend: HTML, CSS, Bootstrap, JavaScript
 Control de versiones: GitHub
-Docker para containerización
+Cloudinary para gestion de imagenes.
+Docker para containerización.
 
 ## ------------------------------------------------------------------------------------------------------------------
 
