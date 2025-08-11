@@ -1,11 +1,11 @@
 from django.shortcuts import render, redirect
 from django.views import View
-from django.contrib.auth import login, authenticate
 from django.contrib import messages
 from django.contrib.auth.views import LoginView
 from .forms import CustomUserCreationForm, CustomAuthenticationForm
 from django.urls import reverse_lazy
 from django.conf import settings
+from allauth.account.models import EmailAddress
 from django.contrib.auth.views import (
     PasswordResetView, 
     PasswordResetDoneView, 
@@ -21,22 +21,25 @@ class RegistroView(View):
     def post(self, request):
         form = CustomUserCreationForm(request.POST)
         if form.is_valid():
-            # Guardar el usuario
-            user = form.save()
+            user = form.save(commit=False)
+            user.is_active = False
+            user.save()
 
-            # Autenticarlo para obtener el backend correcto
-            user = authenticate(
-                request,
-                username=form.cleaned_data["username"],
-                password=form.cleaned_data["password1"]
+            # Crear o conseguir EmailAddress para ese usuario y email
+            email_address, created = EmailAddress.objects.get_or_create(
+                user=user,
+                email=user.email,
             )
 
-            # Iniciar sesión
-            if user is not None:
-                login(request, user)
-                return redirect('home')
-            else:
-                messages.error(request, "No se pudo iniciar sesión automáticamente. Intenta loguearte manualmente.")
+            if not email_address.verified:
+                print(">>> Enviando mail de confirmación para usuario:", user.email)
+                email_address.send_confirmation(request)
+
+            messages.success(
+                request,
+                "Te enviamos un mail de confirmacion! Por favor abrilo para validar tu cuenta. "
+            )
+            return redirect('login') 
         else:
             # Manejo de errores del formulario
             for field, errors in form.errors.items():
@@ -57,6 +60,12 @@ class CustomLoginView(LoginView):
         - Si está desmarcado: la sesión expira al cerrar el navegador.
         - Si está marcado: la sesión dura 30 días.
         """
+        user = form.get_user()
+
+        # 🚨 Chequeo si el email está confirmado
+        if not EmailAddress.objects.filter(user=user, verified=True).exists():
+            messages.error(self.request, "Debes confirmar tu email antes de iniciar sesión.")
+            return redirect('login')
         remember_me = form.cleaned_data.get('remember_me')
 
         if not remember_me:

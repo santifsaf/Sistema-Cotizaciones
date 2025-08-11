@@ -58,6 +58,14 @@ SOCIALACCOUNT_PROVIDERS = {
 
 SOCIALACCOUNT_ADAPTER = 'login.adapters.MySocialAccountAdapter'
 
+
+# Configuración para forzar verificación email
+ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_EMAIL_VERIFICATION = "mandatory" 
+ACCOUNT_LOGIN_ATTEMPTS_LIMIT = 5  
+ACCOUNT_LOGIN_ATTEMPTS_TIMEOUT = 600  
+
+
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
 CRISPY_TEMPLATE_PACK = 'bootstrap5'
 
@@ -189,6 +197,7 @@ ALLOWED_HOSTS = [EXTERNAL_HOSTNAME] if EXTERNAL_HOSTNAME else ['localhost', '127
 
 # Configuración de email
 EMAIL_BACKEND = config('EMAIL_BACKEND', default='django.core.mail.backends.console.EmailBackend')
+
 
 # Configuración SMTP (para producción)
 EMAIL_HOST = config('EMAIL_HOST', default='smtp.gmail.com')
