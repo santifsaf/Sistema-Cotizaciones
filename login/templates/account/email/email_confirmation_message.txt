@@ -1,0 +1,12 @@
+Hola {{ user.get_full_name|default:user.username }},
+
+Gracias por registrarte en CotizApp.
+
+Para activar tu cuenta, por favor hacé clic en el siguiente enlace:
+
+{{ activate_url }}
+
+Si no te registraste, ignorá este correo.
+
+Saludos,
+El equipo de CotizApp

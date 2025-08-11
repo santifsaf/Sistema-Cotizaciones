@@ -62,8 +62,7 @@ SOCIALACCOUNT_ADAPTER = 'login.adapters.MySocialAccountAdapter'
 # Configuración para forzar verificación email
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_EMAIL_VERIFICATION = "mandatory" 
-ACCOUNT_LOGIN_ATTEMPTS_LIMIT = 5  
-ACCOUNT_LOGIN_ATTEMPTS_TIMEOUT = 600  
+
 
 
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
