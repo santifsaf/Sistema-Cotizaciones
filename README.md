@@ -18,7 +18,7 @@
 CotizApp es una aplicación web desarrollada en Django que permite gestionar artículos, clientes y empresas para crear cotizaciones de forma simple y profesional.
 Podés loguearte, cargar previamente tus artículos, clientes y datos de tu empresa, y luego crear cotizaciones con la opcion de descargarlas en PDF.
 
-## ------------------------------------------------------------------------------------------------------------------
+## ---------------------------------------------------------------
 ## 🚀 Funcionalidades principales
 
 ✅ Views personalizadas para el registro, inicio de sesión de usuarios y la recuperación de contraseña via mail 
@@ -32,7 +32,7 @@ Podés loguearte, cargar previamente tus artículos, clientes y datos de tu empr
 - Filtros de busqueda (número de cotizacion o por cliente)
 ✅ Interfaz responsive básica con **Bootstrap**
 
-## ------------------------------------------------------------------------------------------------------------------
+## ---------------------------------------------------------------
 
 ## 🛠️ Tecnologías utilizadas
 
@@ -43,7 +43,7 @@ Frontend: HTML, CSS, Bootstrap, JavaScript
 Control de versiones: GitHub
 Cloudinary, WeasyPrint, django-axes, django-allauth.
 
-## ------------------------------------------------------------------------------------------------------------------
+## ---------------------------------------------------------------
 
 
 ## 📁 Estructura del proyecto
@@ -65,7 +65,7 @@ proyectoWeb/
 └── cotizaciones/      # CRUD de cotizaciones (CBV) con interfaz interactiva y generación de PDFs
 ```
 
-## ------------------------------------------------------------------------------------------------------------------
+## ---------------------------------------------------------------
 ## 🗄️ Arquitectura de Base de Datos
 
     User {
@@ -154,7 +154,7 @@ Cotizaciones → ArticulosCotizado (uno a muchos): Una cotización puede contene
 
 Articulo ↔ Cotizaciones (muchos a muchos): Un artículo puede aparecer en múltiples cotizaciones y una cotización puede contener múltiples artículos. Esta relación se gestiona a través de la tabla intermedia ArticulosCotizado, que además almacena la cantidad de cada artículo en la cotización.
 
-## ------------------------------------------------------------------------------------------------------------------
+## ---------------------------------------------------------------
 
 ## 📊 Datos de Demostración
 
@@ -172,7 +172,7 @@ python manage.py loaddata demo_basic_data_utf8
 
 Una vez cargados los datos, podrás crear cotizaciones usando los artículos y clientes pre-cargados.
 
-## ------------------------------------------------------------------------------------------------------------------
+## ---------------------------------------------------------------
 
 ## 📧 Configuración de Mail
 
@@ -191,7 +191,7 @@ EMAIL_HOST_PASSWORD=tu_app_password
 DEFAULT_FROM_EMAIL=nombre_de_app@gmail.com
 ⚠️ Importante: se debe generar una contraseña de aplicación desde la cuenta de Gmail, no usar la contraseña personal.
 
-## ------------------------------------------------------------------------------------------------------------------
+## ---------------------------------------------------------------
 
 ## 🔐 Seguridad: Protección contra intentos de login fallidos (django-axes)
 
@@ -220,8 +220,7 @@ AxesProxyHandler.reset_attempts(ip_address='127.0.0.1')
 
 # O desbloquear todo 
 AxesProxyHandler.reset_attempts()
-
-## ------------------------------------------------------------------------------------------------------------------
+## ---------------------------------------------------------------
 
 ## 🔍 Decisiones técnicas
 
@@ -261,7 +260,7 @@ Las credenciales sensibles (API key, secret) se gestionan con variables de entor
 Se implementó un monitor externo utilizando UptimeRobot para verificar la disponibilidad del sistema cada 5 minutos. Esto se debe a que el servicio de hosting gratuito puede poner la aplicación en estado de suspensión tras periodos de inactividad.
 
 
-## ------------------------------------------------------------------------------------------------------------------
+## ---------------------------------------------------------------
 
 🐳 Ejecución con Docker
 Para facilitar la configuración y despliegue, el proyecto está completamente dockerizado.
@@ -290,7 +289,7 @@ docker-compose down       # Detener y limpiar contenedores
 docker-compose logs       # Ver logs de la aplicación
 ```
 
-## ------------------------------------------------------------------------------------------------------------------
+## ---------------------------------------------------------------
 
 ## 📦 Instalación manual (sin Docker)
 
@@ -331,8 +330,7 @@ python manage.py createsuperuser
 ```bash
 python manage.py runserver
 ```
-
-## ------------------------------------------------------------------------------------------------------------------
+## ---------------------------------------------------------------
 
 ## 🎯 Uso del sistema
 
