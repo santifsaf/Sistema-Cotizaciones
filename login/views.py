@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect
+from django.contrib.auth import get_user_model
 from django.views import View
 from django.contrib import messages
 from django.contrib.auth.views import LoginView
@@ -137,3 +138,4 @@ class CustomPasswordResetCompleteView(PasswordResetCompleteView):
     Vista final que confirma que el cambio de contraseña fue exitoso.
     """
     template_name = 'registration/password_reset_complete.html'
+
