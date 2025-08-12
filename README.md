@@ -235,13 +235,11 @@ Me parecio una buena oportunidad de aprendizaje implementar containerización co
 
 ### Personalización del login con Google
 
-Para manejar logins con Google, se implementó un **SocialAccountAdapter** personalizado sobre `django-allauth`.  
+Para manejar logins con Google, se implementó `django-allauth` con un **SocialAccountAdapter** personalizado que permite centralizar la lógica de vinculación de cuentas, siguiendo las buenas prácticas recomendadas por Django Allauths. 
 Este adapter:
 - Verifica si ya existe un usuario con el email proporcionado.
 - Si existe, conecta automáticamente la cuenta social con el usuario y realiza el login sin pasar por el registro.
 - Evita duplicación de usuarios y mejora la experiencia de login.
-
-Esta decisión técnica permite centralizar la lógica de vinculación de cuentas, siguiendo las buenas prácticas recomendadas por Django Allauths
 
 ## Uso de Cloudinary para almacenamiento de medios
 Elegí Cloudinary para alojar las imágenes subidas por usuarios (artículos, etc.) por su plan gratuito, CDN global y optimización automática de imágenes.
