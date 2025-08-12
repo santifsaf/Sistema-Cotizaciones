@@ -1,27 +1,27 @@
 ## Índice
-1. [Descripción General](#cotizapp)
-2. [Funcionalidades Principales](#-funcionalidades-principales)
-3. [Tecnologías Utilizadas](#-tecnologías-utilizadas)
-4. [Estructura del Proyecto](#-estructura-del-proyecto)
-5. [Arquitectura de Base de Datos](#-arquitectura-de-base-de-datos)
-6. [Relaciones del Sistema](#-relaciones-del-sistema)
-7. [Datos de Demostración](#-datos-de-demostración)
-8. [Configuración de Mail](#-configuración-de-mail)
-9. [Seguridad y Protección de Login](#-seguridad-protección-contra-intentos-de-login-fallidos)
-10. [Decisiones Técnicas](#-decisiones-técnicas)
-11. [Ejecución con Docker](#-ejecución-con-docker)
-12. [Instalación Manual](#-instalación-manual-sin-docker)
-13. [Uso del Sistema](#-uso-del-sistema)
+1. [Descripción General]
+2. [Funcionalidades Principales]
+3. [Tecnologías Utilizadas]
+4. [Estructura del Proyecto]
+5. [Arquitectura de Base de Datos]
+6. [Relaciones del Sistema]
+7. [Datos de Demostración]
+8. [Configuración de Mail]
+9. [Seguridad y Protección de Login]
+10. [Decisiones Técnicas]
+12. [Instalación Manual]
+13. [Uso del Sistema]
 
 # 📄 CotizApp
 
-**CotizApp** es una aplicación web desarrollada en **Django** que permite gestionar artículos, clientes y empresas para crear cotizaciones de forma simple y profesional.  
-Podés loguearte, cargar previamente tus artículos, clientes y datos de tu empresa, y luego crear cotizaciones con la opcion de descargarlas en PDF.  
+CotizApp es una aplicación web desarrollada en Django que permite gestionar artículos, clientes y empresas para crear cotizaciones de forma simple y profesional.
+Podés loguearte, cargar previamente tus artículos, clientes y datos de tu empresa, y luego crear cotizaciones con la opcion de descargarlas en PDF.
 
 ## ------------------------------------------------------------------------------------------------------------------
 ## 🚀 Funcionalidades principales
 
-✅ Views personalizadas para el registro, inicio de sesión de usuarios y la recuperación de contraseña via mail (Bloqueo automático tras 5 intentos fallidos)
+✅ Views personalizadas para el registro, inicio de sesión de usuarios y la recuperación de contraseña via mail 
+✅ Verificacion via mail para el registro de nuevos usuarios (Bloqueo automático tras 5 intentos fallidos)
 ✅ Carga y gestión de artículos con filtros de busqueda (nombre o descripcion).   
 ✅ Carga y gestión de clientes con filtros de busqueda (nombre o empresa).  
 ✅ Carga de datos de tu empresa (para incluir en la cotización)  
@@ -35,12 +35,12 @@ Podés loguearte, cargar previamente tus artículos, clientes y datos de tu empr
 
 ## 🛠️ Tecnologías utilizadas
 
-Backend: Django
-Base de datos: Postgres
+Docker para containerización
+Backend: Django 
+Base de datos: PostgreSQL
 Frontend: HTML, CSS, Bootstrap, JavaScript
 Control de versiones: GitHub
-Cloudinary para gestion de imagenes.
-Docker para containerización.
+Cloudinary, WeasyPrint, django-axes, django-allauth.
 
 ## ------------------------------------------------------------------------------------------------------------------
 
@@ -57,8 +57,8 @@ proyectoWeb/
 ├── Dockerfile         # Imagen de Docker
 ├── media              # Archivos subidos por usuarios  
 ├── cotizApp/          # App principal y configuración Django
-│   └── static/        # Archivos estáticos de cotizApp
 ├── login/             # Gestión de usuarios, autenticación y recuperación personalizada de credenciales
+    └── adapters.py      # Personalizacion del flujo de autenticación con Google de Allauth.
 ├── articulos/         # CRUD de artículos (FBV)
 ├── clientes/          # CRUD de clientes (CBV)
 └── cotizaciones/      # CRUD de cotizaciones (CBV) con interfaz interactiva y generación de PDFs
@@ -103,7 +103,7 @@ proyectoWeb/
     Articulo {
         int id PK
         int usuario_log_id FK
-        imagen
+        string imagen
         string nombre
         string descripcion
         int precio
@@ -225,30 +225,26 @@ AxesProxyHandler.reset_attempts()
 ## 🔍 Decisiones técnicas
 
 ### Arquitectura de Views
-El proyecto implementa **ambos enfoques de Django** para demostrar versatilidad técnica:
+- **Artículos**: Function-Based Views (FBV) 
+- **Clientes, Cotizaciones y Login**: Class-Based Views (CBV)
 
-- **Artículos**: Function-Based Views (FBV) - enfoque tradicional y directo
-- **Clientes y Cotizaciones**: Class-Based Views (CBV) - enfoque orientado a objetos
-
-Esta decisión fue intencional para mostrar dominio de ambas metodologías. En proyectos reales, se recomienda mantener consistencia según las preferencias del equipo y la complejidad de la lógica de negocio.
+Esta decisión fue intencional para mostrar dominio de ambas metodologías.
 
 ### Containerización con Docker
-Aunque CotizApp no es una aplicación con muchas dependencias, decidí implementar containerización como una oportunidad de aprendizaje y buenas prácticas de desarrollo. Docker facilita la reproducibilidad del entorno y simplifica el proceso para otros desarrolladores.
+Me parecio una buena oportunidad de aprendizaje implementar containerización con Docker. Facilita la reproducibilidad del entorno y simplifica el proceso para otros desarrolladores.
 
 ### Personalización del login con Google
 
 Para manejar logins con Google, se implementó un **SocialAccountAdapter** personalizado sobre `django-allauth`.  
-Este adapter intercepta el flujo en el método `pre_social_login` y:
-
+Este adapter:
 - Verifica si ya existe un usuario con el email proporcionado.
 - Si existe, conecta automáticamente la cuenta social con el usuario y realiza el login sin pasar por el registro.
 - Evita duplicación de usuarios y mejora la experiencia de login.
-- Mantiene la compatibilidad con futuras actualizaciones de `django-allauth` sin modificar su código fuente.
 
-Esta decisión técnica permite centralizar la lógica de vinculación de cuentas y mantener el código desacoplado, siguiendo las buenas prácticas recomendadas por Django Allauths
+Esta decisión técnica permite centralizar la lógica de vinculación de cuentas, siguiendo las buenas prácticas recomendadas por Django Allauths
 
 ## Uso de Cloudinary para almacenamiento de medios
-Se eligió Cloudinary para alojar las imágenes subidas por usuarios (artículos, etc.) por su plan gratuito, CDN global y optimización automática de imágenes.
+Elegí Cloudinary para alojar las imágenes subidas por usuarios (artículos, etc.) por su plan gratuito, CDN global y optimización automática de imágenes.
 
 El campo imagen del modelo Articulo usa CloudinaryField para integración directa con Cloudinary.
 
@@ -260,23 +256,24 @@ Se mantiene un placeholder (imagen por defecto) alojado en Cloudinary para artí
 
 Las credenciales sensibles (API key, secret) se gestionan con variables de entorno para proteger la seguridad.
 
-En desarrollo local se recomienda usar un fallback a imágenes locales para evitar dependencia directa de Cloudinary.
-
 ## UptimeRobot 
 Se implementó un monitor externo utilizando UptimeRobot para verificar la disponibilidad del sistema cada 5 minutos. Esto se debe a que el servicio de hosting gratuito puede poner la aplicación en estado de suspensión tras periodos de inactividad.
 
 
 ## ------------------------------------------------------------------------------------------------------------------
 
-## 🐳 Ejecución con Docker 
+🐳 Ejecución con Docker
+Para facilitar la configuración y despliegue, el proyecto está completamente dockerizado.
 
-Para facilitar la configuración y despliegue, el proyecto está completamente dockerizado:
+Requisitos:
+Docker y Docker Compose instalados
+Variables de entorno configuradas (por ejemplo, DATABASE_URL, SECRET_KEY, etc.).
 
 ### Opción 1: Docker Compose 
 ```bash
 # Clonar el repositorio
-git clone https://github.com/usuario/proyectoWeb.git
-cd proyectoWeb
+git clone https://github.com/santifsaf/Sistema-Cotizaciones.git
+cd Sistema-Cotizaciones
 
 # Levantar la aplicación
 docker-compose up
@@ -299,12 +296,13 @@ docker-compose logs       # Ver logs de la aplicación
 ### Requerimientos
 Ver archivo `requirements.txt` para todas las dependencias.
 
+
 ### Pasos de instalación
 
 1. **Clonar el repositorio:**
 ```bash
-git clone https://github.com/usuario/proyectoWeb.git
-cd proyectoWeb
+git clone https://github.com/santifsaf/Sistema-Cotizaciones.git
+cd Sistema-Cotizaciones
 ```
 
 2. **Crear entorno virtual:**
@@ -340,14 +338,7 @@ python manage.py runserver
 ### Para usuarios finales:
 1. **Registro** → Crear cuenta
 2. **Login** → Acceder al sistema  
-3. **Configuración** → Cargar datos de empresa
-4. **Inventario** → Cargar artículos propios
-5. **Clientes** → Agregar información de clientes
+4. **Inventario** → Cargar artículos 
+5. **Clientes** **Datos empresa** → Agregar información de clientes y de tu empresa
 6. **Cotizaciones** → Crear y generar PDFs
-
-### Para desarrolladores:
-1. **Clone** → Descargar repositorio
-2. **Docker** → `docker-compose up` y listo
-3. **Fixtures** → Cargar datos demo (opcional)
-4. **Testing** → Probar funcionalidades
 
