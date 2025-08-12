@@ -6,7 +6,6 @@ from .views import (
     CustomPasswordResetDoneView, 
     CustomPasswordResetConfirmView,
     CustomPasswordResetCompleteView,
-    ReenvioConfirmacionView
 )
 
 urlpatterns = [
