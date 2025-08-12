@@ -17,7 +17,7 @@ class MySocialAccountAdapter(DefaultSocialAccountAdapter):
         except User.DoesNotExist:
             return  # Usuario nuevo: seguir con flujo normal
 
-        # Marcar email como verificado YA antes del login
+        # Sincronizar y verificar email
         EmailAddress.objects.update_or_create(
             user=user,
             email=email,
@@ -27,10 +27,10 @@ class MySocialAccountAdapter(DefaultSocialAccountAdapter):
         # Conectar cuenta social con usuario existente
         sociallogin.connect(request, user)
 
-        # Loguear sin pasar por confirmación
+        # Loguear directamente
         perform_login(request, user, email_verification='optional')
 
-        # Forzar redirección después de login
+        # Redirigir
         request.session['next'] = reverse('home')
 
     def get_login_redirect_url(self, request):

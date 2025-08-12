@@ -5,7 +5,8 @@ from django.contrib.auth.views import LoginView
 from .forms import CustomUserCreationForm, CustomAuthenticationForm
 from django.urls import reverse_lazy
 from django.conf import settings
-from allauth.account.models import EmailAddress
+from django.contrib.auth import get_user_model
+from allauth.account.models import EmailAddress, EmailConfirmationHMAC
 from django.contrib.auth.views import (
     PasswordResetView, 
     PasswordResetDoneView, 
@@ -13,14 +14,16 @@ from django.contrib.auth.views import (
     PasswordResetCompleteView
 )
 
+
+User = get_user_model()
+
 class RegistroView(View):
     """
-    Maneja el registro de usuarios.
-
-    GET: muestra el formulario vacío.
-    POST: valida y crea usuario inactivo, envía mail de confirmación si no está verificado.
-    Muestra errores si el formulario falla.
+    Registro manual con validación de email.
+    Si el email ya existe y está verificado -> bloquea registro.
+    Si existe pero no está verificado -> sobrescribe usuario y envía confirmación.
     """
+
     def get(self, request):
         form = CustomUserCreationForm()
         return render(request, "registration/registro.html", {"form": form})
@@ -28,28 +31,53 @@ class RegistroView(View):
     def post(self, request):
         form = CustomUserCreationForm(request.POST)
         if form.is_valid():
-            user = form.save(commit=False)
-            user.is_active = False
-            user.save()
+            email = form.cleaned_data.get('email')
 
-            email_address, created = EmailAddress.objects.get_or_create(
-                user=user,
-                email=user.email,
-            )
+            # Caso 1: Email ya verificado
+            if EmailAddress.objects.filter(email__iexact=email, verified=True).exists():
+                messages.error(
+                    request,
+                    "Este email ya está registrado y verificado. Iniciá sesión con tu cuenta."
+                )
+                return render(request, "registration/registro.html", {"form": form})
 
-            if not email_address.verified:
-                email_address.send_confirmation(request)
+            # Caso 2: Email no verificado pero existente
+            try:
+                user = User.objects.get(email__iexact=email)
+                user.username = form.cleaned_data.get('username')  # Actualiza datos si querés
+                user.set_password(form.cleaned_data.get('password1'))
+                user.is_active = False
+                user.save()
+            except User.DoesNotExist:
+                # Usuario nuevo
+                user = form.save(commit=False)
+                user.is_active = False
+                user.save()
+
+            # EmailAddress sincronizado
+            email_address, created = EmailAddress.objects.get_or_create(user=user)
+            if email_address.email != user.email:
+                email_address.email = user.email
+                email_address.save()
+
+            # Enviar confirmación con EmailConfirmationHMAC
+            confirmation = EmailConfirmationHMAC(email_address)
+            confirmation.send(request)
 
             messages.success(
                 request,
-                "Te enviamos un mail de confirmacion! Por favor abrilo para validar tu cuenta. "
+                "Te enviamos un mail de confirmación. Por favor, abrilo para validar tu cuenta."
             )
-            return redirect('login') 
-        else:
-            # Manejo de errores del formulario
-            for field, errors in form.errors.items():
-                for error in errors:
-                    messages.error(request, f"{field.capitalize()}: {error}")
+            return redirect('login')
+
+        # Errores de formulario
+        for field, errors in form.errors.items():
+            for error in errors:
+                if field == "__all__":
+                    messages.error(request, f"{error}")
+                else:
+                    label = form.fields[field].label or field
+                    messages.error(request, f"{label}: {error}")
 
         return render(request, "registration/registro.html", {"form": form})
     
