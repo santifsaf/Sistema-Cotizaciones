@@ -11,26 +11,23 @@ class MySocialAccountAdapter(DefaultSocialAccountAdapter):
     def pre_social_login(self, request, sociallogin):
         email = sociallogin.account.extra_data.get('email')
         if not email:
-            return  # Si no hay email, nada que hacer
+            return
 
         try:
             user = User.objects.get(email__iexact=email)
         except User.DoesNotExist:
-            return  # Usuario nuevo, sigue el flujo normal
+            return  # No existe, sigue el flujo normal
 
-        # Usuario existente: conectar cuenta social y login sin mail confirm
-        sociallogin.connect(request, user)
-        perform_login(request, user, email_verification='optional')
-        request.session['next'] = reverse('home')
+        # Loguear al usuario existente SIN pasar por verificación
+        perform_login(request, user, email_verification='optional', redirect_url=reverse('home'))
 
-    def get_login_redirect_url(self, request):
-        return request.session.pop('next', super().get_login_redirect_url(request))
+        # Cancelamos el flujo normal para evitar crear otro usuario o pasar por confirmación
+        sociallogin.state['process'] = 'login'
 
     def save_user(self, request, sociallogin, form=None):
         user = super().save_user(request, sociallogin, form)
         email = user.email
         if email:
-            # Marcamos email como verificado para evitar mail de confirmación
             EmailAddress.objects.update_or_create(
                 user=user,
                 email=email,
