@@ -9,8 +9,8 @@
 8. [Configuración de Mail]
 9. [Seguridad y Protección de Login]
 10. [Decisiones Técnicas]
-12. [Instalación Manual]
-13. [Uso del Sistema]
+11. [Instalación Manual]
+12. [Uso del Sistema]
 
 # 📄 CotizApp
 
