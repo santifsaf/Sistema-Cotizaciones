@@ -1,16 +1,16 @@
 ## Índice
-1. [Descripción General]
-2. [Funcionalidades Principales]
-3. [Tecnologías Utilizadas]
-4. [Estructura del Proyecto]
-5. [Arquitectura de Base de Datos]
-6. [Relaciones del Sistema]
-7. [Datos de Demostración]
-8. [Configuración de Mail]
-9. [Seguridad y Protección de Login]
-10. [Decisiones Técnicas]
-11. [Instalación Manual]
-12. [Uso del Sistema]
+1. [Descripción General](#descripción-general)
+2. [Funcionalidades Principales](#funcionalidades-principales)
+3. [Tecnologías Utilizadas](#tecnologías-utilizadas)
+4. [Estructura del Proyecto](#estructura-del-proyecto)
+5. [Arquitectura de Base de Datos](#arquitectura-de-base-de-datos)
+6. [Relaciones del Sistema](#relaciones-del-sistema)
+7. [Datos de Demostración](#datos-de-demostración)
+8. [Configuración de Mail](#configuración-de-mail)
+9. [Seguridad y Protección de Login](#seguridad-y-protección-de-login)
+10. [Decisiones Técnicas](#decisiones-técnicas)
+11. [Instalación Manual](#instalación-manual)
+12. [Uso del Sistema](#uso-del-sistema)
 
 # 📄 CotizApp
 
