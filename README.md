@@ -257,6 +257,9 @@ Las credenciales sensibles (API key, secret) se gestionan con variables de entor
 ## UptimeRobot 
 Se implementó un monitor externo utilizando UptimeRobot para verificar la disponibilidad del sistema cada 5 minutos. Esto se debe a que el servicio de hosting gratuito puede poner la aplicación en estado de suspensión tras periodos de inactividad.
 
+🔧 Posibles mejoras:
+
+·Envío de cotizaciones al cliente vía mail directamente desde la aplicación (sin necesidad de descarga y envío manual del PDF).
 
 ## ---------------------------------------------------------------
 
