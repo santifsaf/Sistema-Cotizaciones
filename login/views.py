@@ -14,6 +14,13 @@ from django.contrib.auth.views import (
 )
 
 class RegistroView(View):
+    """
+    Maneja el registro de usuarios.
+
+    GET: muestra el formulario vacío.
+    POST: valida y crea usuario inactivo, envía mail de confirmación si no está verificado.
+    Muestra errores si el formulario falla.
+    """
     def get(self, request):
         form = CustomUserCreationForm()
         return render(request, "registration/registro.html", {"form": form})
@@ -25,14 +32,12 @@ class RegistroView(View):
             user.is_active = False
             user.save()
 
-            # Crear o conseguir EmailAddress para ese usuario y email
             email_address, created = EmailAddress.objects.get_or_create(
                 user=user,
                 email=user.email,
             )
 
             if not email_address.verified:
-                print(">>> Enviando mail de confirmación para usuario:", user.email)
                 email_address.send_confirmation(request)
 
             messages.success(
@@ -62,7 +67,7 @@ class CustomLoginView(LoginView):
         """
         user = form.get_user()
 
-        # 🚨 Chequeo si el email está confirmado
+        # Chequeo si el email está confirmado
         if not EmailAddress.objects.filter(user=user, verified=True).exists():
             messages.error(self.request, "Debes confirmar tu email antes de iniciar sesión.")
             return redirect('login')

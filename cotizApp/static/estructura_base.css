@@ -107,6 +107,78 @@
     text-decoration: none;
   }
 
+  /* Estilo claro por defecto */
+  body {
+    background-color: white;
+    color: black;
+  }
+
+  /* Bootstrap bg-light normal */
+  .bg-light {
+    background-color: #f8f9fa !important;
+    color: #212529 !important;
+  }
+
+  /* Modo oscuro - fondo y texto general */
+  html[data-bs-theme="dark"] {
+    background-color: #121212;
+    color: #eee;
+  }
+
+  html[data-bs-theme="dark"] body {
+    background-color: transparent; /* para heredar fondo de html */
+    color: inherit;
+  }
+
+  /* bg-light en modo oscuro */
+  html[data-bs-theme="dark"] .bg-light {
+    background-color: #2a2a2a !important;
+    color: #eee !important;
+    border-color: #444 !important;
+  }
+
+  /* Inputs, selects, textarea en modo oscuro */
+  html[data-bs-theme="dark"] input,
+  html[data-bs-theme="dark"] select,
+  html[data-bs-theme="dark"] textarea {
+    background-color: #3a3a3a;
+    color: #eee;
+    border: 1px solid #555;
+  }
+
+  /* Botones en modo oscuro */
+  html[data-bs-theme="dark"] .btn {
+    color: #eee;
+  }
+
+  /* Alertas modo oscuro */
+  html[data-bs-theme="dark"] .alert-danger {
+    background-color: #661010;
+    color: #f8d7da;
+    border-color: #f5c6cb;
+  }
+
+  /* Home y secciones bg-white (modo claro) */
+  .hero-section,
+  .py-5.bg-white {
+    background-color: white;
+    color: black;
+  }
+
+  /* Home y secciones bg-white (modo oscuro) */
+  html[data-bs-theme="dark"] .hero-section,
+  html[data-bs-theme="dark"] .py-5.bg-white {
+    background-color: #121212 !important;
+    color: #eee !important;
+    background: none !important;
+  }
+
+  /* Sobrescribir texto oscuro en modo oscuro */
+  html[data-bs-theme="dark"] .text-dark {
+    color: #eee !important;
+  }
+
+
     
     @media (max-width: 991.98px) {
       .navbar-collapse {
