@@ -62,7 +62,7 @@ SOCIALACCOUNT_ADAPTER = 'login.adapters.MySocialAccountAdapter'
 # Configuración para forzar verificación email
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_EMAIL_VERIFICATION = "mandatory" 
-
+SOCIALACCOUNT_EMAIL_VERIFICATION = "optional"
 
 
 

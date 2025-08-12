@@ -7,7 +7,6 @@ from allauth.account.models import EmailAddress
 User = get_user_model()
 
 class MySocialAccountAdapter(DefaultSocialAccountAdapter):
-
     def pre_social_login(self, request, sociallogin):
         email = sociallogin.account.extra_data.get('email')
         if not email:
@@ -16,13 +15,26 @@ class MySocialAccountAdapter(DefaultSocialAccountAdapter):
         try:
             user = User.objects.get(email__iexact=email)
         except User.DoesNotExist:
-            return  # No existe, sigue el flujo normal
+            return  # Usuario nuevo: seguir con flujo normal
 
-        # Loguear al usuario existente SIN pasar por verificación
-        perform_login(request, user, email_verification='optional', redirect_url=reverse('home'))
+        # Marcar email como verificado YA antes del login
+        EmailAddress.objects.update_or_create(
+            user=user,
+            email=email,
+            defaults={'verified': True, 'primary': True}
+        )
 
-        # Cancelamos el flujo normal para evitar crear otro usuario o pasar por confirmación
-        sociallogin.state['process'] = 'login'
+        # Conectar cuenta social con usuario existente
+        sociallogin.connect(request, user)
+
+        # Loguear sin pasar por confirmación
+        perform_login(request, user, email_verification='optional')
+
+        # Forzar redirección después de login
+        request.session['next'] = reverse('home')
+
+    def get_login_redirect_url(self, request):
+        return request.session.pop('next', super().get_login_redirect_url(request))
 
     def save_user(self, request, sociallogin, form=None):
         user = super().save_user(request, sociallogin, form)
