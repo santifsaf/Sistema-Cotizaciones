@@ -12,6 +12,7 @@
 11. [Instalación Manual](#instalación-manual)
 12. [Uso del Sistema](#uso-del-sistema)
 
+
 # 📄 CotizApp
 
 CotizApp es una aplicación web desarrollada en Django que permite gestionar artículos, clientes y empresas para crear cotizaciones de forma simple y profesional.
