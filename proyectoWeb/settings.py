@@ -60,7 +60,7 @@ SOCIALACCOUNT_ADAPTER = 'login.adapters.MySocialAccountAdapter'
 
 
 # Configuración para forzar verificación email
-ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_SIGNUP_FIELDS = ['email*', 'username*', 'password1*', 'password2*']
 ACCOUNT_EMAIL_VERIFICATION = "mandatory" 
 SOCIALACCOUNT_EMAIL_VERIFICATION = "optional"
 
@@ -68,7 +68,6 @@ SOCIALACCOUNT_EMAIL_VERIFICATION = "optional"
 
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
 CRISPY_TEMPLATE_PACK = 'bootstrap5'
-
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',

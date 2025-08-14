@@ -12,16 +12,29 @@ class Cotizaciones(models.Model):
     usuario = models.ForeignKey(User, on_delete=models.CASCADE)
     fecha = models.DateField(null=True, blank=True)
     condiciones_pago = models.CharField(max_length=50, null=True, blank=True)
-    numero_referencia=models.CharField(unique=True, editable=False, blank=True, max_length=20)
+    numero_referencia = models.CharField(unique=True, editable=False, blank=True, max_length=20)
     empresa = models.ForeignKey(Empresa, on_delete=models.SET_NULL, null=True, blank=True)
-    cliente=models.ForeignKey(Clientes, on_delete=models.SET_NULL, null=True, blank=True)
+    cliente = models.ForeignKey(Clientes, on_delete=models.SET_NULL, null=True, blank=True)
+    
+    # Campos históricos de la empresa
+    empresa_nombre = models.CharField(max_length=100, null=True, blank=True)
+    empresa_cuit = models.CharField(max_length=20, null=True, blank=True)
+    empresa_mail = models.EmailField(null=True, blank=True)
+    empresa_telefono = models.CharField(max_length=20, null=True, blank=True)
+    
+    # Campos históricos del cliente
+    cliente_nombre = models.CharField(max_length=100, null=True, blank=True)
+    cliente_empresa = models.CharField(max_length=100, null=True, blank=True)
+    cliente_cuit = models.CharField(max_length=20, null=True, blank=True)
+    cliente_mail = models.EmailField(null=True, blank=True)
+    
     observaciones = models.TextField(null=True, blank=True)
     descuento = models.DecimalField(max_digits=5, decimal_places=2, default=0, null=True, blank=True)
     total = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     total_con_descuento = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
     costo_envio = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
-    created=models.DateTimeField(auto_now_add=True)
-    updated=models.DateTimeField(auto_now=True)
+    created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
     
     def calcular_totales(self):
         """
@@ -44,10 +57,7 @@ class Cotizaciones(models.Model):
         descuento_pct = max(Decimal('0.00'), min(descuento_pct, Decimal('100.00')))
 
         # Calcular subtotal (sin descuento)
-        for item in articulos:
-            precio = item.articulo.precio or Decimal('0.00')
-            subtotal += precio * item.cantidad
-
+        subtotal = sum((item.articulo_precio or Decimal('0.00')) * item.cantidad for item in self.items.all())
         # Aplicar descuento al subtotal
         descuento_monto = subtotal * (descuento_pct / 100)
         total_con_descuento = max(subtotal - descuento_monto, Decimal('0.00'))
@@ -57,8 +67,9 @@ class Cotizaciones(models.Model):
     def save(self, *args, **kwargs):
         """
         1) Genera 'numero_referencia' único si no existe.
-        2) Recalcula y asigna 'total' y 'total_con_descuento' antes de guardar.
-        3) Llama al super().save().
+        2) Guarda campos históricos de empresa y cliente.
+        3) Recalcula y asigna 'total' y 'total_con_descuento' antes de guardar.
+        4) Llama al super().save().
         """
         if not self.numero_referencia:
             with transaction.atomic():
@@ -68,6 +79,20 @@ class Cotizaciones(models.Model):
                     .aggregate(maxn=Max('n'))['maxn'] or 0
                 )
                 self.numero_referencia = f'COT-{ultimo+1:05d}'
+                
+        # Guardar campos históricos del cliente
+        if self.cliente and not self.cliente_nombre:
+            self.cliente_nombre = self.cliente.nombre
+            self.cliente_empresa = getattr(self.cliente, 'nombre_empresa', '')
+            self.cliente_cuit = getattr(self.cliente, 'cuit', '')
+            self.cliente_mail = getattr(self.cliente, 'mail', '')
+            
+        # Guardar campos históricos de la empresa  
+        if self.empresa and not self.empresa_nombre:
+            self.empresa_nombre = self.empresa.nombre
+            self.empresa_cuit = getattr(self.empresa, 'cuit', '')
+            self.empresa_mail = getattr(self.empresa, 'mail', '')
+            self.empresa_telefono = getattr(self.empresa, 'telefono', '')
 
         super().save(*args, **kwargs)
 
@@ -78,19 +103,25 @@ class Cotizaciones(models.Model):
 
 
 class ArticulosCotizado(models.Model):
-    """
-    Modelo que representa un artículo cotizado dentro de una cotización.
-    """
     cotizacion = models.ForeignKey(Cotizaciones, on_delete=models.CASCADE, related_name='items')
-    articulo = models.ForeignKey(Articulo, on_delete=models.CASCADE)
+    articulo = models.ForeignKey(Articulo, on_delete=models.SET_NULL, null=True)
     cantidad = models.PositiveIntegerField()
+    articulo_nombre = models.CharField(max_length=30, null=True, blank=True)
+    articulo_precio = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
+    articulo_descripcion = models.TextField(null=True, blank=True)
+    
+
 
     @property
     def subtotal(self):
-        """
-        Calcula el subtotal del artículo cotizado, considerando descuento por pago en efectivo.
-        """
-        precio_unitario = self.articulo.precio or Decimal('0.00')
-        if self.cotizacion.condiciones_pago == 'Efectivo':
-            precio_unitario *= Decimal('0.90')  # 10% off
+        # Usar el campo histórico en lugar del artículo original
+        precio_unitario = self.articulo_precio or Decimal('0.00')
         return precio_unitario * self.cantidad
+    
+
+    def save(self, *args, **kwargs):
+        if self.articulo and not self.articulo_nombre:
+            self.articulo_nombre = self.articulo.nombre
+            self.articulo_precio = self.articulo.precio
+            self.articulo_descripcion = self.articulo.descripcion
+        super().save(*args, **kwargs)
