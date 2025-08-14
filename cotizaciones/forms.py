@@ -7,7 +7,6 @@ import re
 
 class CotizacionForm(forms.ModelForm):
 
-    # Redefinimos como CharField para poder limpiar manualmente
     total = forms.CharField()
     total_con_descuento = forms.CharField(required=False)
     costo_envio = forms.CharField(required=False)

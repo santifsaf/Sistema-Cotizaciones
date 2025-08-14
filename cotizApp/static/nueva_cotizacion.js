@@ -30,13 +30,8 @@ function actualizarTotalesFila(fila) {
 
     const precio = parseFloat(precioInput.getAttribute('data-precio-original')) || 0;
     const cantidad = parseInt(cantidadInput.value) || 0;
-    const condicionPagoEl = document.getElementById('condiciones-pago');
-    const condicionPago = condicionPagoEl ? condicionPagoEl.value : '';
 
     let precioFinal = precio;
-    if (condicionPago === "Efectivo") {
-        precioFinal = precio * 0.9;
-    }
 
     const totalCalculado = precioFinal * cantidad;
     precioInput.value = formatearMoneda(precioFinal);
@@ -415,14 +410,6 @@ function completarCampos(e) {
         }
     // --- Inicialización y eventos ---
     document.addEventListener('DOMContentLoaded', function () {
-        const condicionPagoEl = document.getElementById('condiciones-pago');
-        if (condicionPagoEl) {
-            condicionPagoEl.addEventListener('change', function () {
-                const filas = document.querySelectorAll('.invoice-items tbody tr');
-                filas.forEach(actualizarTotalesFila);
-                actualizarTotalesGenerales();
-            });
-        }
 
         document.querySelectorAll('.invoice-items tbody tr').forEach(asignarEventosFila);
 
