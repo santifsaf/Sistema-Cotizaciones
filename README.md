@@ -233,6 +233,10 @@ Esta decisión fue intencional para mostrar dominio de ambas metodologías.
 ### Containerización con Docker
 Me parecio una buena oportunidad de aprendizaje implementar containerización con Docker. Facilita la reproducibilidad del entorno y simplifica el proceso para otros desarrolladores.
 
+## Campos históricos en Cotizaciones
+
+Para que los datos de clientes y empresas queden registrados aunque se eliminen posteriormente, se implementaron campos históricos en el modelo Cotizaciones.Esto garantiza que los PDFs y registros de cotizaciones mantengan la información original, sin depender de la existencia de los objetos relacionados.
+
 ### Personalización del login con Google
 
 Para manejar logins con Google, se implementó `django-allauth` con un **SocialAccountAdapter** personalizado que permite centralizar la lógica de vinculación de cuentas, siguiendo las buenas prácticas recomendadas por Django Allauths. 
