@@ -49,38 +49,13 @@ Versión simple y elegante con manejo de usuarios no autenticados.
 
   <!-- Desktop: fila normal -->
   <div class="row g-4 justify-content-center d-none d-md-flex text-center">
-    <!-- Video 1 -->
-    <div class="col-6 col-md-3">
-      <video class="w-100 rounded shadow-sm" autoplay muted loop playsinline preload="metadata" poster="{% static 'img/thumb1.png' %}">
-        <source src="{% static 'videos/paso1.mp4' %}" type="video/mp4">
-        <source src="{% static 'videos/paso1.webm' %}" type="video/webm">
-      </video>
-      <h6 class="mt-2 fw-bold text-dark">Completar información de la empresa</h6>
-      <p class="text-muted small mb-0">Personalizá tus cotizaciones con tus datos fiscales y de contacto.</p>
-    </div>
 
-    <!-- Video 2 -->
-    <div class="col-6 col-md-3">
-      <video class="w-100 rounded shadow-sm" autoplay muted loop playsinline preload="metadata" poster="{% static 'img/thumb2.png' %}">
-        <source src="{% static 'videos/paso2.mp4' %}" type="video/mp4">
-        <source src="{% static 'videos/paso2.webm' %}" type="video/webm">
-      </video>
-      <h6 class="mt-2 fw-bold text-dark">Agregar artículos ó servicios</h6>
-      <p class="text-muted small mb-0">Gestioná tu catalogo en pocos pasos</p>
-    </div>
-
-    <!-- Video 3 -->
-    <div class="col-6 col-md-3">
-      <video class="w-100 rounded shadow-sm" autoplay muted loop playsinline preload="metadata" poster="{% static 'img/thumb3.png' %}">
-        <source src="{% static 'videos/paso3.mp4' %}" type="video/mp4">
-        <source src="{% static 'videos/paso3.webm' %}" type="video/webm">
-      </video>
-      <h6 class="mt-2 fw-bold text-dark">Completar datos de tus clientes</h6>
-      <p class="text-muted small mb-0">Administrá todas tus ventas en un solo lugar</p>
-    </div>
-
-    <!-- Video 4 -->
-    <div class="col-6 col-md-3">
+        <!-- Video 4 -->
+    <div class="flex-shrink-0" style="width: 300px; cursor: pointer;" 
+         data-bs-toggle="modal" 
+         data-bs-target="#videoModal" 
+         data-video-mp4="{% static 'videos/paso4.mp4' %}" 
+         data-video-webm="{% static 'videos/paso4.webm' %}">
       <video class="w-100 rounded shadow-sm" autoplay muted loop playsinline preload="metadata" poster="{% static 'img/thumb4.png' %}">
         <source src="{% static 'videos/paso4.mp4' %}" type="video/mp4">
         <source src="{% static 'videos/paso4.webm' %}" type="video/webm">
@@ -88,22 +63,27 @@ Versión simple y elegante con manejo de usuarios no autenticados.
       <h6 class="mt-2 fw-bold text-dark">Crear tu primer cotización</h6>
       <p class="text-muted small mb-0">Cotizá y envía tu propuesta en minutos</p>
     </div>
-  </div>
 
-  <!-- Móvil: scroll horizontal -->
-  <div class="d-flex flex-row flex-nowrap overflow-auto pb-3 gap-3 d-md-none">
     <!-- Video 1 -->
-    <div class="flex-shrink-0" style="width: 220px;">
+    <div class="flex-shrink-0" style="width: 300px; cursor: pointer;" 
+         data-bs-toggle="modal" 
+         data-bs-target="#videoModal" 
+         data-video-mp4="{% static 'videos/paso1.mp4' %}" 
+         data-video-webm="{% static 'videos/paso1.webm' %}">
       <video class="w-100 rounded shadow-sm" autoplay muted loop playsinline preload="metadata" poster="{% static 'img/thumb1.png' %}">
         <source src="{% static 'videos/paso1.mp4' %}" type="video/mp4">
         <source src="{% static 'videos/paso1.webm' %}" type="video/webm">
       </video>
-      <h6 class="mt-2 fw-bold text-dark">Completar información de la empresa</h6>
+      <h6 class="mt-2 fw-bold text-dark">Información de tu empresa</h6>
       <p class="text-muted small mb-0">Personalizá tus cotizaciones con tus datos fiscales y de contacto</p>
     </div>
 
     <!-- Video 2 -->
-    <div class="flex-shrink-0" style="width: 220px;">
+    <div class="flex-shrink-0" style="width: 300px; cursor: pointer;" 
+         data-bs-toggle="modal" 
+         data-bs-target="#videoModal" 
+         data-video-mp4="{% static 'videos/paso2.mp4' %}" 
+         data-video-webm="{% static 'videos/paso2.webm' %}">
       <video class="w-100 rounded shadow-sm" autoplay muted loop playsinline preload="metadata" poster="{% static 'img/thumb2.png' %}">
         <source src="{% static 'videos/paso2.mp4' %}" type="video/mp4">
         <source src="{% static 'videos/paso2.webm' %}" type="video/webm">
@@ -113,26 +93,69 @@ Versión simple y elegante con manejo de usuarios no autenticados.
     </div>
 
     <!-- Video 3 -->
-    <div class="flex-shrink-0" style="width: 220px;">
+    <div class="flex-shrink-0" style="width: 300px; cursor: pointer;" 
+         data-bs-toggle="modal" 
+         data-bs-target="#videoModal" 
+         data-video-mp4="{% static 'videos/paso3.mp4' %}" 
+         data-video-webm="{% static 'videos/paso3.webm' %}">
       <video class="w-100 rounded shadow-sm" autoplay muted loop playsinline preload="metadata" poster="{% static 'img/thumb3.png' %}">
         <source src="{% static 'videos/paso3.mp4' %}" type="video/mp4">
         <source src="{% static 'videos/paso3.webm' %}" type="video/webm">
       </video>
-      <h6 class="mt-2 fw-bold text-dark">Completar datos de tus clientes</h6>
+      <h6 class="mt-2 fw-bold text-dark">Info de tus clientes</h6>
       <p class="text-muted small mb-0">Administrá todas tus ventas en un solo lugar</p>
     </div>
 
-    <!-- Video 4 -->
-    <div class="flex-shrink-0" style="width: 220px;">
-      <video class="w-100 rounded shadow-sm" autoplay muted loop playsinline preload="metadata" poster="{% static 'img/thumb4.png' %}">
-        <source src="{% static 'videos/paso4.mp4' %}" type="video/mp4">
-        <source src="{% static 'videos/paso4.webm' %}" type="video/webm">
-      </video>
-      <h6 class="mt-2 fw-bold text-dark">Crear tu primer cotización</h6>
-      <p class="text-muted small mb-0">Cotizá y envía tu propuesta en minutos</p>
-    </div>
   </div>
 
+  <!-- Móvil: scroll horizontal -->
+  <div class="d-flex flex-row flex-nowrap overflow-auto pb-3 gap-3 d-md-none">
+
+    
+    <!-- Video 1 -->
+    <div class="flex-shrink-0" style="width: 300px; cursor: pointer;" 
+         data-bs-toggle="modal" 
+         data-bs-target="#videoModal" 
+         data-video-mp4="{% static 'videos/paso1.mp4' %}" 
+         data-video-webm="{% static 'videos/paso1.webm' %}">
+      <video class="w-100 rounded shadow-sm" autoplay muted loop playsinline preload="metadata" poster="{% static 'img/thumb1.png' %}">
+        <source src="{% static 'videos/paso1.mp4' %}" type="video/mp4">
+        <source src="{% static 'videos/paso1.webm' %}" type="video/webm">
+      </video>
+      <h6 class="mt-2 fw-bold text-dark">Información de tu empresa</h6>
+      <p class="text-muted small mb-0">Personalizá tus cotizaciones con tus datos fiscales y de contacto</p>
+    </div>
+
+    <!-- Video 2 -->
+    <div class="flex-shrink-0" style="width: 300px; cursor: pointer;" 
+         data-bs-toggle="modal" 
+         data-bs-target="#videoModal" 
+         data-video-mp4="{% static 'videos/paso2.mp4' %}" 
+         data-video-webm="{% static 'videos/paso2.webm' %}">
+      <video class="w-100 rounded shadow-sm" autoplay muted loop playsinline preload="metadata" poster="{% static 'img/thumb2.png' %}">
+        <source src="{% static 'videos/paso2.mp4' %}" type="video/mp4">
+        <source src="{% static 'videos/paso2.webm' %}" type="video/webm">
+      </video>
+      <h6 class="mt-2 fw-bold text-dark">Agregar artículos ó servicios</h6>
+      <p class="text-muted small mb-0">Gestioná tu catalogo en pocos pasos</p>
+    </div>
+
+    <!-- Video 3 -->
+    <div class="flex-shrink-0" style="width: 300px; cursor: pointer;" 
+         data-bs-toggle="modal" 
+         data-bs-target="#videoModal" 
+         data-video-mp4="{% static 'videos/paso3.mp4' %}" 
+         data-video-webm="{% static 'videos/paso3.webm' %}">
+      <video class="w-100 rounded shadow-sm" autoplay muted loop playsinline preload="metadata" poster="{% static 'img/thumb3.png' %}">
+        <source src="{% static 'videos/paso3.mp4' %}" type="video/mp4">
+        <source src="{% static 'videos/paso3.webm' %}" type="video/webm">
+      </video>
+      <h6 class="mt-2 fw-bold text-dark">Info de tus clientes</h6>
+      <p class="text-muted small mb-0">Administrá todas tus ventas en un solo lugar</p>
+    </div>
+
+
+  </div>
 </div>
 
 
@@ -141,17 +164,17 @@ Versión simple y elegante con manejo de usuarios no autenticados.
 
 {% if user.is_authenticated %}
   <!-- Accesos  -->
-  <section class="py-5 bg-white">
+  <section class="py-4">
       
-      <div class="row g-4">
+      <div class="row g-3">
         <!-- Acceso 1 -->
         <div class="col-md-4">
           <a href="{% url 'mis_articulos' %}" class="card h-100 border-0 text-decoration-none shadow-sm-hover">
-            <div class="card-body p-4 text-center">
-              <div class="text-primary mb-3">
-                <i class="bi bi-box-seam fs-1"></i>
+            <div class="card-body p-3 text-center">
+              <div class="text-primary mb-2">
+                <i class="bi bi-box-seam fs-2"></i>
               </div>
-              <h4 class="card-title text-dark mb-3">Artículos</h4>
+              <h5 class="card-title text-dark mb-2">Artículos</h5>
             </div>
           </a>
         </div>
@@ -159,11 +182,11 @@ Versión simple y elegante con manejo de usuarios no autenticados.
         <!-- Acceso 2 -->
         <div class="col-md-4">
           <a href="{% url 'mis_clientes' %}" class="card h-100 border-0 text-decoration-none shadow-sm-hover">
-            <div class="card-body p-4 text-center">
-              <div class="text-primary mb-3">
-                <i class="bi bi-people fs-1"></i>
+            <div class="card-body p-3 text-center">
+              <div class="text-primary mb-2">
+                <i class="bi bi-people fs-2"></i>
               </div>
-              <h4 class="card-title text-dark mb-3">Clientes</h4>
+              <h5 class="card-title text-dark mb-2">Clientes</h5>
             </div>
           </a>
         </div>
@@ -171,11 +194,11 @@ Versión simple y elegante con manejo de usuarios no autenticados.
         <!-- Acceso 3 -->
         <div class="col-md-4">
           <a href="{% url 'mis_empresas' %}" class="card h-100 border-0 text-decoration-none shadow-sm-hover">
-            <div class="card-body p-4 text-center">
-              <div class="text-primary mb-3">
-                <i class="bi bi-building fs-1"></i>
+            <div class="card-body p-3 text-center">
+              <div class="text-primary mb-2">
+                <i class="bi bi-building fs-2"></i>
               </div>
-              <h4 class="card-title text-dark mb-3">Empresa</h4>
+              <h5 class="card-title text-dark mb-2">Empresa</h5>
             </div>
           </a>
         </div>
@@ -183,4 +206,42 @@ Versión simple y elegante con manejo de usuarios no autenticados.
     </div>
   </section>
 {% endif %}
+
+  <!-- Modal -->
+<div class="modal fade" id="videoModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-xl modal-dialog-centered">
+    <div class="modal-content bg-dark border-0">
+      <div class="modal-body p-0">
+        <div id="videoContainer"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+  <!-- Script -->
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  const videoModal = document.getElementById("videoModal");
+  const videoContainer = document.getElementById("videoContainer");
+
+  videoModal.addEventListener("show.bs.modal", function (event) {
+    const trigger = event.relatedTarget;
+    const mp4 = trigger.getAttribute("data-video-mp4");
+    const webm = trigger.getAttribute("data-video-webm");
+
+    videoContainer.innerHTML = `
+      <video class="w-100" controls autoplay>
+        <source src="${mp4}" type="video/mp4">
+        <source src="${webm}" type="video/webm">
+        Tu navegador no soporta videos.
+      </video>
+    `;
+  });
+
+  videoModal.addEventListener("hidden.bs.modal", function () {
+    videoContainer.innerHTML = ""; // Limpia el video al cerrar
+  });
+});
+</script>
 {% endblock %}
