@@ -1,0 +1,21 @@
+
+  .text-truncate-3 {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    height: 4.5em;
+    line-height: 1.5;
+  }
+  .card {
+    transition: transform 0.2s, box-shadow 0.2s;
+    border-radius: 12px;
+    overflow: hidden;
+  }
+  .card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 16px rgba(0,0,0,0.08);
+  }
+  .object-fit-cover {
+    object-fit: cover;
+  }
+

@@ -230,6 +230,10 @@ AxesProxyHandler.reset_attempts()
 
 Esta decisión fue intencional para mostrar dominio de ambas metodologías.
 
+## Campos históricos en Cotizaciones
+
+Para que los datos de clientes y empresas queden registrados aunque se eliminen posteriormente, se implementaron campos históricos en el modelo Cotizaciones.Esto garantiza que los PDFs y registros de cotizaciones mantengan la información original, sin depender de la existencia de los objetos relacionados.
+
 ### Containerización con Docker
 Me parecio una buena oportunidad de aprendizaje implementar containerización con Docker. Facilita la reproducibilidad del entorno y simplifica el proceso para otros desarrolladores.
 
@@ -261,7 +265,13 @@ Las credenciales sensibles (API key, secret) se gestionan con variables de entor
 ## UptimeRobot 
 Se implementó un monitor externo utilizando UptimeRobot para verificar la disponibilidad del sistema cada 5 minutos. Esto se debe a que el servicio de hosting gratuito puede poner la aplicación en estado de suspensión tras periodos de inactividad.
 
+<<<<<<< HEAD
 ⚙️ Próximas mejoras:
+=======
+
+
+🔧 Posibles mejoras:
+>>>>>>> d69c3fe (Mejoras generales)
 
 •Guía interactiva en la pagina de inicio.
 

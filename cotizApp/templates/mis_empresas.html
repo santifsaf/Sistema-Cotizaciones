@@ -7,7 +7,7 @@
     <h2 class="mb-0">INFORMACION EMPRESA</h2>
     <a class="btn btn-success" href="{% url 'nueva_empresa' %}">Cargar datos</a>
   </div>
-  <form action="{% url 'eliminar_empresa' %}" method="post">
+  <form action="{% url 'eliminar_empresa' %}" method="post" autocomplete="off">
     {% csrf_token %}
     <input type="hidden" name="accion" value="eliminar">
     <div class="table-responsive">
