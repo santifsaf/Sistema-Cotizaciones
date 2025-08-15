@@ -16,8 +16,18 @@
           <!-- Mensajes de error -->
           {% if messages %}
             {% for message in messages %}
-              <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                <i class="fas fa-exclamation-triangle me-2"></i>
+              <div class="alert 
+                  {% if message.tags %}alert-{{ message.tags }}{% else %}alert-info{% endif %} 
+                  alert-dismissible fade show" role="alert">
+                
+                {% if 'success' in message.tags %}
+                  <i class="fas fa-check-circle me-2"></i>
+                {% elif 'error' in message.tags %}
+                  <i class="fas fa-exclamation-triangle me-2"></i>
+                {% else %}
+                  <i class="fas fa-info-circle me-2"></i>
+                {% endif %}
+                
                 {{ message }}
                 <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
               </div>
@@ -92,7 +102,7 @@
                 <div class="input-group">
                   {{ form.password1 }}
                   <button class="btn btn-outline-secondary" type="button" id="togglePassword1">
-                    <i class="fas fa-eye" id="eyeIcon1"></i>
+                    <i class="fas fa-eye-slash" id="eyeIcon1"></i>
                   </button>
                 </div>
                 {% if form.password1.errors %}
@@ -109,7 +119,7 @@
                 <div class="input-group">
                   {{ form.password2 }}
                   <button class="btn btn-outline-secondary" type="button" id="togglePassword2">
-                    <i class="fas fa-eye" id="eyeIcon2"></i>
+                    <i class="fas fa-eye-slash" id="eyeIcon2"></i>
                   </button>
                 </div>
                 {% if form.password2.errors %}
@@ -185,8 +195,8 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
     
-    setupPasswordToggle('togglePassword1', '{{ form.password1.id_for_label }}', 'eyeIcon1');
-    setupPasswordToggle('togglePassword2', '{{ form.password2.id_for_label }}', 'eyeIcon2');
+    setupPasswordToggle('togglePassword1', '{{ form.password1.id_for_widget }}', 'eyeIcon1');
+    setupPasswordToggle('togglePassword2', '{{ form.password2.id_for_widget }}', 'eyeIcon2');
     
     // Password strength indicator
     const passwordField = document.getElementById('{{ form.password1.id_for_label }}');
