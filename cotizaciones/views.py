@@ -1,3 +1,5 @@
+from decimal import Decimal
+
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse_lazy
 from django.utils import timezone
@@ -6,21 +8,13 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import ListView, View
 from django.template.loader import render_to_string
 from django.http import HttpResponse
-from decimal import Decimal
-from cotizApp.models import Empresa
-from .models import Clientes, Cotizaciones, ArticulosCotizado
-from articulos.models import Articulo
-from .forms import CotizacionForm
+
 from weasyprint import HTML
-from django.forms import modelformset_factory
-from .models import ArticulosCotizado
 
-ArticuloCotizadoFormSet = modelformset_factory(
-    ArticulosCotizado,
-    fields=('articulo', 'cantidad'),
-    extra=1  
-)
-
+from cotizApp.models import Empresa
+from articulos.models import Articulo
+from .models import Clientes, Cotizaciones, ArticulosCotizado
+from .forms import CotizacionForm
 
 
 class MisCotizaciones(LoginRequiredMixin, ListView):
@@ -37,31 +31,12 @@ class MisCotizaciones(LoginRequiredMixin, ListView):
         qs = Cotizaciones.objects.filter(usuario=self.request.user)
 
         if search:
-            # Búsqueda por número de referencia
-            cotiz_por_ref = qs.filter(numero_referencia__icontains=search)
-            
-            # Búsqueda en campos históricos del cliente (más confiable)
-            cotiz_por_nombre_cliente = qs.filter(cliente_nombre__icontains=search)
-            cotiz_por_empresa_cliente = qs.filter(cliente_empresa__icontains=search)
-            cotiz_por_empresa_nombre = qs.filter(empresa_nombre__icontains=search)
-            
-            # Búsqueda en relaciones existentes (por compatibilidad)
-            cotiz_por_cliente_rel = qs.filter(
-                cliente__isnull=False,
-                cliente__nombre__icontains=search
-            )
-            cotiz_por_empresa_rel = qs.filter(
-                cliente__isnull=False,
-                cliente__nombre_empresa__icontains=search
-            )
-            
-            # Combinar todas las búsquedas
-            qs = cotiz_por_ref.union(
-                cotiz_por_nombre_cliente,
-                cotiz_por_empresa_cliente, 
-                cotiz_por_empresa_nombre,
-                cotiz_por_cliente_rel,
-                cotiz_por_empresa_rel
+            qs = qs.filter(
+                numero_referencia__icontains=search
+            ).union(
+                qs.filter(cliente_nombre__icontains=search),
+                qs.filter(cliente_empresa__icontains=search),
+                qs.filter(empresa_nombre__icontains=search)
             )
 
         return qs
@@ -91,7 +66,6 @@ class NuevaCotizacion(LoginRequiredMixin, View):
         Procesa el formulario de cotización y guarda los datos.
         """
         form = CotizacionForm(request.POST)
-        item_forms = ArticuloCotizadoFormSet(request.POST)
 
         if form.is_valid():
             cotizacion = form.save(commit=False)
@@ -165,10 +139,8 @@ class NuevaCotizacion(LoginRequiredMixin, View):
 
 class EliminarCotizacion(LoginRequiredMixin, View):
     def post(self, request):
-        print("POST data:", request.POST)
         accion = request.POST.get('accion')
         cotizaciones_a_eliminar = request.POST.getlist('cotizaciones_seleccionadas[]')
-        print(f"Accion: {accion}, Cotizaciones a eliminar: {cotizaciones_a_eliminar}")
 
         if accion == 'eliminar' and cotizaciones_a_eliminar:
             Cotizaciones.objects.filter(id__in=cotizaciones_a_eliminar).delete()

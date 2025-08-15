@@ -43,58 +43,144 @@ Versión simple y elegante con manejo de usuarios no autenticados.
       </div>
     </div>
   </div>
-</section>
 
-<!-- Accesos  -->
-<section class="py-5 bg-white">
-    
-    <div class="row g-4">
-      <!-- Acceso 1 -->
-      <div class="col-md-4">
-        <a href="{% url 'mis_articulos' %}" class="card h-100 border-0 text-decoration-none shadow-sm-hover">
-          <div class="card-body p-4 text-center">
-            <div class="text-primary mb-3">
-              <i class="bi bi-box-seam fs-1"></i>
-            </div>
-            <h4 class="card-title text-dark mb-3">Artículos</h4>
-            <p class="card-text text-muted">
-              Administra tu catálogo de productos y servicios
-            </p>
-          </div>
-        </a>
-      </div>
-      
-      <!-- Acceso 2 -->
-      <div class="col-md-4">
-        <a href="{% url 'mis_clientes' %}" class="card h-100 border-0 text-decoration-none shadow-sm-hover">
-          <div class="card-body p-4 text-center">
-            <div class="text-primary mb-3">
-              <i class="bi bi-people fs-1"></i>
-            </div>
-            <h4 class="card-title text-dark mb-3">Clientes</h4>
-            <p class="card-text text-muted">
-              Gestiona tu base de datos de clientes
-            </p>
-          </div>
-        </a>
-      </div>
-      
-      <!-- Acceso 3 -->
-      <div class="col-md-4">
-        <a href="{% url 'mis_empresas' %}" class="card h-100 border-0 text-decoration-none shadow-sm-hover">
-          <div class="card-body p-4 text-center">
-            <div class="text-primary mb-3">
-              <i class="bi bi-building fs-1"></i>
-            </div>
-            <h4 class="card-title text-dark mb-3">Mi Empresa</h4>
-            <p class="card-text text-muted">
-              Carga los datos de tu empresa
-            </p>
-          </div>
-        </a>
-      </div>
+<!-- Sección de videos tutoriales adaptativa -->
+<div class="mt-5">
+
+  <!-- Desktop: fila normal -->
+  <div class="row g-4 justify-content-center d-none d-md-flex text-center">
+    <!-- Video 1 -->
+    <div class="col-6 col-md-3">
+      <video class="w-100 rounded shadow-sm" autoplay muted loop playsinline preload="metadata" poster="{% static 'img/thumb1.png' %}">
+        <source src="{% static 'videos/paso1.mp4' %}" type="video/mp4">
+        <source src="{% static 'videos/paso1.webm' %}" type="video/webm">
+      </video>
+      <h6 class="mt-2 fw-bold text-dark">Completar información de la empresa</h6>
+      <p class="text-muted small mb-0">Personalizá tus cotizaciones con tus datos fiscales y de contacto.</p>
+    </div>
+
+    <!-- Video 2 -->
+    <div class="col-6 col-md-3">
+      <video class="w-100 rounded shadow-sm" autoplay muted loop playsinline preload="metadata" poster="{% static 'img/thumb2.png' %}">
+        <source src="{% static 'videos/paso2.mp4' %}" type="video/mp4">
+        <source src="{% static 'videos/paso2.webm' %}" type="video/webm">
+      </video>
+      <h6 class="mt-2 fw-bold text-dark">Agregar artículos ó servicios</h6>
+      <p class="text-muted small mb-0">Gestioná tu catalogo en pocos pasos</p>
+    </div>
+
+    <!-- Video 3 -->
+    <div class="col-6 col-md-3">
+      <video class="w-100 rounded shadow-sm" autoplay muted loop playsinline preload="metadata" poster="{% static 'img/thumb3.png' %}">
+        <source src="{% static 'videos/paso3.mp4' %}" type="video/mp4">
+        <source src="{% static 'videos/paso3.webm' %}" type="video/webm">
+      </video>
+      <h6 class="mt-2 fw-bold text-dark">Completar datos de tus clientes</h6>
+      <p class="text-muted small mb-0">Administrá todas tus ventas en un solo lugar</p>
+    </div>
+
+    <!-- Video 4 -->
+    <div class="col-6 col-md-3">
+      <video class="w-100 rounded shadow-sm" autoplay muted loop playsinline preload="metadata" poster="{% static 'img/thumb4.png' %}">
+        <source src="{% static 'videos/paso4.mp4' %}" type="video/mp4">
+        <source src="{% static 'videos/paso4.webm' %}" type="video/webm">
+      </video>
+      <h6 class="mt-2 fw-bold text-dark">Crear tu primer cotización</h6>
+      <p class="text-muted small mb-0">Cotizá y envía tu propuesta en minutos</p>
     </div>
   </div>
+
+  <!-- Móvil: scroll horizontal -->
+  <div class="d-flex flex-row flex-nowrap overflow-auto pb-3 gap-3 d-md-none">
+    <!-- Video 1 -->
+    <div class="flex-shrink-0" style="width: 220px;">
+      <video class="w-100 rounded shadow-sm" autoplay muted loop playsinline preload="metadata" poster="{% static 'img/thumb1.png' %}">
+        <source src="{% static 'videos/paso1.mp4' %}" type="video/mp4">
+        <source src="{% static 'videos/paso1.webm' %}" type="video/webm">
+      </video>
+      <h6 class="mt-2 fw-bold text-dark">Completar información de la empresa</h6>
+      <p class="text-muted small mb-0">Personalizá tus cotizaciones con tus datos fiscales y de contacto</p>
+    </div>
+
+    <!-- Video 2 -->
+    <div class="flex-shrink-0" style="width: 220px;">
+      <video class="w-100 rounded shadow-sm" autoplay muted loop playsinline preload="metadata" poster="{% static 'img/thumb2.png' %}">
+        <source src="{% static 'videos/paso2.mp4' %}" type="video/mp4">
+        <source src="{% static 'videos/paso2.webm' %}" type="video/webm">
+      </video>
+      <h6 class="mt-2 fw-bold text-dark">Agregar artículos ó servicios</h6>
+      <p class="text-muted small mb-0">Gestioná tu catalogo en pocos pasos</p>
+    </div>
+
+    <!-- Video 3 -->
+    <div class="flex-shrink-0" style="width: 220px;">
+      <video class="w-100 rounded shadow-sm" autoplay muted loop playsinline preload="metadata" poster="{% static 'img/thumb3.png' %}">
+        <source src="{% static 'videos/paso3.mp4' %}" type="video/mp4">
+        <source src="{% static 'videos/paso3.webm' %}" type="video/webm">
+      </video>
+      <h6 class="mt-2 fw-bold text-dark">Completar datos de tus clientes</h6>
+      <p class="text-muted small mb-0">Administrá todas tus ventas en un solo lugar</p>
+    </div>
+
+    <!-- Video 4 -->
+    <div class="flex-shrink-0" style="width: 220px;">
+      <video class="w-100 rounded shadow-sm" autoplay muted loop playsinline preload="metadata" poster="{% static 'img/thumb4.png' %}">
+        <source src="{% static 'videos/paso4.mp4' %}" type="video/mp4">
+        <source src="{% static 'videos/paso4.webm' %}" type="video/webm">
+      </video>
+      <h6 class="mt-2 fw-bold text-dark">Crear tu primer cotización</h6>
+      <p class="text-muted small mb-0">Cotizá y envía tu propuesta en minutos</p>
+    </div>
+  </div>
+
+</div>
+
+
 </section>
 
+
+{% if user.is_authenticated %}
+  <!-- Accesos  -->
+  <section class="py-5 bg-white">
+      
+      <div class="row g-4">
+        <!-- Acceso 1 -->
+        <div class="col-md-4">
+          <a href="{% url 'mis_articulos' %}" class="card h-100 border-0 text-decoration-none shadow-sm-hover">
+            <div class="card-body p-4 text-center">
+              <div class="text-primary mb-3">
+                <i class="bi bi-box-seam fs-1"></i>
+              </div>
+              <h4 class="card-title text-dark mb-3">Artículos</h4>
+            </div>
+          </a>
+        </div>
+        
+        <!-- Acceso 2 -->
+        <div class="col-md-4">
+          <a href="{% url 'mis_clientes' %}" class="card h-100 border-0 text-decoration-none shadow-sm-hover">
+            <div class="card-body p-4 text-center">
+              <div class="text-primary mb-3">
+                <i class="bi bi-people fs-1"></i>
+              </div>
+              <h4 class="card-title text-dark mb-3">Clientes</h4>
+            </div>
+          </a>
+        </div>
+        
+        <!-- Acceso 3 -->
+        <div class="col-md-4">
+          <a href="{% url 'mis_empresas' %}" class="card h-100 border-0 text-decoration-none shadow-sm-hover">
+            <div class="card-body p-4 text-center">
+              <div class="text-primary mb-3">
+                <i class="bi bi-building fs-1"></i>
+              </div>
+              <h4 class="card-title text-dark mb-3">Empresa</h4>
+            </div>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+{% endif %}
 {% endblock %}
