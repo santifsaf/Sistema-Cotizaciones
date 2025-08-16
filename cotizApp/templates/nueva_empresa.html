@@ -5,7 +5,7 @@
 <section class="d-flex justify-content-center align-items-center" style="min-height: 80vh;">
     <div class="card shadow p-4" style="min-width: 350px; max-width: 500px; width: 100%;">
         <h2 class="mb-4 text-center">Nueva empresa</h2>
-        <form method="POST" enctype="multipart/form-data">
+        <form method="POST" enctype="multipart/form-data" autocomplete="off">
             {% csrf_token %}
             <div class="mb-3">
                 {% for field in form %}
