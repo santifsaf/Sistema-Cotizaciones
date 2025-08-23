@@ -40,7 +40,8 @@ Docker para containerización
 Backend: Django 
 Base de datos: PostgreSQL
 Frontend: HTML, CSS, Bootstrap, JavaScript
-Control de versiones: GitHub
+Control de versiones: GitHub.
+
 Cloudinary, WeasyPrint, django-axes, django-allauth.
 
 ## ---------------------------------------------------------------
