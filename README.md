@@ -36,11 +36,16 @@ Podés loguearte, cargar previamente tus artículos, clientes y datos de tu empr
 
 ## 🛠️ Tecnologías utilizadas
 
-Docker para containerización
 Backend: Django 
+
 Base de datos: PostgreSQL
+
 Frontend: HTML, CSS, Bootstrap, JavaScript
-Control de versiones: GitHub
+
+Control de versiones: GitHub.
+
+Docker para containerización
+
 Cloudinary, WeasyPrint, django-axes, django-allauth.
 
 ## ---------------------------------------------------------------
