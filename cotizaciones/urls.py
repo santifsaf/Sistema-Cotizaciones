@@ -1,5 +1,5 @@
-from django.urls import path
-from .views import MisCotizaciones, NuevaCotizacion, EliminarCotizacion, generar_pdf
+from django.urls import path, include
+from .views import MisCotizaciones, NuevaCotizacion, EliminarCotizacion
 from . import views
 
 urlpatterns = [

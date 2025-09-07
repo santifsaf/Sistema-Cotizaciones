@@ -209,7 +209,7 @@ SERVER_EMAIL = config('SERVER_EMAIL', default='noreply@tudominio.com')
 # Configuración para reset de contraseña
 PASSWORD_RESET_TIMEOUT = config('PASSWORD_RESET_TIMEOUT', default=3600, cast=int)
 DEFAULT_DOMAIN = config('DEFAULT_DOMAIN', default='127.0.0.1:8000')
-DEFAULT_PROTOCOL = config('DEFAULT_PROTOCOL', default='http')
+DEFAULT_PROTOCOL = config('DEFAULT_PROTOCOL', default='https')
 
 # En settings.py para producción
 if not DEBUG:
