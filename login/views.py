@@ -3,8 +3,8 @@ from django.views import View
 from django.contrib import messages
 from django.contrib.auth.views import LoginView
 from .forms import CustomUserCreationForm, CustomAuthenticationForm
-from django.urls import reverse_lazy
 from django.conf import settings
+from django.urls import reverse_lazy
 from django.contrib.auth import get_user_model
 from allauth.account.models import EmailAddress, EmailConfirmationHMAC
 from django.contrib.auth.views import (
