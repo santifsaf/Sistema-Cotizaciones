@@ -1,8 +1,8 @@
 from django.contrib import admin
 from django.urls import path, include
 from django.conf.urls.static import static
-from cotizApp.views import Home
 from django.conf import settings
+from cotizApp.views import Home
 
 urlpatterns = [
     path('admin/', admin.site.urls),
