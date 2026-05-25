@@ -1,6 +1,7 @@
 from .models import Cotizaciones
 from django import forms
 from clientes.models import Clientes
+from cotizApp.models import Empresa
 from decimal import Decimal, InvalidOperation
 import re
 
@@ -24,6 +25,14 @@ class CotizacionForm(forms.ModelForm):
             'total',
             'total_con_descuento'
         ]
+
+    def __init__(self, *args, **kwargs):
+        user = kwargs.pop('user', None)
+        super().__init__(*args, **kwargs)
+
+        if user is not None:
+            self.fields['empresa'].queryset = Empresa.objects.filter(usuario_log=user)
+            self.fields['cliente'].queryset = Clientes.objects.filter(usuario_log=user)
 
     def _limpiar_decimal(self, valor):
         if not valor:

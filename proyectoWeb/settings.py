@@ -12,8 +12,22 @@ FIXTURE_DIRS = [
 ]
 
 
-ALLOWED_HOSTS = []
+def config_bool(name, default=False):
+    value = config(name, default=default)
+    if isinstance(value, bool):
+        return value
 
+    normalized = str(value).strip().lower()
+    true_values = {'1', 'true', 't', 'yes', 'y', 'on'}
+    false_values = {'0', 'false', 'f', 'no', 'n', 'off', 'release', 'prod', 'production'}
+
+    if normalized in true_values:
+        return True
+    if normalized in false_values:
+        return False
+    return default
+
+DEBUG = config_bool('DEBUG', default=False)
 
 
 INSTALLED_APPS = [
@@ -116,11 +130,13 @@ TEMPLATES = [
 WSGI_APPLICATION = 'proyectoWeb.wsgi.application'
 
 
+DATABASE_URL = config('DATABASE_URL')
+
 DATABASES = {
     'default': dj_database_url.config(
-        default=config('DATABASE_URL'),
+        default=DATABASE_URL,
         conn_max_age=600,
-        ssl_require=not config('DEBUG', default=False, cast=bool),
+        ssl_require=not DEBUG and not DATABASE_URL.startswith('sqlite'),
     )
 }
 
@@ -186,7 +202,6 @@ LOGIN_URL = '/login/registration/login/'
 LOGIN_REDIRECT_URL = '/home/' 
 
 SECRET_KEY = config('SECRET_KEY')
-DEBUG = config('DEBUG', default=False, cast=bool)
 
 EXTERNAL_HOSTNAME = os.environ.get('RENDER_EXTERNAL_HOSTNAME')
 

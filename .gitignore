@@ -1,2 +1,23 @@
 __pycache__/ 
 *.pyc 
+
+# Entornos y variables locales
+.env
+.env.*
+!.env.example
+env/
+venv/
+.venv/
+
+# Bases y archivos generados localmente
+db.sqlite3
+test.sqlite3
+media/
+staticfiles/
+
+# Logs y caches
+*.log
+*.err
+.pytest_cache/
+.coverage
+htmlcov/
