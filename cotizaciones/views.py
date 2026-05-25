@@ -4,6 +4,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db import transaction
+from django.db.models import Q
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.template.loader import render_to_string
@@ -29,15 +30,14 @@ class MisCotizaciones(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         search = self.request.GET.get('search')
-        qs = Cotizaciones.objects.filter(usuario=self.request.user)
+        qs = Cotizaciones.objects.filter(usuario=self.request.user).order_by('-created')
 
         if search:
             qs = qs.filter(
-                numero_referencia__icontains=search
-            ).union(
-                qs.filter(cliente_nombre__icontains=search),
-                qs.filter(cliente_empresa__icontains=search),
-                qs.filter(empresa_nombre__icontains=search)
+                Q(numero_referencia__icontains=search)
+                | Q(cliente_nombre__icontains=search)
+                | Q(cliente_empresa__icontains=search)
+                | Q(empresa_nombre__icontains=search)
             )
 
         return qs
@@ -90,6 +90,18 @@ class NuevaCotizacion(LoginRequiredMixin, View):
         cantidades = request.POST.getlist('cantidad')
         articulos_ids = request.POST.getlist('articulos_cotizados')
         articulos_guardados = 0
+        ids_validos = []
+
+        for art_id in articulos_ids:
+            try:
+                ids_validos.append(int(art_id))
+            except (TypeError, ValueError):
+                continue
+
+        articulos_map = Articulo.objects.filter(
+            id__in=ids_validos,
+            usuario_log=request.user,
+        ).in_bulk()
 
         for i in range(len(articulos_ids)):
             art_id = articulos_ids[i].strip()
@@ -103,7 +115,12 @@ class NuevaCotizacion(LoginRequiredMixin, View):
             except (IndexError, ValueError):
                 continue
 
-            articulo = Articulo.objects.filter(id=art_id, usuario_log=request.user).first()
+            try:
+                articulo_id = int(art_id)
+            except ValueError:
+                continue
+
+            articulo = articulos_map.get(articulo_id)
             if articulo is None:
                 continue
 
@@ -143,7 +160,7 @@ def generar_pdf(request, cotizacion_id):
     """
     try:
         cotizacion = get_object_or_404(
-            Cotizaciones,
+            Cotizaciones.objects.prefetch_related('items'),
             id=cotizacion_id,
             usuario=request.user,
         )

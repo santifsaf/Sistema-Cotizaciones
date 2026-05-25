@@ -122,6 +122,17 @@
       </div>
   </nav>
 
+  {% if messages %}
+    <div class="container messages-container">
+      {% for message in messages %}
+        <div class="alert {% if message.tags == 'error' %}alert-danger{% elif message.tags %}alert-{{ message.tags }}{% else %}alert-info{% endif %} alert-dismissible fade show" role="alert">
+          {{ message }}
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+
   <div id="html">
     {% block content %}
     {% endblock %}

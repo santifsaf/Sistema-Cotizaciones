@@ -18,6 +18,9 @@ class Articulo(models.Model):
     class Meta:
         verbose_name="Articulo"
         verbose_name_plural="Articulos"
+        indexes = [
+            models.Index(fields=['usuario_log', 'nombre'], name='articulo_user_nombre_idx'),
+        ]
 
     def __str__(self):
         return self.nombre

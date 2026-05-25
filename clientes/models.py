@@ -15,6 +15,10 @@ class Clientes(models.Model):
     class Meta:
         verbose_name="Cliente"
         verbose_name_plural="Clientes"
+        indexes = [
+            models.Index(fields=['usuario_log', 'nombre'], name='cliente_user_nombre_idx'),
+            models.Index(fields=['usuario_log', 'nombre_empresa'], name='cliente_user_empresa_idx'),
+        ]
 
     def __str__(self):
         return f"{self.nombre_empresa} - {self.nombre}"

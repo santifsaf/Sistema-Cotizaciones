@@ -14,7 +14,7 @@ def mis_articulos(request):
     Busca por nombre y descripción del artículo.
     """
     search = request.GET.get('search', '').strip()
-    articulos = Articulo.objects.filter(usuario_log=request.user)
+    articulos = Articulo.objects.filter(usuario_log=request.user).order_by('nombre')
     if search:
         articulos = articulos.filter(Q(nombre__icontains=search) | Q(descripcion__icontains=search))
     return render(request, "mis_articulos.html", {"articulos": articulos})

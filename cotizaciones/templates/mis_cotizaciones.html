@@ -40,7 +40,13 @@
           {% for cotizacion in cotizaciones %}
           <tr>
             <td>{{ cotizacion.numero_referencia }}</td>
-            <td>{{ cotizacion.cliente }}</td>
+            <td>
+              {% if cotizacion.cliente_empresa %}
+                {{ cotizacion.cliente_empresa }} - {{ cotizacion.cliente_nombre }}
+              {% else %}
+                {{ cotizacion.cliente_nombre|default:"-" }}
+              {% endif %}
+            </td>
             <td>{{ cotizacion.created }}</td>
             <td>
               <input type="checkbox" name="cotizaciones_seleccionadas[]" value="{{ cotizacion.id }}">
@@ -59,14 +65,6 @@
       <button type="submit" class="btn btn-danger mt-2" name="accion" value="eliminar">Eliminar seleccionados</button>
     {% endif %}
   </form>
-
-  {% if messages %} 
-  <div class="mt-3">
-    {% for message in messages %}
-      <div class="alert alert-info">{{ message }}</div>
-    {% endfor %}
-  </div>
-  {% endif %}
 </div>
 
 {% endblock %}

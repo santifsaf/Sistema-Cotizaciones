@@ -38,6 +38,12 @@ class Cotizaciones(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
 
+    class Meta:
+        indexes = [
+            models.Index(fields=['usuario', '-created'], name='cotiz_user_created_idx'),
+            models.Index(fields=['usuario', 'numero_referencia'], name='cotiz_user_ref_idx'),
+        ]
+
     def calcular_totales(self):
         """
         Devuelve subtotal, descuento normalizado y total con descuento.

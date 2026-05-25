@@ -15,7 +15,7 @@ def mis_empresas(request):
     Muestra la lista de empresas registradas.
     Solo accesible para usuarios autenticados.
     """
-    empresas = Empresa.objects.filter(usuario_log=request.user)  
+    empresas = Empresa.objects.filter(usuario_log=request.user).order_by('nombre')
     return render(request, "mis_empresas.html", {"empresas": empresas})
 
 @login_required

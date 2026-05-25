@@ -42,18 +42,6 @@
   <form action="{% url 'eliminar_articulo' %}" method="post">
     {% csrf_token %}
 
-    <!-- Mensajes -->
-    {% if messages %}
-      <div class="mb-4">
-        {% for message in messages %}
-          <div class="alert alert-info alert-dismissible fade show" role="alert">
-            {{ message }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-          </div>
-        {% endfor %}
-      </div>
-    {% endif %}
-
     {% if articulos %}
       <!-- Contenedor scrollable -->
       <div class="overflow-auto" style="max-height: 70vh;">

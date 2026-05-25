@@ -14,6 +14,9 @@ class Empresa(models.Model):
     class Meta:
         verbose_name="Empresa"
         verbose_name_plural="Empresas"
+        indexes = [
+            models.Index(fields=['usuario_log', 'nombre'], name='empresa_user_nombre_idx'),
+        ]
 
     def __str__(self):
         return self.nombre

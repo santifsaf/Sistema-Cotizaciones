@@ -13,27 +13,6 @@
         </div>
         
         <div class="card-body p-4">
-          <!-- Mensajes de error -->
-          {% if messages %}
-            {% for message in messages %}
-              <div class="alert 
-                  {% if message.tags %}alert-{{ message.tags }}{% else %}alert-info{% endif %} 
-                  alert-dismissible fade show" role="alert">
-                
-                {% if 'success' in message.tags %}
-                  <i class="fas fa-check-circle me-2"></i>
-                {% elif 'error' in message.tags %}
-                  <i class="fas fa-exclamation-triangle me-2"></i>
-                {% else %}
-                  <i class="fas fa-info-circle me-2"></i>
-                {% endif %}
-                
-                {{ message }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-              </div>
-            {% endfor %}
-          {% endif %}
-          
           <form id="register-form" method="post" autocomplete="off" novalidate onkeydown="return event.key !== 'Enter';">
             {% csrf_token %}
             
