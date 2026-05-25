@@ -228,4 +228,3 @@ python manage.py collectstatic --noinput
 4. Cargar articulos.
 5. Crear una cotizacion seleccionando cliente, empresa, condicion de pago y articulos.
 6. Descargar la cotizacion en PDF.
-

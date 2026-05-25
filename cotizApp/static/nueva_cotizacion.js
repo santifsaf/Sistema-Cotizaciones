@@ -6,6 +6,12 @@ function parsearMoneda(valor) {
     return parseFloat((valor || '').toString().replace('$', '')) || 0;
 }
 
+function obtenerPrecioPorCondicionPago(precio) {
+    const condicionPagoEl = document.getElementById('condiciones-pago');
+    const condicionPago = condicionPagoEl ? condicionPagoEl.value : '';
+    return condicionPago === 'Efectivo' ? precio * 0.9 : precio;
+}
+
 // --- Eventos de filas ---
 function asignarEventosFila(fila) {
     const cantidadInput = fila.querySelector('[name="cantidad"]');
@@ -31,7 +37,7 @@ function actualizarTotalesFila(fila) {
     const precio = parseFloat(precioInput.getAttribute('data-precio-original')) || 0;
     const cantidad = parseInt(cantidadInput.value) || 0;
 
-    let precioFinal = precio;
+    let precioFinal = obtenerPrecioPorCondicionPago(precio);
 
     const totalCalculado = precioFinal * cantidad;
     precioInput.value = formatearMoneda(precioFinal);
@@ -433,6 +439,16 @@ function completarCampos(e) {
 
         const clienteEl = document.getElementById('cliente');
         if (clienteEl) clienteEl.addEventListener('change', mostrarInfoCliente);
+
+        const condicionPagoEl = document.getElementById('condiciones-pago');
+        if (condicionPagoEl) {
+            condicionPagoEl.addEventListener('change', function () {
+                document
+                    .querySelectorAll('.invoice-items tbody tr:not(.fila-descuento):not(.fila-costo-envio)')
+                    .forEach(actualizarTotalesFila);
+                actualizarTotalesGenerales();
+            });
+        }
     });
 
         // --- Info empresa/cliente ---

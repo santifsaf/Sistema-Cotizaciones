@@ -47,6 +47,7 @@ class NuevaCotizacion(LoginRequiredMixin, View):
     """Crea cotizaciones con articulos asociados."""
     template_name = 'nueva_cotizacion.html'
     success_url = reverse_lazy('mis_cotizaciones')
+    DESCUENTO_EFECTIVO = Decimal('0.90')
 
     def _get_context_data(self, form):
         return {
@@ -129,12 +130,18 @@ class NuevaCotizacion(LoginRequiredMixin, View):
                 articulo=articulo,
                 cantidad=cantidad_val,
                 articulo_nombre=articulo.nombre,
-                articulo_precio=articulo.precio,
+                articulo_precio=self._precio_por_condicion_pago(articulo, cotizacion),
                 articulo_descripcion=articulo.descripcion,
             )
             articulos_guardados += 1
 
         return articulos_guardados
+
+    def _precio_por_condicion_pago(self, articulo, cotizacion):
+        precio = Decimal(str(articulo.precio or 0))
+        if cotizacion.condiciones_pago == 'Efectivo':
+            return precio * self.DESCUENTO_EFECTIVO
+        return precio
 
 
 class EliminarCotizacion(LoginRequiredMixin, View):

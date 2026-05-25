@@ -11,7 +11,7 @@ from .models import ArticulosCotizado, Cotizaciones
 
 
 @override_settings(SECURE_SSL_REDIRECT=False)
-class CotizacionesSecurityTests(TestCase):
+class PruebasCotizaciones(TestCase):
     def setUp(self):
         self.user = User.objects.create_user(
             username='usuario_uno',
@@ -69,7 +69,7 @@ class CotizacionesSecurityTests(TestCase):
             precio=150,
         )
 
-    def test_delete_only_removes_user_cotizaciones(self):
+    def test_eliminar_solo_borra_cotizaciones_del_usuario(self):
         own_cotizacion = Cotizaciones.objects.create(usuario=self.user)
         other_cotizacion = Cotizaciones.objects.create(usuario=self.other_user)
 
@@ -86,7 +86,7 @@ class CotizacionesSecurityTests(TestCase):
         self.assertTrue(Cotizaciones.objects.filter(id=own_cotizacion.id).exists())
         self.assertTrue(Cotizaciones.objects.filter(id=other_cotizacion.id).exists())
 
-    def test_form_rejects_foreign_empresa_and_cliente(self):
+    def test_formulario_rechaza_empresa_y_cliente_ajenos(self):
         form = CotizacionForm(
             data={
                 'empresa': self.other_empresa.id,
@@ -100,7 +100,7 @@ class CotizacionesSecurityTests(TestCase):
         self.assertIn('empresa', form.errors)
         self.assertIn('cliente', form.errors)
 
-    def test_create_skips_foreign_articulos(self):
+    def test_creacion_ignora_articulos_ajenos(self):
         self.client.force_login(self.user)
         response = self.client.post(
             reverse('nueva_cotizacion'),
@@ -127,7 +127,7 @@ class CotizacionesSecurityTests(TestCase):
             ).exists()
         )
 
-    def test_create_with_valid_articulo_redirects_and_saves_item(self):
+    def test_creacion_con_efectivo_aplica_descuento_y_guarda_item(self):
         self.client.force_login(self.user)
         response = self.client.post(
             reverse('nueva_cotizacion'),
@@ -138,8 +138,8 @@ class CotizacionesSecurityTests(TestCase):
                 'condiciones_pago': 'Efectivo',
                 'descuento': '10',
                 'costo_envio': '0',
-                'total': '300.00',
-                'total_con_descuento': '270.00',
+                'total': '270.00',
+                'total_con_descuento': '243.00',
                 'cantidad': ['2'],
                 'articulos_cotizados': [str(self.articulo.id)],
             },
@@ -148,7 +148,34 @@ class CotizacionesSecurityTests(TestCase):
         self.assertRedirects(response, reverse('mis_cotizaciones'))
         cotizacion = Cotizaciones.objects.get(usuario=self.user)
         self.assertEqual(cotizacion.items.count(), 1)
-        self.assertEqual(cotizacion.total, Decimal('300.00'))
-        self.assertEqual(cotizacion.total_con_descuento, Decimal('270.00'))
+        item = cotizacion.items.get()
+        self.assertEqual(item.articulo_precio, Decimal('135.00'))
+        self.assertEqual(cotizacion.total, Decimal('270.00'))
+        self.assertEqual(cotizacion.total_con_descuento, Decimal('243.00'))
         self.assertEqual(cotizacion.empresa_nombre, self.empresa.nombre)
         self.assertEqual(cotizacion.cliente_nombre, self.cliente.nombre)
+
+    def test_creacion_con_precio_de_lista_mantiene_precio_original(self):
+        self.client.force_login(self.user)
+        response = self.client.post(
+            reverse('nueva_cotizacion'),
+            {
+                'empresa': self.empresa.id,
+                'cliente': self.cliente.id,
+                'fecha': '2026-05-25',
+                'condiciones_pago': 'Precio de lista',
+                'descuento': '0',
+                'costo_envio': '0',
+                'total': '300.00',
+                'total_con_descuento': '300.00',
+                'cantidad': ['2'],
+                'articulos_cotizados': [str(self.articulo.id)],
+            },
+        )
+
+        self.assertRedirects(response, reverse('mis_cotizaciones'))
+        cotizacion = Cotizaciones.objects.get(usuario=self.user)
+        item = cotizacion.items.get()
+        self.assertEqual(item.articulo_precio, Decimal('150.00'))
+        self.assertEqual(cotizacion.total, Decimal('300.00'))
+        self.assertEqual(cotizacion.total_con_descuento, Decimal('300.00'))
