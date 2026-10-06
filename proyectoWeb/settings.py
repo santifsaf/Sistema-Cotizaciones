@@ -31,8 +31,6 @@ DEBUG = config_bool('DEBUG', default=False)
 
 
 INSTALLED_APPS = [
-    'crispy_forms',
-    'crispy_bootstrap5',
     'login',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -78,10 +76,6 @@ ACCOUNT_SIGNUP_FIELDS = ['email*', 'username*', 'password1*', 'password2*']
 ACCOUNT_EMAIL_VERIFICATION = "mandatory" 
 SOCIALACCOUNT_EMAIL_VERIFICATION = "optional"
 
-
-
-CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
-CRISPY_TEMPLATE_PACK = 'bootstrap5'
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
@@ -131,12 +125,13 @@ WSGI_APPLICATION = 'proyectoWeb.wsgi.application'
 
 
 DATABASE_URL = config('DATABASE_URL')
+DATABASE_SSL_REQUIRE = config_bool('DATABASE_SSL_REQUIRE', default=True)
 
 DATABASES = {
-    'default': dj_database_url.config(
-        default=DATABASE_URL,
+    'default': dj_database_url.parse(
+        DATABASE_URL,
         conn_max_age=600,
-        ssl_require=not DEBUG and not DATABASE_URL.startswith('sqlite'),
+        ssl_require=DATABASE_SSL_REQUIRE and not DATABASE_URL.startswith('sqlite'),
     )
 }
 
@@ -172,7 +167,14 @@ cloudinary.config(
 )
 
 STATIC_URL = 'static/'        
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+STORAGES = {
+    'default': {
+        'BACKEND': 'django.core.files.storage.FileSystemStorage',
+    },
+    'staticfiles': {
+        'BACKEND': 'whitenoise.storage.CompressedManifestStaticFilesStorage',
+    },
+}
 
 STATICFILES_DIRS = [
     BASE_DIR / "cotizApp/static",    

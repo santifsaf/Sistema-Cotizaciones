@@ -1,25 +1,60 @@
+name: cotizapp-dev
+
+x-app: &app
+  build:
+    context: .
+    dockerfile: dockerfile
+  image: cotizapp:local
+  env_file:
+    - ./.env.docker
+  environment:
+    DEBUG: "True"
+    DATABASE_URL: postgresql://cotizapp:cotizapp-local@db:5432/cotizapp
+    DATABASE_SSL_REQUIRE: "False"
+    DEFAULT_DOMAIN: localhost:8000
+    DEFAULT_PROTOCOL: http
+  volumes:
+    - .:/app
+    - staticfiles:/app/staticfiles
+
 services:
   db:
-    image: postgres:15
-    restart: always
-    env_file:
-      - ./proyectoWeb/.env.db
+    image: postgres:15-bookworm
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: cotizapp
+      POSTGRES_USER: cotizapp
+      POSTGRES_PASSWORD: cotizapp-local
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+
+  setup:
+    <<: *app
+    command:
+      - sh
+      - -c
+      - python manage.py migrate --noinput && python manage.py collectstatic --noinput
+    depends_on:
+      db:
+        condition: service_healthy
 
   web:
-    build:
-      context: .
-      dockerfile: dockerfile
-    command: python manage.py runserver 0.0.0.0:8000
-    volumes:
-      - .:/app
+    <<: *app
+    command: ["python", "manage.py", "runserver", "0.0.0.0:8000"]
     ports:
-      - "8000:8000"
-    env_file:
-      - ./proyectoWeb/.env
+      - "127.0.0.1:8000:8000"
     depends_on:
-      - db
+      db:
+        condition: service_healthy
+      setup:
+        condition: service_completed_successfully
 
 volumes:
   postgres_data:
+  staticfiles:

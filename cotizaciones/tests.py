@@ -69,6 +69,34 @@ class PruebasCotizaciones(TestCase):
             precio=150,
         )
 
+    def test_pdf_genera_documento_con_items_historicos(self):
+        cotizacion = Cotizaciones.objects.create(
+            usuario=self.user,
+            empresa_nombre=self.empresa.nombre,
+            cliente_nombre=self.cliente.nombre,
+            total=Decimal('150.00'),
+            total_con_descuento=Decimal('150.00'),
+        )
+        ArticulosCotizado.objects.create(
+            cotizacion=cotizacion,
+            articulo=self.articulo,
+            cantidad=1,
+            articulo_nombre=self.articulo.nombre,
+            articulo_descripcion=self.articulo.descripcion,
+            articulo_precio=Decimal('150.00'),
+        )
+        self.client.force_login(self.user)
+
+        response = self.client.get(reverse('generar_pdf', args=[cotizacion.id]))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response['Content-Type'], 'application/pdf')
+        self.assertTrue(response.content.startswith(b'%PDF-'))
+        self.assertIn(
+            f'cotizacion_{cotizacion.numero_referencia}.pdf',
+            response['Content-Disposition'],
+        )
+
     def test_eliminar_solo_borra_cotizaciones_del_usuario(self):
         own_cotizacion = Cotizaciones.objects.create(usuario=self.user)
         other_cotizacion = Cotizaciones.objects.create(usuario=self.other_user)

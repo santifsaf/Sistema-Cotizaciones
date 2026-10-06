@@ -1,30 +1,30 @@
-# Imagen base de Python
-FROM python:3.11-slim
+FROM python:3.11-slim-bookworm
 
-# Directorio de la app
-WORKDIR /app
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    PIP_NO_CACHE_DIR=1
 
-# Variables de entorno para optimizar opcionales
-ENV PYTHONDONTWRITEBYTECODE=1
-ENV PYTHONUNBUFFERED=1
-
-# Copia e instala dependencias Python
-COPY requirements.txt .
-RUN pip install --upgrade pip && pip install -r requirements.txt --no-cache-dir
-
-
-# Instala librerías necesarias del sistema
-RUN apt-get update && apt-get install -y \
-    build-essential \
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    fonts-dejavu-core \
+    libharfbuzz-subset0 \
     libpango-1.0-0 \
-    libpangocairo-1.0-0 \
-    libcairo2 \
-    libffi-dev \
-    shared-mime-info \
+    libpangoft2-1.0-0 \
     && rm -rf /var/lib/apt/lists/*
 
+RUN useradd --create-home --uid 10001 app \
+    && mkdir -p /app \
+    && chown app:app /app
 
-# Copia el código fuente de la app
-COPY . .
+WORKDIR /app
+COPY requirements.txt .
+RUN python -m pip install -r requirements.txt
 
-CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+COPY --chown=app:app . .
+RUN sed -i 's/\r$//' start.sh build.sh \
+    && chmod +x start.sh build.sh \
+    && mkdir -p staticfiles proyectoWeb/media \
+    && chown app:app staticfiles proyectoWeb/media
+
+USER app
+EXPOSE 8000
+CMD ["sh", "./start.sh"]
